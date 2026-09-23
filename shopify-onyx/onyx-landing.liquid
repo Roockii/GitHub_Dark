@@ -166,7 +166,11 @@
 .onyx .acc-content ul{list-style:none;padding:0;}
 .onyx .acc-content ul li{display:flex;gap:.5rem;}
 .onyx .acc-content ul li+li{margin-top:.375rem;}
-.onyx .acc-content ul li::before{content:"";margin-top:.55rem;width:.375rem;height:.375rem;border-radius:999px;flex-shrink:0;background-image:var(--sunrise);}
+.onyx .acc-content ul li::before,.onyx .acc-content p.tick-line::before{content:"";margin-top:.2rem;width:1.05rem;height:1.05rem;flex-shrink:0;background:var(--tick-color,var(--sunrise-2));-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;}
+.onyx .acc-content ul li,.onyx .acc-content p.tick-line{gap:.6rem;font-weight:500;color:var(--ink);}
+.onyx .acc-content p.tick-line{display:flex;}
+.onyx .acc-content p + p,.onyx .acc-content p + ul,.onyx .acc-content ul + p{margin-top:.75rem;}
+.onyx .acc-content p.tick-line + p.tick-line{margin-top:.375rem;}
 
 /* sticky bar */
 .onyx .sticky-bar{position:fixed;bottom:0;left:0;right:0;z-index:40;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);border-top:1px solid #e5e7eb;padding:.75rem 1rem calc(.75rem + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .3s;}
@@ -472,7 +476,7 @@
   data-money-format="{{ shop.money_format | escape }}"
   data-cart-url="{{ routes.cart_url }}"
   data-cart-add-url="{{ routes.cart_add_url }}"
-  style="--wiggle-every:{{ section.settings.wiggle_every }}s;--sunrise-1:{{ section.settings.color_1 }};--sunrise-2:{{ section.settings.color_2 }};--sunrise-3:{{ section.settings.color_3 }};--ink:{{ section.settings.color_ink }};--secondary:{{ section.settings.color_secondary }};"
+  style="--wiggle-every:{{ section.settings.wiggle_every }}s;--sunrise-1:{{ section.settings.color_1 }};--sunrise-2:{{ section.settings.color_2 }};--sunrise-3:{{ section.settings.color_3 }};--ink:{{ section.settings.color_ink }};--secondary:{{ section.settings.color_secondary }};--tick-color:{{ section.settings.tick_color }};"
 >
   {%- if section.settings.title_custom_font -%}
     <style>{{ section.settings.title_font | font_face: font_display: 'swap' }}</style>
@@ -1118,6 +1122,22 @@
         self.update();
       });
 
+      // Ticks escritos a mano (✓ al inicio del párrafo) → tick de color
+      root.querySelectorAll('.acc-content p').forEach(function (p) {
+        var walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT);
+        var node = walker.nextNode();
+        while (node && !node.nodeValue.trim()) node = walker.nextNode();
+        if (!node) return;
+        var re = /^\s*[\u2713\u2714\u2705\u2611]\uFE0F?\s*/;
+        if (re.test(node.nodeValue)) {
+          node.nodeValue = node.nodeValue.replace(re, '');
+          var span = document.createElement('span');
+          while (p.firstChild) span.appendChild(p.firstChild);
+          p.appendChild(span);
+          p.classList.add('tick-line');
+        }
+      });
+
       // Acordeón (uno abierto a la vez)
       root.querySelectorAll('[data-accordion] .acc-item').forEach(function (item) {
         var btn = item.querySelector('.acc-btn'), body = item.querySelector('.acc-body');
@@ -1314,6 +1334,12 @@
       "id": "color_secondary",
       "label": "Fondo secundario",
       "default": "#F4F1EC"
+    },
+    {
+      "type": "color",
+      "id": "tick_color",
+      "label": "Color de los ticks (pestañas desplegables)",
+      "default": "#FF9F1C"
     },
     {
       "type": "checkbox",
