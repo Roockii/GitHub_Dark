@@ -75,6 +75,17 @@
 .onyx .btn-main:hover .btn-bg{opacity:1;}
 .onyx .btn-main[disabled]{opacity:.5;cursor:not-allowed;}
 .onyx .btn-main.is-loading .btn-label{opacity:.5;}
+@keyframes onyx-wiggle{
+  0%,86%,100%{transform:rotate(0) scale(1);}
+  88%{transform:rotate(-2.5deg) scale(1.03);}
+  90%{transform:rotate(2.5deg) scale(1.03);}
+  92%{transform:rotate(-2deg) scale(1.03);}
+  94%{transform:rotate(1.5deg) scale(1.02);}
+  96%{transform:rotate(-.5deg) scale(1.01);}
+}
+.onyx .btn-main.wiggle{animation:onyx-wiggle var(--wiggle-every,10s) ease-in-out infinite;}
+.onyx .btn-main.wiggle:hover,.onyx .btn-main.wiggle[disabled]{animation-play-state:paused;}
+@media (prefers-reduced-motion:reduce){.onyx .btn-main.wiggle{animation:none;}}
 
 /* =========================================================
    HERO / PRODUCTO
@@ -134,6 +145,7 @@
 .onyx .offer-head h3{font-weight:500;font-size:1.125rem;font-family:'Inter',sans-serif;letter-spacing:0;}
 .onyx .offer-head .r{text-align:right;}
 .onyx .offer-head .r .n{font-weight:600;}
+.onyx .offer-head .r .n .price-each{font-size:.75rem;margin-left:.2rem;}
 .onyx .offer-head .r .o{font-size:.75rem;text-decoration:line-through;color:#9ca3af;}
 .onyx .checks{margin-top:1rem;font-size:.875rem;}
 .onyx .checks li{display:flex;gap:.75rem;align-items:flex-start;font-weight:500;}
@@ -337,6 +349,11 @@
     assign start_discount = first_qty_block.settings.discount
   endif
 
+  assign can_buy = false
+  if current_variant.available or section.settings.ignore_stock
+    assign can_buy = true
+  endif
+
   assign display_title = section.settings.title_override
   if display_title == blank and p != blank
     assign display_title = p.title
@@ -398,13 +415,14 @@
   data-variant-price="{{ current_variant.price }}"
   data-variant-compare="{{ current_variant.compare_at_price }}"
   data-variant-available="{{ current_variant.available }}"
+  data-ignore-stock="{{ section.settings.ignore_stock }}"
   data-each-always="{{ section.settings.each_always }}"
   data-pct-suffix="{{ section.settings.pct_suffix | escape }}"
   data-sticky-offset="{{ section.settings.sticky_offset }}"
   data-money-format="{{ shop.money_format | escape }}"
   data-cart-url="{{ routes.cart_url }}"
   data-cart-add-url="{{ routes.cart_add_url }}"
-  style="--sunrise-1:{{ section.settings.color_1 }};--sunrise-2:{{ section.settings.color_2 }};--sunrise-3:{{ section.settings.color_3 }};--ink:{{ section.settings.color_ink }};--secondary:{{ section.settings.color_secondary }};"
+  style="--wiggle-every:{{ section.settings.wiggle_every }}s;--sunrise-1:{{ section.settings.color_1 }};--sunrise-2:{{ section.settings.color_2 }};--sunrise-3:{{ section.settings.color_3 }};--ink:{{ section.settings.color_ink }};--secondary:{{ section.settings.color_secondary }};"
 >
   {%- if section.settings.show_progress -%}
     <div class="onyx-progress" aria-hidden="true"></div>
@@ -495,8 +513,8 @@
               <p class="label-sm">{{ section.settings.variant_label }}</p>
               <select class="variant-select" data-variant-select aria-label="{{ section.settings.variant_label | escape }}">
                 {%- for v in p.variants -%}
-                  <option value="{{ v.id }}"{% if v.id == current_variant.id %} selected{% endif %}{% unless v.available %} disabled{% endunless %}>
-                    {{ v.title }}{% unless v.available %} — {{ section.settings.sold_out_text }}{% endunless %}
+                  <option value="{{ v.id }}"{% if v.id == current_variant.id %} selected{% endif %}{% unless v.available or section.settings.ignore_stock %} disabled{% endunless %}>
+                    {{ v.title }}{% unless v.available or section.settings.ignore_stock %} — {{ section.settings.sold_out_text }}{% endunless %}
                   </option>
                 {%- endfor -%}
               </select>
@@ -528,9 +546,9 @@
             </div>
           {%- endif -%}
 
-          <button type="submit" name="add" class="btn-main atc" data-atc{% unless current_variant.available %} disabled{% endunless %}>
+          <button type="submit" name="add" class="btn-main atc{% if section.settings.wiggle %} wiggle{% endif %}" data-atc{% unless can_buy %} disabled{% endunless %}>
             <span class="btn-bg"></span>
-            <span class="btn-label" data-atc-label>{% if current_variant.available %}{{ section.settings.atc_text }}{% else %}{{ section.settings.sold_out_text }}{% endif %}</span>
+            <span class="btn-label" data-atc-label>{% if can_buy %}{{ section.settings.atc_text }}{% else %}{{ section.settings.sold_out_text }}{% endif %}</span>
           </button>
           <p class="atc-error" data-atc-error hidden></p>
         {%- endform -%}
@@ -543,8 +561,8 @@
             <div class="offer-head">
               <h3>{{ offer_title }}</h3>
               <div class="r">
-                <p class="n" data-offer-price>{{ current_variant.price | money }}</p>
-                <p class="o" data-offer-compare{% if offer_compare == nil %} hidden{% endif %}>{% if offer_compare %}{{ offer_compare | money }}{% endif %}</p>
+                <p class="n"><span data-offer-price>{{ unit_price | money }}</span>{% if section.settings.each_text != blank %}<span class="price-each" data-price-each{% unless section.settings.each_always or start_qty > 1 %} hidden{% endunless %}>{{ section.settings.each_text }}</span>{% endif %}</p>
+                <p class="o" data-offer-compare{% if compare_price == nil %} hidden{% endif %}>{% if compare_price %}{{ compare_price | money }}{% endif %}</p>
               </div>
             </div>
             {%- assign offer_lines = section.settings.offer_bullets | newline_to_br | split: '<br />' -%}
@@ -851,7 +869,7 @@
           <p class="t">{{ display_title }}</p>
           <p class="p"><strong data-sticky-price>{{ unit_price | money }}</strong> <s data-sticky-compare{% if compare_price == nil %} hidden{% endif %}>{% if compare_price %}{{ compare_price | money }}{% endif %}</s></p>
         </div>
-        <button type="button" class="btn-main sticky-btn" data-sticky-atc{% unless current_variant.available %} disabled{% endunless %}>
+        <button type="button" class="btn-main sticky-btn{% if section.settings.wiggle %} wiggle{% endif %}" data-sticky-atc{% unless can_buy %} disabled{% endunless %}>
           <span class="btn-bg"></span>
           <span class="btn-label">{{ section.settings.atc_text }}</span>
         </button>
@@ -980,6 +998,10 @@
       try { this.update(); } catch (err) { console.error('[Onyx] update', err); }
     }
 
+    OnyxProduct.prototype.canBuy = function (v) {
+      return !!v && (v.available || this.root.dataset.ignoreStock === 'true');
+    };
+
     OnyxProduct.prototype.$ = function (sel) { return this.root.querySelector(sel); };
 
     OnyxProduct.prototype.bind = function () {
@@ -1047,19 +1069,15 @@
     OnyxProduct.prototype.update = function () {
       var v = this.variant;
       if (!v) return;
-      var root = this.root, fmt = this.fmt;
+      var self = this, root = this.root, fmt = this.fmt;
       var unit = Math.round(v.price * (100 - this.discount) / 100);
       var override = +root.dataset.compareOverride || 0;
       var base = override > 0 ? override : (v.compare_at_price && v.compare_at_price > v.price ? v.compare_at_price : v.price);
       // "Precio tachado" propio de la opción elegida y de la primera opción
       var selectedOpt = root.querySelector('.qty-opt.is-selected');
-      var firstOpt = root.querySelector('.qty-opt');
       var selCompare = selectedOpt ? +selectedOpt.dataset.compare || 0 : 0;
-      var firstCompare = firstOpt ? +firstOpt.dataset.compare || 0 : 0;
       var current = selCompare > 0 ? selCompare : base;
       var compare = current > unit ? current : null;
-      var offerBase = firstCompare > 0 ? firstCompare : base;
-      var offerCompare = offerBase > v.price ? offerBase : null;
       var showEach = root.dataset.eachAlways === 'true' || this.qty > 1;
       root.querySelectorAll('[data-price-each]').forEach(function (el) { el.hidden = !showEach; });
 
@@ -1071,20 +1089,20 @@
       }
       set('[data-price-now]', formatMoney(unit, fmt));
       set('[data-sticky-price]', formatMoney(unit, fmt));
-      set('[data-offer-price]', formatMoney(v.price, fmt));
+      set('[data-offer-price]', formatMoney(unit, fmt));
       set('[data-price-compare]', compare ? formatMoney(compare, fmt) : '', !compare);
-      set('[data-offer-compare]', offerCompare ? formatMoney(offerCompare, fmt) : '', !offerCompare);
+      set('[data-offer-compare]', compare ? formatMoney(compare, fmt) : '', !compare);
       set('[data-sticky-compare]', compare ? formatMoney(compare, fmt) : '', !compare);
       set('[data-pct-off]', compare ? Math.round((1 - unit / compare) * 100) + root.dataset.pctSuffix : '', !compare);
 
       var idInput = this.$('[data-variant-id]'); if (idInput) idInput.value = v.id;
       var qtyInput = this.$('[data-qty-input]'); if (qtyInput) qtyInput.value = this.qty;
 
-      root.querySelectorAll('[data-atc],[data-sticky-atc]').forEach(function (b) { b.disabled = !v.available; });
+      root.querySelectorAll('[data-atc],[data-sticky-atc]').forEach(function (b) { b.disabled = !self.canBuy(v); });
       var label = this.$('[data-atc-label]');
       if (label) {
         if (!label.dataset.original) label.dataset.original = label.textContent;
-        label.textContent = v.available ? label.dataset.original : root.dataset.soldOut;
+        label.textContent = this.canBuy(v) ? label.dataset.original : root.dataset.soldOut;
       }
     };
 
@@ -1099,7 +1117,7 @@
 
     OnyxProduct.prototype.addToCart = function () {
       var self = this, root = this.root, v = this.variant;
-      if (!v || !v.available) return;
+      if (!v || !this.canBuy(v)) return;
       var buttons = root.querySelectorAll('[data-atc],[data-sticky-atc]');
       var err = this.$('[data-atc-error]');
       buttons.forEach(function (b) { b.disabled = true; b.classList.add('is-loading'); });
@@ -1125,7 +1143,7 @@
           self.toast(e.message || root.dataset.errorMsg);
         })
         .finally(function () {
-          buttons.forEach(function (b) { b.classList.remove('is-loading'); b.disabled = !v.available; });
+          buttons.forEach(function (b) { b.classList.remove('is-loading'); b.disabled = !self.canBuy(v); });
         });
     };
 
@@ -1292,6 +1310,29 @@
       "id": "atc_text",
       "label": "Texto del botón",
       "default": "Añadir al carrito +"
+    },
+    {
+      "type": "checkbox",
+      "id": "wiggle",
+      "label": "Efecto de tintineo en el botón",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "wiggle_every",
+      "label": "Tintineo cada",
+      "min": 3,
+      "max": 30,
+      "step": 1,
+      "unit": "s",
+      "default": 10
+    },
+    {
+      "type": "checkbox",
+      "id": "ignore_stock",
+      "label": "No mostrar nunca \"Agotado\" (dropshipping)",
+      "default": true,
+      "info": "El botón siempre deja comprar. En el producto desmarca también 'Controlar cantidad' en Inventario, o Shopify rechazará el pedido."
     },
     {
       "type": "text",
