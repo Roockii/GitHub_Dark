@@ -495,6 +495,11 @@
       {{ pf | font_face: font_display: 'swap' }}
       {{ sid }} .ripple-section h2{font-family:{{ pf.family }},{{ pf.fallback_families }};font-weight:{{ pf.weight }};font-style:{{ pf.style }};}
     {%- endunless -%}
+    {%- assign pf = section.settings.compare_font -%}
+    {%- unless pf.family == 'Helvetica' and pf.weight == 700 and pf.style == 'normal' -%}
+      {{ pf | font_face: font_display: 'swap' }}
+      {{ sid }} .cmp-section .cmp-head h2{font-family:{{ pf.family }},{{ pf.fallback_families }};font-weight:{{ pf.weight }};font-style:{{ pf.style }};}
+    {%- endunless -%}
     {%- assign pf = section.settings.features_font -%}
     {%- unless pf.family == 'Helvetica' and pf.weight == 700 and pf.style == 'normal' -%}
       {{ pf | font_face: font_display: 'swap' }}
@@ -776,7 +781,13 @@
               </div>
             </div>
             <div class="fade-in">
-              <h3>{{ block.settings.title }}</h3>
+              {%- assign bf = block.settings.title_font -%}
+              {%- if bf and bf.family != 'Helvetica' or bf.weight != 700 or bf.style != 'normal' -%}
+                <style>{{ bf | font_face: font_display: 'swap' }}</style>
+                <h3 style="font-family:{{ bf.family }},{{ bf.fallback_families }};font-weight:{{ bf.weight }};font-style:{{ bf.style }};">{{ block.settings.title }}</h3>
+              {%- else -%}
+                <h3>{{ block.settings.title }}</h3>
+              {%- endif -%}
               {%- if block.settings.text != blank -%}<div class="txt">{{ block.settings.text }}</div>{%- endif -%}
               <div class="stats">
                 {%- if block.settings.stat1_value != blank -%}
@@ -1755,6 +1766,13 @@
       "default": "Diseñada para una mañana consciente"
     },
     {
+      "type": "font_picker",
+      "id": "compare_font",
+      "label": "Tipografía del título",
+      "default": "helvetica_n7",
+      "info": "Déjala en Helvetica para mantener la fuente original del diseño."
+    },
+    {
       "type": "text",
       "id": "compare_sub",
       "label": "Subtítulo",
@@ -2098,6 +2116,13 @@
           "id": "title",
           "label": "Título",
           "default": "Vibración potente"
+        },
+        {
+          "type": "font_picker",
+          "id": "title_font",
+          "label": "Tipografía del título",
+          "default": "helvetica_n7",
+          "info": "Déjala en Helvetica para mantener la fuente original del diseño."
         },
         {
           "type": "richtext",
