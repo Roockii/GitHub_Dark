@@ -1,0 +1,99 @@
+{{ 'onyx.css' | asset_url | stylesheet_tag }}
+
+<footer
+  class="onyx onyx-footer onyx-wrap"
+  style="background:{{ section.settings.bg }};color:{{ section.settings.text_color }};--sunrise-1:{{ section.settings.color_1 }};--sunrise-2:{{ section.settings.color_2 }};--sunrise-3:{{ section.settings.color_3 }};"
+>
+  <div class="foot-top">
+    <div>
+      <p class="foot-logo onyx-display">
+        {%- if section.settings.logo != blank -%}
+          {{ section.settings.logo | image_url: width: 400 | image_tag: loading: 'lazy', alt: shop.name }}
+        {%- else -%}
+          {{ section.settings.logo_text }}<span class="text-sunrise">{{ section.settings.logo_accent }}</span>
+        {%- endif -%}
+      </p>
+      {%- if section.settings.description != blank -%}
+        <div class="foot-desc">{{ section.settings.description }}</div>
+      {%- endif -%}
+    </div>
+
+    <nav class="foot-nav" aria-label="{{ 'Pie de página' }}">
+      {%- if section.settings.menu != blank -%}
+        {%- for link in section.settings.menu.links -%}
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        {%- endfor -%}
+      {%- endif -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'link' -%}
+          <a href="{{ block.settings.url }}" {{ block.shopify_attributes }}>{{ block.settings.label }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </nav>
+  </div>
+
+  <div class="foot-bottom">
+    {%- assign year = 'now' | date: '%Y' -%}
+    <p>{{ section.settings.copyright | replace: '[year]', year }}</p>
+    <div class="socials">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'social' -%}
+          <a href="{{ block.settings.url }}" target="_blank" rel="noopener" {{ block.shopify_attributes }}>{{ block.settings.label }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Onyx · Pie de página",
+  "tag": "div",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo (imagen)", "info": "Si no subes imagen se usa el texto." },
+    { "type": "text", "id": "logo_text", "label": "Logo (texto)", "default": "onyx" },
+    { "type": "text", "id": "logo_accent", "label": "Logo: acento en degradado", "default": "." },
+    { "type": "richtext", "id": "description", "label": "Descripción", "default": "<p>La alarma de pulsera silenciosa para despertar con calma, energía y sin molestar a nadie.</p>" },
+    { "type": "link_list", "id": "menu", "label": "Menú (opcional)", "info": "También puedes añadir enlaces sueltos como bloques." },
+    { "type": "text", "id": "copyright", "label": "Copyright", "info": "Usa [year] para el año actual.", "default": "© 2026 Onyx Sleep. Todos los derechos reservados." },
+    { "type": "header", "content": "Colores" },
+    { "type": "color", "id": "bg", "label": "Fondo", "default": "#0A0A0C" },
+    { "type": "color", "id": "text_color", "label": "Texto", "default": "#FFFFFF" },
+    { "type": "color", "id": "color_1", "label": "Degradado 1", "default": "#FFD93D" },
+    { "type": "color", "id": "color_2", "label": "Degradado 2", "default": "#FF9F1C" },
+    { "type": "color", "id": "color_3", "label": "Degradado 3", "default": "#FF5E3A" }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Enlace",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Texto", "default": "Producto" },
+        { "type": "url", "id": "url", "label": "Enlace" }
+      ]
+    },
+    {
+      "type": "social",
+      "name": "Red social",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Texto / icono", "default": "IG" },
+        { "type": "url", "id": "url", "label": "Enlace" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Onyx · Pie de página",
+      "blocks": [
+        { "type": "link", "settings": { "label": "Producto" } },
+        { "type": "link", "settings": { "label": "Reseñas" } },
+        { "type": "link", "settings": { "label": "Preguntas frecuentes" } },
+        { "type": "link", "settings": { "label": "Contacto" } },
+        { "type": "social", "settings": { "label": "IG" } },
+        { "type": "social", "settings": { "label": "YT" } },
+        { "type": "social", "settings": { "label": "✉" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

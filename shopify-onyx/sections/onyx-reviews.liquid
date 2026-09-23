@@ -1,0 +1,166 @@
+{{ 'onyx.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'onyx.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign initial = section.settings.initial_count
+  assign total = section.blocks.size
+  assign bars = '5,4,3,2,1' | split: ','
+-%}
+
+<section
+  id="{{ section.settings.anchor | default: 'reviews' }}"
+  class="onyx onyx-wrap py-xl"
+  data-onyx-reviews
+  style="scroll-margin-top:2rem;--sunrise-1:{{ section.settings.color_1 }};--sunrise-2:{{ section.settings.color_2 }};--sunrise-3:{{ section.settings.color_3 }};--secondary:{{ section.settings.color_secondary }};"
+>
+  <div class="fade-in rev-top">
+    <div>
+      <h2 class="h2-xl">
+        {{ section.settings.heading }}
+        {% if section.settings.heading_highlight != blank %}<span class="text-sunrise">{{ section.settings.heading_highlight }}</span>{% endif %}
+      </h2>
+      {%- if section.settings.summary != blank -%}
+        <p class="rev-summary">{{ section.settings.summary }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_bars -%}
+      <div class="bars">
+        {%- for s in bars -%}
+          {%- liquid
+            assign count_key = 'count_' | append: s
+            assign count = section.settings[count_key] | default: 0
+            assign pct = 0
+            assign total_reviews = section.settings.total_reviews | default: 0
+            if total_reviews > 0
+              assign pct = count | times: 100.0 | divided_by: total_reviews | round
+            endif
+          -%}
+          <div class="bar">
+            <span class="s">{{ s }} {{ section.settings.stars_word }}</span>
+            <div class="track bg-secondary"><div class="fill" style="width:{{ pct }}%"></div></div>
+            <span class="c">{{ count }} ({{ pct }}%)</span>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="rev-grid">
+    {%- for block in section.blocks -%}
+      <div class="rev-card{% if forloop.index > initial %} is-hidden{% endif %}" {{ block.shopify_attributes }}>
+        <div class="rev-author">
+          <span class="avatar bg-sunrise">
+            {%- if block.settings.avatar != blank -%}
+              {{ block.settings.avatar | image_url: width: 100 | image_tag: loading: 'lazy', alt: block.settings.name }}
+            {%- else -%}
+              {{ block.settings.name | slice: 0 }}
+            {%- endif -%}
+          </span>
+          <div>
+            <p class="n">{{ block.settings.name }}{% if block.settings.verified and section.settings.verified_text != blank %} <span style="font-weight:400;color:#6b7280;font-size:.75rem">· {{ section.settings.verified_text }}</span>{% endif %}</p>
+            <span class="st stars" aria-label="{{ block.settings.stars }} de 5">{%- for i in (1..block.settings.stars) -%}★{%- endfor -%}</span>
+          </div>
+        </div>
+        <p class="t">{{ block.settings.title }}</p>
+        <div class="x">{{ block.settings.text }}</div>
+        {%- if block.settings.photo != blank -%}
+          <div class="ph">{{ block.settings.photo | image_url: width: 600 | image_tag: loading: 'lazy', class: 'media-cover', alt: block.settings.title }}</div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if total > initial -%}
+    <div class="more-wrap">
+      <button type="button" class="btn-outline border-sunrise hover-glow" data-more-reviews>{{ section.settings.more_text }}</button>
+    </div>
+  {%- endif -%}
+</section>
+
+<script>
+  (function () {
+    function init() {
+      document.querySelectorAll('[data-onyx-reviews]').forEach(function (root) {
+        var btn = root.querySelector('[data-more-reviews]');
+        if (!btn || btn.__bound) return;
+        btn.__bound = true;
+        btn.addEventListener('click', function () {
+          root.querySelectorAll('.rev-card.is-hidden').forEach(function (c) { c.classList.remove('is-hidden'); });
+          btn.parentNode.style.display = 'none';
+        });
+      });
+    }
+    init();
+    document.addEventListener('shopify:section:load', init);
+    // En el editor, mostrar la reseña seleccionada aunque esté oculta
+    document.addEventListener('shopify:block:select', function (e) {
+      if (e.target.classList && e.target.classList.contains('rev-card')) e.target.classList.remove('is-hidden');
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Onyx · Reseñas",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Ancla (ID)", "default": "reviews", "info": "El enlace de valoración del producto apunta a #reviews" },
+    { "type": "text", "id": "heading", "label": "Título", "default": "Escéptico al principio." },
+    { "type": "text", "id": "heading_highlight", "label": "Título: parte destacada", "default": "Ahora me despierto SIEMPRE." },
+    { "type": "text", "id": "summary", "label": "Resumen", "default": "★★★★★ 4,98 · 3.622 reseñas" },
+    { "type": "header", "content": "Barras de valoración" },
+    { "type": "checkbox", "id": "show_bars", "label": "Mostrar barras", "default": true },
+    { "type": "text", "id": "stars_word", "label": "Palabra 'estrellas'", "default": "estrellas" },
+    { "type": "number", "id": "total_reviews", "label": "Total de reseñas", "default": 3622 },
+    { "type": "number", "id": "count_5", "label": "Reseñas de 5 estrellas", "default": 3537 },
+    { "type": "number", "id": "count_4", "label": "Reseñas de 4 estrellas", "default": 85 },
+    { "type": "number", "id": "count_3", "label": "Reseñas de 3 estrellas", "default": 0 },
+    { "type": "number", "id": "count_2", "label": "Reseñas de 2 estrellas", "default": 0 },
+    { "type": "number", "id": "count_1", "label": "Reseñas de 1 estrella", "default": 0 },
+    { "type": "header", "content": "Listado" },
+    { "type": "range", "id": "initial_count", "label": "Reseñas visibles al inicio", "min": 1, "max": 30, "step": 1, "default": 6 },
+    { "type": "text", "id": "more_text", "label": "Texto del botón 'ver más'", "default": "Ver más reseñas" },
+    { "type": "text", "id": "verified_text", "label": "Texto 'compra verificada'", "default": "Compra verificada" },
+    { "type": "header", "content": "Colores" },
+    { "type": "color", "id": "color_1", "label": "Degradado 1", "default": "#FFD93D" },
+    { "type": "color", "id": "color_2", "label": "Degradado 2", "default": "#FF9F1C" },
+    { "type": "color", "id": "color_3", "label": "Degradado 3", "default": "#FF5E3A" },
+    { "type": "color", "id": "color_secondary", "label": "Fondo de las barras", "default": "#F4F1EC" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Reseña",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Nombre", "default": "Jessica S." },
+        { "type": "image_picker", "id": "avatar", "label": "Avatar (opcional)" },
+        { "type": "range", "id": "stars", "label": "Estrellas", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "checkbox", "id": "verified", "label": "Compra verificada", "default": false },
+        { "type": "text", "id": "title", "label": "Título", "default": "Nunca he sido persona de mañanas" },
+        { "type": "richtext", "id": "text", "label": "Texto", "default": "<p>Escribe aquí la reseña.</p>" },
+        { "type": "image_picker", "id": "photo", "label": "Foto del cliente (opcional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Onyx · Reseñas",
+      "blocks": [
+        { "type": "review", "settings": { "name": "Jessica S.", "title": "Nunca he sido persona de mañanas", "text": "<p>He probado muchísimas alarmas y esta es la única que me ha funcionado. Sin posponer, y no me siento agotada al despertar. ¡Un antes y un después!</p>" } },
+        { "type": "review", "settings": { "name": "Antonis R.", "title": "Cumple su función", "text": "<p>Alarma vibratoria silenciosa y reloj sencillo. Cliente satisfecho.</p>" } },
+        { "type": "review", "settings": { "name": "Bronagh B.", "title": "No puedo recomendarla más", "text": "<p>Me despierta suavemente y empiezo el día de buen humor. Además, me encanta que no emita EMF, así que puedo llevarla día y noche ✨</p>" } },
+        { "type": "review", "settings": { "name": "Andrea M.F.", "title": "Ideal con TDAH", "text": "<p>Tengo TDAH y es un alivio despertarme descansada y no abrumada por el sonido de la alarma del móvil.</p>" } },
+        { "type": "review", "settings": { "name": "Philip B.", "title": "Correa transpirable", "text": "<p>Correa muy transpirable y me despierta bastante bien. Satisfecho.</p>" } },
+        { "type": "review", "settings": { "name": "Luka K.", "title": "Impresionado", "text": "<p>Me despierta, puedo ducharme con ella, la batería dura MUCHO y no despierto a mi mujer.</p>" } },
+        { "type": "review", "settings": { "name": "Chantelle D.", "title": "Me despierto con calma", "text": "<p>Lo único que me ha ayudado a despertar mejor cada día. Las alarmas del móvil solo me generaban ansiedad.</p>" } },
+        { "type": "review", "settings": { "name": "Christian K.", "title": "Menos estrés", "text": "<p>La uso todos los días y me despierto mucho menos estresado.</p>" } },
+        { "type": "review", "settings": { "name": "Mrs R.A.", "title": "Merece cada euro", "text": "<p>Tengo problemas de salud crónicos y me cuesta despertar. Es elegante, sencilla y la he cargado una sola vez en semanas.</p>" } },
+        { "type": "review", "settings": { "name": "Noe R.", "title": "10/10", "text": "<p>Me despierta a la primera vibración y me despierto de verdad, no el típico 'ya estoy…' y vuelta a dormir.</p>" } },
+        { "type": "review", "settings": { "name": "Diego P.", "title": "Me siento mejor", "text": "<p>Desde que tengo la Onyx me siento mejor cada mañana y menos cansado durante el día.</p>" } },
+        { "type": "review", "settings": { "name": "Milan W.", "title": "Muy útil", "text": "<p>Me ha ayudado mucho por las mañanas. Muy recomendable si te cuesta salir de la cama.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

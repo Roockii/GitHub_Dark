@@ -1,0 +1,80 @@
+{{ 'onyx.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'onyx.js' | asset_url }}" defer></script>
+
+<section
+  class="onyx onyx-wrap py-xl"
+  style="background:{{ section.settings.bg }};--sunrise-1:{{ section.settings.color_1 }};--sunrise-2:{{ section.settings.color_2 }};--sunrise-3:{{ section.settings.color_3 }};--ink:{{ section.settings.color_ink }};"
+>
+  <div class="fade-in cmp-head">
+    {%- if section.settings.eyebrow != blank -%}<p class="eyebrow text-sunrise">{{ section.settings.eyebrow }}</p>{%- endif -%}
+    <h2 class="h2-xl">{{ section.settings.heading }}</h2>
+    {%- if section.settings.subheading != blank -%}<p class="sub">{{ section.settings.subheading }}</p>{%- endif -%}
+  </div>
+
+  {%- assign rows = section.blocks -%}
+  <div class="fade-in cmp-table" role="table" aria-label="{{ section.settings.heading | escape }}">
+    <div role="columnheader"></div>
+    <div class="cmp-col best bg-sunrise" role="columnheader">{{ section.settings.col_1 }}</div>
+    <div class="cmp-col" role="columnheader">{{ section.settings.col_2 }}</div>
+    <div class="cmp-col" role="columnheader">{{ section.settings.col_3 }}</div>
+
+    {%- for block in rows -%}
+      <div class="cmp-label" role="rowheader" {{ block.shopify_attributes }}>{{ block.settings.label }}</div>
+      <div class="cmp-cell best{% if forloop.last %} last{% endif %}" role="cell">
+        {%- if block.settings.col_1 -%}<span class="cmp-yes" aria-label="Sí">✓</span>{%- else -%}<span class="cmp-no" aria-label="No">✕</span>{%- endif -%}
+      </div>
+      <div class="cmp-cell" role="cell">
+        {%- if block.settings.col_2 -%}<span class="cmp-yes" aria-label="Sí">✓</span>{%- else -%}<span class="cmp-no" aria-label="No">✕</span>{%- endif -%}
+      </div>
+      <div class="cmp-cell" role="cell">
+        {%- if block.settings.col_3 -%}<span class="cmp-yes" aria-label="Sí">✓</span>{%- else -%}<span class="cmp-no" aria-label="No">✕</span>{%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Onyx · Comparativa",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "¿Qué hace diferente a Onyx?" },
+    { "type": "text", "id": "heading", "label": "Título", "default": "Diseñada para una mañana consciente" },
+    { "type": "text", "id": "subheading", "label": "Subtítulo", "default": "La vibración física supera al sonido. Siempre." },
+    { "type": "header", "content": "Columnas" },
+    { "type": "text", "id": "col_1", "label": "Columna 1 (destacada)", "default": "ONYX" },
+    { "type": "text", "id": "col_2", "label": "Columna 2", "default": "Móvil" },
+    { "type": "text", "id": "col_3", "label": "Columna 3", "default": "Smartwatch" },
+    { "type": "header", "content": "Colores" },
+    { "type": "color", "id": "bg", "label": "Fondo", "default": "#FFFFFF" },
+    { "type": "color", "id": "color_ink", "label": "Texto", "default": "#0A0A0C" },
+    { "type": "color", "id": "color_1", "label": "Degradado 1", "default": "#FFD93D" },
+    { "type": "color", "id": "color_2", "label": "Degradado 2", "default": "#FF9F1C" },
+    { "type": "color", "id": "color_3", "label": "Degradado 3", "default": "#FF5E3A" }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Fila",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Característica", "default": "Uso como alarma" },
+        { "type": "checkbox", "id": "col_1", "label": "Columna 1 la tiene", "default": true },
+        { "type": "checkbox", "id": "col_2", "label": "Columna 2 la tiene", "default": false },
+        { "type": "checkbox", "id": "col_3", "label": "Columna 3 la tiene", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Onyx · Comparativa",
+      "blocks": [
+        { "type": "row", "settings": { "label": "Uso como alarma", "col_1": true, "col_2": true, "col_3": true } },
+        { "type": "row", "settings": { "label": "Sin EMF", "col_1": true, "col_2": false, "col_3": false } },
+        { "type": "row", "settings": { "label": "Batería de +14 días", "col_1": true, "col_2": false, "col_3": false } },
+        { "type": "row", "settings": { "label": "Despertar silencioso", "col_1": true, "col_2": false, "col_3": true } },
+        { "type": "row", "settings": { "label": "Sin pico de cortisol", "col_1": true, "col_2": false, "col_3": false } }
+      ]
+    }
+  ]
+}
+{% endschema %}

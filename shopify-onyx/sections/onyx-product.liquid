@@ -1,0 +1,620 @@
+{%- comment -%}
+  ONYX — Hero de producto
+  Galería + valoración + precio + selector de cantidad + añadir al carrito
+  + caja de oferta + garantías + acordeón + barra fija inferior.
+{%- endcomment -%}
+
+{{ 'onyx.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'onyx.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign p = product
+  if section.settings.product != blank
+    assign p = section.settings.product
+  endif
+  if p != blank
+    assign current_variant = p.selected_or_first_available_variant
+  endif
+
+  assign quantity_blocks = section.blocks | where: 'type', 'quantity'
+  assign first_qty_block = quantity_blocks | first
+
+  assign start_qty = 1
+  assign start_discount = 0
+  if first_qty_block
+    assign start_qty = first_qty_block.settings.qty
+    assign start_discount = first_qty_block.settings.discount
+  endif
+
+  assign display_title = section.settings.title_override
+  if display_title == blank and p != blank
+    assign display_title = p.title
+  endif
+  if display_title == blank
+    assign display_title = 'Onyx Vibration Alarm'
+  endif
+
+  assign offer_title = section.settings.offer_title
+  if offer_title == blank
+    assign offer_title = display_title
+  endif
+-%}
+
+<div
+  id="onyx-product-{{ section.id }}"
+  class="onyx onyx-product"
+  data-onyx-product
+  data-section-id="{{ section.id }}"
+  data-after-add="{{ section.settings.after_add }}"
+  data-added-msg="{{ section.settings.added_message | escape }}"
+  data-error-msg="{{ section.settings.error_message | escape }}"
+  data-sold-out="{{ section.settings.sold_out_text | escape }}"
+  data-pct-suffix="{{ section.settings.pct_suffix | escape }}"
+  data-sticky-offset="{{ section.settings.sticky_offset }}"
+  data-money-format="{{ shop.money_format | escape }}"
+  data-cart-url="{{ routes.cart_url }}"
+  data-cart-add-url="{{ routes.cart_add_url }}"
+  style="--sunrise-1:{{ section.settings.color_1 }};--sunrise-2:{{ section.settings.color_2 }};--sunrise-3:{{ section.settings.color_3 }};--ink:{{ section.settings.color_ink }};--secondary:{{ section.settings.color_secondary }};"
+>
+  {%- if section.settings.show_progress -%}
+    <div class="onyx-progress" aria-hidden="true"></div>
+  {%- endif -%}
+
+  <section id="top" class="hero onyx-wrap">
+    {%- comment -%} ---------- GALERÍA ---------- {%- endcomment -%}
+    <div class="hero-gallery">
+      <div class="main-media placeholder-img" data-main-media>
+        {%- if p != blank and p.media.size > 0 -%}
+          {%- for media in p.media -%}
+            {%- if media.preview_image -%}
+              {%- assign media_alt = media.alt | default: p.title | escape -%}
+              {{
+                media.preview_image
+                | image_url: width: 1400
+                | image_tag:
+                  class: 'media-cover',
+                  loading: 'eager',
+                  sizes: '(min-width: 1024px) 45vw, 100vw',
+                  widths: '400, 700, 1000, 1400',
+                  alt: media_alt,
+                  data-media-index: forloop.index0,
+                  data-media-id: media.id
+              }}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- else -%}
+          <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="color:var(--sunrise-2)" stroke-width="1.2" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M12 9v3l2 1"/><path d="M5 3l2 2M19 3l-2 2"/></svg>
+        {%- endif -%}
+        {%- if section.settings.show_glow -%}<div class="glow"></div>{%- endif -%}
+      </div>
+
+      {%- if p != blank and p.media.size > 1 -%}
+        <div class="thumbs no-scrollbar">
+          {%- for media in p.media -%}
+            {%- if media.preview_image -%}
+              <button type="button" class="thumb placeholder-img{% if forloop.first %} is-active{% endif %}" data-thumb="{{ forloop.index0 }}" aria-label="{{ 'Imagen' }} {{ forloop.index }}">
+                {{ media.preview_image | image_url: width: 200 | image_tag: class: 'media-cover', loading: 'lazy', alt: '' }}
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ---------- INFO PRODUCTO ---------- {%- endcomment -%}
+    <div class="info">
+      {%- if section.settings.rating_text != blank -%}
+        <a href="{{ section.settings.rating_link | default: '#reviews' }}" class="rating-link">
+          <span class="star-boxes" aria-hidden="true">
+            {%- for i in (1..5) -%}
+              <span class="star-box"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg></span>
+            {%- endfor -%}
+          </span>
+          {{ section.settings.rating_text }}
+        </a>
+      {%- endif -%}
+
+      <h1 class="p-title">{{ display_title }}</h1>
+
+      {%- liquid
+        if current_variant
+          assign pct_left = 100 | minus: start_discount
+          assign unit_price = current_variant.price | times: pct_left | divided_by: 100.0 | round
+          assign compare_price = nil
+          if current_variant.compare_at_price
+            if current_variant.compare_at_price > current_variant.price
+              assign compare_price = current_variant.compare_at_price
+            endif
+          endif
+        endif
+      -%}
+      <div class="price-row">
+        <span class="price-now" data-price-now>{% if current_variant %}{{ unit_price | money }}{% else %}39,95 €{% endif %}</span>
+        <span class="price-compare" data-price-compare{% if current_variant and compare_price == nil %} hidden{% endif %}>{% if compare_price %}{{ compare_price | money }}{% elsif current_variant == blank %}85,00 €{% endif %}</span>
+        {%- if section.settings.show_pct_badge -%}
+          {%- liquid
+            assign pct_off = ''
+            if compare_price
+              assign pct_off = unit_price | times: 100.0 | divided_by: compare_price | round
+              assign pct_off = 100 | minus: pct_off
+            endif
+          -%}
+          <span class="pct-badge bg-sunrise" data-pct-off{% if pct_off == '' and current_variant %} hidden{% endif %}>{% if pct_off != '' %}{{ pct_off }}{% else %}53{% endif %}{{ section.settings.pct_suffix }}</span>
+        {%- endif -%}
+      </div>
+
+      {%- if p != blank -%}
+        {%- form 'product', p, data-product-form: '', novalidate: 'novalidate' -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+          <input type="hidden" name="quantity" value="{{ start_qty }}" data-qty-input>
+
+          {%- if section.settings.show_variant_picker and p.has_only_default_variant == false -%}
+            <div style="margin-bottom:1.5rem">
+              <p class="label-sm">{{ section.settings.variant_label }}</p>
+              <select class="variant-select" data-variant-select aria-label="{{ section.settings.variant_label | escape }}">
+                {%- for v in p.variants -%}
+                  <option value="{{ v.id }}"{% if v.id == current_variant.id %} selected{% endif %}{% unless v.available %} disabled{% endunless %}>
+                    {{ v.title }}{% unless v.available %} — {{ section.settings.sold_out_text }}{% endunless %}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- endif -%}
+
+          {%- if quantity_blocks.size > 0 -%}
+            <div style="margin-bottom:1.5rem">
+              {%- if section.settings.qty_heading != blank -%}
+                <p class="label-sm">{{ section.settings.qty_heading }}</p>
+              {%- endif -%}
+              {%- assign cols = quantity_blocks.size -%}
+              {%- if cols > 3 -%}{%- assign cols = 3 -%}{%- endif -%}
+              <div class="qty-grid bg-secondary" style="--cols:{{ cols }}" role="radiogroup" aria-label="{{ section.settings.qty_heading | escape }}">
+                {%- for block in quantity_blocks -%}
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked="{% if forloop.first %}true{% else %}false{% endif %}"
+                    class="qty-opt{% if forloop.first %} is-selected{% endif %}"
+                    data-qty="{{ block.settings.qty }}"
+                    data-discount="{{ block.settings.discount }}"
+                    {{ block.shopify_attributes }}
+                  >
+                    {%- if block.settings.badge != blank -%}
+                      <span class="qty-badge">{{ block.settings.badge }}</span>
+                    {%- endif -%}
+                    <span class="qty-radio"></span>
+                    <span class="qty-label">{{ block.settings.label }}</span>
+                    {%- if block.settings.subtitle != blank -%}
+                      <span class="qty-sub">{{ block.settings.subtitle }}</span>
+                    {%- endif -%}
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+
+          <button type="submit" name="add" class="btn-main atc" data-atc{% unless current_variant.available %} disabled{% endunless %}>
+            <span class="btn-bg"></span>
+            <span class="btn-label" data-atc-label>
+              {%- if current_variant.available -%}{{ section.settings.atc_text }}{%- else -%}{{ section.settings.sold_out_text }}{%- endif -%}
+            </span>
+          </button>
+          <p class="atc-error" data-atc-error hidden></p>
+        {%- endform -%}
+      {%- else -%}
+        <p class="label-sm" style="color:#b45309">Selecciona un producto en los ajustes de la sección o usa esta sección en una plantilla de producto.</p>
+      {%- endif -%}
+
+      {%- comment -%} ---------- CAJA DE OFERTA ---------- {%- endcomment -%}
+      {%- assign bullets = section.blocks | where: 'type', 'bullet' -%}
+      {%- if section.settings.show_offer_box -%}
+        <div class="offer-box bg-secondary">
+          <div class="offer-inner">
+            {%- if section.settings.offer_badge != blank -%}
+              <span class="pill bg-sunrise">{{ section.settings.offer_badge }}</span>
+            {%- endif -%}
+            <div class="offer-head">
+              <h3>{{ offer_title }}</h3>
+              <div class="r">
+                <p class="n" data-offer-price>{% if current_variant %}{{ current_variant.price | money }}{% else %}39,95 €{% endif %}</p>
+                <p class="o" data-offer-compare{% if current_variant and compare_price == nil %} hidden{% endif %}>{% if compare_price %}{{ compare_price | money }}{% elsif current_variant == blank %}85,00 €{% endif %}</p>
+              </div>
+            </div>
+            {%- if bullets.size > 0 -%}
+              <ul class="checks">
+                {%- for block in bullets -%}
+                  <li {{ block.shopify_attributes }}><span class="ck">✓</span> <span>{{ block.settings.text }}</span></li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- assign trusts = section.blocks | where: 'type', 'trust' -%}
+      {%- if trusts.size > 0 -%}
+        <div class="trust">
+          {%- for block in trusts -%}
+            <span {{ block.shopify_attributes }}>{{ block.settings.icon }} {{ block.settings.text }}</span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ---------- ACORDEÓN ---------- {%- endcomment -%}
+      {%- assign acc = section.blocks | where: 'type', 'accordion' -%}
+      {%- if acc.size > 0 -%}
+        <div class="accordion bg-secondary" data-accordion>
+          {%- for block in acc -%}
+            <div class="acc-item{% if block.settings.open %} is-open{% endif %}" {{ block.shopify_attributes }}>
+              <button type="button" class="acc-btn" aria-expanded="{{ block.settings.open }}" aria-controls="acc-{{ block.id }}">
+                {{ block.settings.title }}<span class="acc-arrow" aria-hidden="true">⌄</span>
+              </button>
+              <div class="acc-body" id="acc-{{ block.id }}"{% if block.settings.open %} style="max-height:none"{% endif %}>
+                <div class="acc-content">{{ block.settings.content }}</div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  {%- comment -%} ---------- BARRA FIJA INFERIOR ---------- {%- endcomment -%}
+  {%- if section.settings.show_sticky and p != blank -%}
+    <div class="sticky-bar" data-sticky-bar>
+      <div class="sticky-inner">
+        <div class="sticky-thumb placeholder-img">
+          {%- if p.featured_media -%}
+            {{ p.featured_media.preview_image | image_url: width: 120 | image_tag: class: 'media-cover', loading: 'lazy', alt: '' }}
+          {%- endif -%}
+        </div>
+        <div class="sticky-info">
+          <p class="t">{{ display_title }}</p>
+          <p class="p"><strong data-sticky-price>{{ unit_price | money }}</strong> <s data-sticky-compare{% if compare_price == nil %} hidden{% endif %}>{{ compare_price | money }}</s></p>
+        </div>
+        <button type="button" class="btn-main sticky-btn" data-sticky-atc{% unless current_variant.available %} disabled{% endunless %}>
+          <span class="btn-bg"></span>
+          <span class="btn-label">{{ section.settings.sticky_text | default: section.settings.atc_text }}</span>
+        </button>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="onyx-toast" data-toast role="status" aria-live="polite"></div>
+
+  {%- if p != blank -%}
+    <script type="application/json" data-product-json>{{ p | json }}</script>
+  {%- endif -%}
+</div>
+
+<script>
+  (function () {
+    if (window.OnyxProduct) { window.OnyxProduct.initAll(); return; }
+
+    function formatMoney(cents, format) {
+      if (typeof cents === 'string') cents = cents.replace('.', '');
+      var value = '';
+      var placeholder = /\{\{\s*(\w+)\s*\}\}/;
+      function withDelimiters(number, precision, thousands, decimal) {
+        precision = precision == null ? 2 : precision;
+        thousands = thousands || ',';
+        decimal = decimal || '.';
+        if (isNaN(number) || number == null) return 0;
+        number = (number / 100.0).toFixed(precision);
+        var parts = number.split('.');
+        var dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands);
+        return dollars + (parts[1] ? decimal + parts[1] : '');
+      }
+      var m = format ? format.match(placeholder) : null;
+      switch (m ? m[1] : 'amount') {
+        case 'amount': value = withDelimiters(cents, 2); break;
+        case 'amount_no_decimals': value = withDelimiters(cents, 0); break;
+        case 'amount_with_comma_separator': value = withDelimiters(cents, 2, '.', ','); break;
+        case 'amount_no_decimals_with_comma_separator': value = withDelimiters(cents, 0, '.', ','); break;
+        case 'amount_with_apostrophe_separator': value = withDelimiters(cents, 2, "'", '.'); break;
+        case 'amount_with_space_separator': value = withDelimiters(cents, 2, ' ', ','); break;
+        default: value = withDelimiters(cents, 2);
+      }
+      return m ? format.replace(placeholder, value) : value;
+    }
+
+    function OnyxProduct(root) {
+      this.root = root;
+      var json = root.querySelector('[data-product-json]');
+      this.product = json ? JSON.parse(json.textContent) : null;
+      this.fmt = root.dataset.moneyFormat;
+      this.qty = 1;
+      this.discount = 0;
+      var first = root.querySelector('.qty-opt');
+      if (first) { this.qty = +first.dataset.qty || 1; this.discount = +first.dataset.discount || 0; }
+      this.variant = null;
+      if (this.product) {
+        var idInput = root.querySelector('[data-variant-id]');
+        var id = idInput ? +idInput.value : null;
+        this.variant = this.product.variants.find(function (v) { return v.id === id; }) || this.product.variants[0];
+      }
+      this.bind();
+      this.update();
+    }
+
+    OnyxProduct.prototype.$ = function (sel) { return this.root.querySelector(sel); };
+
+    OnyxProduct.prototype.bind = function () {
+      var self = this, root = this.root;
+
+      // Galería
+      root.querySelectorAll('[data-thumb]').forEach(function (t) {
+        t.addEventListener('click', function () { self.showMedia(+t.dataset.thumb); });
+      });
+      this.showMedia(0);
+
+      // Cantidades
+      root.querySelectorAll('.qty-opt').forEach(function (b) {
+        b.addEventListener('click', function () {
+          root.querySelectorAll('.qty-opt').forEach(function (o) {
+            o.classList.remove('is-selected'); o.setAttribute('aria-checked', 'false');
+          });
+          b.classList.add('is-selected'); b.setAttribute('aria-checked', 'true');
+          self.qty = +b.dataset.qty || 1;
+          self.discount = +b.dataset.discount || 0;
+          self.update();
+        });
+      });
+
+      // Variantes
+      var sel = this.$('[data-variant-select]');
+      if (sel) sel.addEventListener('change', function () {
+        self.variant = self.product.variants.find(function (v) { return v.id === +sel.value; });
+        if (self.variant && self.variant.featured_media) {
+          var img = root.querySelector('[data-media-id="' + self.variant.featured_media.id + '"]');
+          if (img) self.showMedia(+img.dataset.mediaIndex);
+        }
+        self.update();
+      });
+
+      // Acordeón (uno abierto a la vez)
+      root.querySelectorAll('[data-accordion] .acc-item').forEach(function (item) {
+        var btn = item.querySelector('.acc-btn'), body = item.querySelector('.acc-body');
+        btn.addEventListener('click', function () {
+          var open = item.classList.contains('is-open');
+          root.querySelectorAll('[data-accordion] .acc-item').forEach(function (i) {
+            i.classList.remove('is-open');
+            i.querySelector('.acc-body').style.maxHeight = '0px';
+            i.querySelector('.acc-btn').setAttribute('aria-expanded', 'false');
+          });
+          if (!open) {
+            item.classList.add('is-open');
+            body.style.maxHeight = body.scrollHeight + 'px';
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      // Añadir al carrito
+      var form = this.$('[data-product-form]');
+      if (form) form.addEventListener('submit', function (e) { e.preventDefault(); self.addToCart(); });
+      var sticky = this.$('[data-sticky-atc]');
+      if (sticky) sticky.addEventListener('click', function () { self.addToCart(); });
+
+      // Barra fija
+      var bar = this.$('[data-sticky-bar]');
+      if (bar) {
+        var offset = +root.dataset.stickyOffset || 900;
+        var onScroll = function () { bar.classList.toggle('is-visible', window.scrollY > offset); };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      }
+    };
+
+    OnyxProduct.prototype.showMedia = function (index) {
+      var imgs = this.root.querySelectorAll('[data-main-media] img');
+      if (!imgs.length) return;
+      imgs.forEach(function (img) { img.classList.toggle('is-active', +img.dataset.mediaIndex === index); });
+      if (!this.root.querySelector('[data-main-media] img.is-active')) imgs[0].classList.add('is-active');
+      this.root.querySelectorAll('[data-thumb]').forEach(function (t) { t.classList.toggle('is-active', +t.dataset.thumb === index); });
+    };
+
+    OnyxProduct.prototype.update = function () {
+      var v = this.variant;
+      if (!v) return;
+      var root = this.root, fmt = this.fmt;
+      var unit = Math.round(v.price * (100 - this.discount) / 100);
+      var compare = v.compare_at_price && v.compare_at_price > v.price ? v.compare_at_price : null;
+
+      function set(sel, text, hide) {
+        root.querySelectorAll(sel).forEach(function (el) {
+          if (text != null) el.textContent = text;
+          el.hidden = !!hide;
+        });
+      }
+      set('[data-price-now]', formatMoney(unit, fmt));
+      set('[data-sticky-price]', formatMoney(unit, fmt));
+      set('[data-offer-price]', formatMoney(v.price, fmt));
+      set('[data-price-compare]', compare ? formatMoney(compare, fmt) : '', !compare);
+      set('[data-offer-compare]', compare ? formatMoney(compare, fmt) : '', !compare);
+      set('[data-sticky-compare]', compare ? formatMoney(compare, fmt) : '', !compare);
+      set('[data-pct-off]', compare ? Math.round((1 - unit / compare) * 100) + root.dataset.pctSuffix : '', !compare);
+
+      var idInput = this.$('[data-variant-id]'); if (idInput) idInput.value = v.id;
+      var qtyInput = this.$('[data-qty-input]'); if (qtyInput) qtyInput.value = this.qty;
+
+      root.querySelectorAll('[data-atc],[data-sticky-atc]').forEach(function (b) { b.disabled = !v.available; });
+      var label = this.$('[data-atc-label]');
+      if (label) {
+        if (!label.dataset.original) label.dataset.original = label.textContent;
+        label.textContent = v.available ? label.dataset.original : root.dataset.soldOut;
+      }
+    };
+
+    OnyxProduct.prototype.toast = function (msg) {
+      var t = this.$('[data-toast]');
+      if (!t || !msg) return;
+      t.textContent = msg;
+      t.classList.add('is-visible');
+      clearTimeout(this._toastTimer);
+      this._toastTimer = setTimeout(function () { t.classList.remove('is-visible'); }, 3500);
+    };
+
+    OnyxProduct.prototype.addToCart = function () {
+      var self = this, root = this.root, v = this.variant;
+      if (!v || !v.available) return;
+      var buttons = root.querySelectorAll('[data-atc],[data-sticky-atc]');
+      var err = this.$('[data-atc-error]');
+      buttons.forEach(function (b) { b.disabled = true; b.classList.add('is-loading'); });
+      if (err) err.hidden = true;
+
+      fetch(root.dataset.cartAddUrl + '.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ items: [{ id: v.id, quantity: self.qty }] })
+      })
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+        .then(function (res) {
+          if (!res.ok) throw new Error(res.data.description || res.data.message || root.dataset.errorMsg);
+          document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+          document.dispatchEvent(new CustomEvent('onyx:added', { detail: res.data }));
+          var mode = root.dataset.afterAdd;
+          if (mode === 'cart') window.location.href = root.dataset.cartUrl;
+          else if (mode === 'checkout') window.location.href = '/checkout';
+          else self.toast(root.dataset.addedMsg);
+        })
+        .catch(function (e) {
+          if (err) { err.textContent = e.message || root.dataset.errorMsg; err.hidden = false; }
+          self.toast(e.message || root.dataset.errorMsg);
+        })
+        .finally(function () {
+          buttons.forEach(function (b) { b.classList.remove('is-loading'); b.disabled = !v.available; });
+        });
+    };
+
+    OnyxProduct.initAll = function () {
+      document.querySelectorAll('[data-onyx-product]').forEach(function (root) {
+        if (root.__onyx) return;
+        root.__onyx = new OnyxProduct(root);
+      });
+    };
+
+    window.OnyxProduct = OnyxProduct;
+    OnyxProduct.initAll();
+    document.addEventListener('shopify:section:load', OnyxProduct.initAll);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Onyx · Producto",
+  "tag": "div",
+  "class": "onyx-section",
+  "settings": [
+    { "type": "header", "content": "Producto" },
+    { "type": "product", "id": "product", "label": "Producto", "info": "Déjalo vacío para usar el producto de la página actual." },
+    { "type": "text", "id": "title_override", "label": "Título personalizado", "info": "Vacío = título del producto." },
+    { "type": "checkbox", "id": "show_variant_picker", "label": "Mostrar selector de variantes", "default": true },
+    { "type": "text", "id": "variant_label", "label": "Texto del selector de variantes", "default": "Elige tu color" },
+
+    { "type": "header", "content": "Valoración" },
+    { "type": "text", "id": "rating_text", "label": "Texto de reseñas", "default": "3.622 reseñas" },
+    { "type": "text", "id": "rating_link", "label": "Enlace de la valoración", "default": "#reviews", "info": "Usa #reviews para bajar a la sección de reseñas." },
+
+    { "type": "header", "content": "Precio" },
+    { "type": "checkbox", "id": "show_pct_badge", "label": "Mostrar % de descuento", "default": true, "info": "Se calcula con el 'Precio de comparación' de la variante." },
+    { "type": "text", "id": "pct_suffix", "label": "Sufijo del descuento", "default": "% DTO" },
+
+    { "type": "header", "content": "Cantidad y carrito" },
+    { "type": "text", "id": "qty_heading", "label": "Título del selector de cantidad", "default": "Elige tu cantidad" },
+    { "type": "paragraph", "content": "El % de los bloques 'Opción de cantidad' solo cambia el precio mostrado. Para que se aplique en el pago, crea un descuento automático por cantidad en Shopify (Descuentos → Cantidad)." },
+    { "type": "text", "id": "atc_text", "label": "Texto del botón", "default": "Añadir al carrito +" },
+    { "type": "text", "id": "sold_out_text", "label": "Texto agotado", "default": "Agotado" },
+    {
+      "type": "select", "id": "after_add", "label": "Después de añadir al carrito", "default": "cart",
+      "options": [
+        { "value": "cart", "label": "Ir a la página del carrito" },
+        { "value": "checkout", "label": "Ir directamente al pago" },
+        { "value": "toast", "label": "Quedarse y mostrar aviso" }
+      ]
+    },
+    { "type": "text", "id": "added_message", "label": "Aviso al añadir", "default": "¡Añadido al carrito!" },
+    { "type": "text", "id": "error_message", "label": "Aviso de error", "default": "No se pudo añadir al carrito. Inténtalo de nuevo." },
+
+    { "type": "header", "content": "Caja de oferta" },
+    { "type": "checkbox", "id": "show_offer_box", "label": "Mostrar caja de oferta", "default": true },
+    { "type": "text", "id": "offer_badge", "label": "Etiqueta", "default": "OFERTA LIMITADA" },
+    { "type": "text", "id": "offer_title", "label": "Título", "info": "Vacío = título del producto." },
+
+    { "type": "header", "content": "Barra fija inferior" },
+    { "type": "checkbox", "id": "show_sticky", "label": "Mostrar barra fija", "default": true },
+    { "type": "text", "id": "sticky_text", "label": "Texto del botón", "default": "Añadir al carrito +" },
+    { "type": "range", "id": "sticky_offset", "label": "Aparece tras hacer scroll (px)", "min": 100, "max": 2000, "step": 50, "default": 900 },
+
+    { "type": "header", "content": "Efectos" },
+    { "type": "checkbox", "id": "show_progress", "label": "Barra de progreso de lectura arriba", "default": true },
+    { "type": "checkbox", "id": "show_glow", "label": "Brillo sobre la imagen principal", "default": true },
+
+    { "type": "header", "content": "Colores" },
+    { "type": "color", "id": "color_1", "label": "Degradado 1", "default": "#FFD93D" },
+    { "type": "color", "id": "color_2", "label": "Degradado 2 (principal)", "default": "#FF9F1C" },
+    { "type": "color", "id": "color_3", "label": "Degradado 3", "default": "#FF5E3A" },
+    { "type": "color", "id": "color_ink", "label": "Texto / botón", "default": "#0A0A0C" },
+    { "type": "color", "id": "color_secondary", "label": "Fondo secundario", "default": "#F4F1EC" }
+  ],
+  "blocks": [
+    {
+      "type": "quantity",
+      "name": "Opción de cantidad",
+      "limit": 6,
+      "settings": [
+        { "type": "number", "id": "qty", "label": "Unidades", "default": 1 },
+        { "type": "text", "id": "label", "label": "Texto", "default": "1 Alarma" },
+        { "type": "text", "id": "subtitle", "label": "Subtexto (opcional)" },
+        { "type": "text", "id": "badge", "label": "Etiqueta superior", "info": "Ej: AHORRA 10%" },
+        { "type": "range", "id": "discount", "label": "Descuento por unidad mostrado", "min": 0, "max": 90, "step": 1, "unit": "%", "default": 0 }
+      ]
+    },
+    {
+      "type": "bullet",
+      "name": "Ventaja (caja de oferta)",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Texto", "default": "Garantizado que te despierta" }
+      ]
+    },
+    {
+      "type": "trust",
+      "name": "Garantía",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Icono / emoji", "default": "🛡" },
+        { "type": "text", "id": "text", "label": "Texto", "default": "100 días de garantía de devolución sin riesgo" }
+      ]
+    },
+    {
+      "type": "accordion",
+      "name": "Pestaña desplegable",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Pregunta / título", "default": "¿Qué es esto?" },
+        { "type": "richtext", "id": "content", "label": "Contenido", "default": "<p>Escribe aquí el contenido. Puedes usar listas con viñetas.</p>" },
+        { "type": "checkbox", "id": "open", "label": "Abierta por defecto", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Onyx · Producto",
+      "blocks": [
+        { "type": "quantity", "settings": { "qty": 1, "label": "1 Alarma", "discount": 0 } },
+        { "type": "quantity", "settings": { "qty": 2, "label": "2 Alarmas", "badge": "AHORRA 10%", "discount": 10 } },
+        { "type": "quantity", "settings": { "qty": 3, "label": "3 Alarmas", "badge": "AHORRA 20%", "discount": 20 } },
+        { "type": "bullet", "settings": { "text": "Creada por personas de sueño profundo, para personas de sueño profundo" } },
+        { "type": "bullet", "settings": { "text": "Garantizado que te despierta" } },
+        { "type": "bullet", "settings": { "text": "Vibraciones silenciosas que no molestan a nadie más" } },
+        { "type": "trust", "settings": { "icon": "🛡", "text": "100 días de garantía de devolución sin riesgo" } },
+        { "type": "trust", "settings": { "icon": "🧪", "text": "Testado por laboratorios externos" } },
+        { "type": "accordion", "settings": { "title": "¿Qué es esto?", "content": "<p>Es una alarma de pulsera con vibración silenciosa, diseñada para despertarte sin ruido, sin estrés y sin molestar a nadie a tu alrededor.</p><p>En lugar de sonidos fuertes y bruscos, utiliza vibraciones suaves pero eficaces en tu muñeca para despertarte de forma natural.</p><ul><li>Personas de sueño ligero que odian las alarmas estridentes</li><li>Personas de sueño profundo que necesitan un estímulo físico</li><li>Parejas que no quieren despertarse mutuamente</li><li>Cualquiera que quiera empezar el día sin caos</li></ul>" } },
+        { "type": "accordion", "settings": { "title": "¿De verdad me despertará?", "content": "<p>Diseñada específicamente para personas de sueño profundo. La vibración aumenta de intensidad gradualmente hasta que te despiertas.</p><p>Como vibra directamente en tu muñeca, tu cerebro no puede ignorarla como un sonido. Y cada pedido incluye nuestra Garantía de Despertar al 100%: si no te despierta, no pagas.</p>" } },
+        { "type": "accordion", "settings": { "title": "¿Cómo se carga?", "content": "<p>Cada pulsera Onyx incluye un cargador magnético a juego. Usa el cable incluido, acopla el cargador y lista para usar.</p>" } },
+        { "type": "accordion", "settings": { "title": "¿Para quién es perfecta?", "content": "<ul><li>Personas de sueño profundo que no responden a alarmas sonoras</li><li>Quien se queda dormido o pospone la alarma sin darse cuenta</li><li>Parejas que quieren despertarse sin molestar al otro</li><li>Personas con TDAH a las que las mañanas les cuestan especialmente</li><li>Personas con narcolepsia que necesitan una alerta fiable</li><li>Personas con discapacidad auditiva que necesitan despertarse en silencio</li></ul>" } },
+        { "type": "accordion", "settings": { "title": "Siempre duermo a pesar de las alarmas. ¿Funcionará?", "content": "<p>Sí. La vibración en la muñeca estimula el cerebro mucho más que el sonido. Probada por más de 80.000 personas de sueño profundo: el 99% se despertó a tiempo durante la prueba de 100 días.</p>" } },
+        { "type": "accordion", "settings": { "title": "Envíos y devoluciones", "content": "<p>Enviamos rápido a todo el mundo desde almacenes locales en la UE y EE. UU.</p><ul><li>Envío gratis en pedidos superiores a 45 €</li><li>Preparación: 1 día laborable</li><li>Entrega: 3-7 días laborables</li><li>Seguimiento incluido en todos los pedidos</li></ul>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
