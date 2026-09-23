@@ -320,6 +320,42 @@
 @media(min-width:768px){.onyx .foot-bottom{flex-direction:row;}}
 .onyx .socials{display:flex;gap:1rem;}
 .onyx .socials a:hover{color:#fff;}
+
+/* ---------- Comparativa v2 (columnas con foto) ---------- */
+.onyx .cmp2{max-width:64rem;margin:0 auto;background:var(--cmp-bg);border-radius:1.5rem;padding:.75rem;}
+.onyx .cmp2-grid{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(var(--rows),auto);column-gap:.5rem;}
+.onyx .cmp2-colbg{grid-row:1 / -1;border-radius:1rem;background:rgba(255,255,255,.035);}
+.onyx .cmp2-colbg.cmp2-c1{grid-column:1;}
+.onyx .cmp2-colbg.cmp2-c2{grid-column:2;}
+.onyx .cmp2-colbg.cmp2-c3{grid-column:3;}
+.onyx .cmp2-colbg.best{border:2px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--sunrise) border-box;box-shadow:0 18px 50px -18px color-mix(in srgb,var(--sunrise-2) 70%,transparent);}
+.onyx .cmp2-head,.onyx .cmp2-cell{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;color:var(--cmp-text);}
+.onyx .cmp2-c1{grid-column:1;}.onyx .cmp2-c2{grid-column:2;}.onyx .cmp2-c3{grid-column:3;}
+.onyx .cmp2-head{padding:1.25rem .5rem 1rem;gap:.75rem;}
+.onyx .cmp2-img{width:6rem;height:6rem;border-radius:.875rem;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.07);color:rgba(255,255,255,.35);}
+.onyx .cmp2-img img{width:100%;height:100%;object-fit:contain;}
+.onyx .best .cmp2-img{background:#f1f1f3;color:#9ca3af;}
+.onyx .cmp2-name{font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:.95rem;}
+.onyx .cmp2-cell{padding:1.25rem .5rem;gap:.7rem;border-top:1px solid rgba(255,255,255,.06);}
+.onyx .cmp2-cell .cmp2-label{font-weight:600;font-size:.95rem;line-height:1.3;}
+.onyx .best.cmp2-head,.onyx .best.cmp2-cell{color:var(--ink);}
+.onyx .best.cmp2-cell{border-top-color:#ececef;}
+.onyx .best.cmp2-cell .cmp2-label{font-weight:500;}
+.onyx .cmp2-ic{width:1.9rem;height:1.9rem;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.onyx .cmp2-ic svg{width:1.05rem;height:1.05rem;}
+.onyx .cmp2-ic.yes{background:var(--cmp-yes);}
+.onyx .cmp2-ic.no{background:var(--cmp-no);}
+.onyx .best .cmp2-ic.yes{background:var(--cmp-best-icon);}
+@media(max-width:640px){
+  .onyx .cmp2{padding:.4rem;border-radius:1rem;}
+  .onyx .cmp2-grid{column-gap:.25rem;}
+  .onyx .cmp2-img{width:3.5rem;height:3.5rem;border-radius:.6rem;}
+  .onyx .cmp2-name{font-size:.72rem;}
+  .onyx .cmp2-cell{padding:.9rem .25rem;gap:.45rem;}
+  .onyx .cmp2-cell .cmp2-label{font-size:.7rem;}
+  .onyx .cmp2-ic{width:1.5rem;height:1.5rem;}
+  .onyx .cmp2-ic svg{width:.85rem;height:.85rem;}
+}
 </style>
 
 {%- liquid
@@ -424,6 +460,10 @@
   data-cart-add-url="{{ routes.cart_add_url }}"
   style="--wiggle-every:{{ section.settings.wiggle_every }}s;--sunrise-1:{{ section.settings.color_1 }};--sunrise-2:{{ section.settings.color_2 }};--sunrise-3:{{ section.settings.color_3 }};--ink:{{ section.settings.color_ink }};--secondary:{{ section.settings.color_secondary }};"
 >
+  {%- if section.settings.title_custom_font -%}
+    <style>{{ section.settings.title_font | font_face: font_display: 'swap' }}</style>
+  {%- endif -%}
+  <style>#onyx-{{ section.id }} .p-title{font-size:{{ section.settings.title_size_mobile }}px;}@media(min-width:768px){#onyx-{{ section.id }} .p-title{font-size:{{ section.settings.title_size }}px;}}</style>
   {%- if section.settings.show_progress -%}
     <div class="onyx-progress" aria-hidden="true"></div>
   {%- endif -%}
@@ -481,7 +521,7 @@
         </a>
       {%- endif -%}
 
-      <h1 class="p-title">{{ display_title }}</h1>
+      <h1 class="p-title"{% if section.settings.title_custom_font %} style="font-family:{{ section.settings.title_font.family }},{{ section.settings.title_font.fallback_families }};font-weight:{{ section.settings.title_font.weight }};font-style:{{ section.settings.title_font.style }};"{% endif %}>{{ display_title }}</h1>
 
       {%- if current_variant -%}
         <div class="price-row">
@@ -714,23 +754,60 @@
 
   {%- comment -%} ================= 5. COMPARATIVA ================= {%- endcomment -%}
   {%- if section.settings.show_compare and compare_blocks.size > 0 -%}
+    {%- assign cmp_rows = compare_blocks.size | plus: 1 -%}
     <section class="onyx-wrap py-xl">
       <div class="fade-in cmp-head">
         {%- if section.settings.compare_eyebrow != blank -%}<p class="eyebrow text-sunrise">{{ section.settings.compare_eyebrow }}</p>{%- endif -%}
         <h2 class="h2-xl">{{ section.settings.compare_heading }}</h2>
         {%- if section.settings.compare_sub != blank -%}<p class="sub">{{ section.settings.compare_sub }}</p>{%- endif -%}
       </div>
-      <div class="fade-in cmp-table" role="table" aria-label="{{ section.settings.compare_heading | escape }}">
-        <div role="columnheader"></div>
-        <div class="cmp-col best bg-sunrise" role="columnheader">{{ section.settings.compare_col_1 }}</div>
-        <div class="cmp-col" role="columnheader">{{ section.settings.compare_col_2 }}</div>
-        <div class="cmp-col" role="columnheader">{{ section.settings.compare_col_3 }}</div>
-        {%- for block in compare_blocks -%}
-          <div class="cmp-label" role="rowheader" {{ block.shopify_attributes }}>{{ block.settings.label }}</div>
-          <div class="cmp-cell best{% if forloop.last %} last{% endif %}" role="cell">{% if block.settings.col_1 %}<span class="cmp-yes" aria-label="Sí">✓</span>{% else %}<span class="cmp-no" aria-label="No">✕</span>{% endif %}</div>
-          <div class="cmp-cell" role="cell">{% if block.settings.col_2 %}<span class="cmp-yes" aria-label="Sí">✓</span>{% else %}<span class="cmp-no" aria-label="No">✕</span>{% endif %}</div>
-          <div class="cmp-cell" role="cell">{% if block.settings.col_3 %}<span class="cmp-yes" aria-label="Sí">✓</span>{% else %}<span class="cmp-no" aria-label="No">✕</span>{% endif %}</div>
-        {%- endfor -%}
+
+      <div
+        class="fade-in cmp2"
+        role="table"
+        aria-label="{{ section.settings.compare_heading | escape }}"
+        style="--cmp-bg:{{ section.settings.compare_bg }};--cmp-text:{{ section.settings.compare_text }};--cmp-yes:{{ section.settings.compare_yes }};--cmp-no:{{ section.settings.compare_no }};--cmp-best-icon:{{ section.settings.compare_best_icon }};"
+      >
+        <div class="cmp2-grid" style="--rows:{{ cmp_rows }}">
+          {%- for c in (1..3) -%}
+            <div class="cmp2-colbg cmp2-c{{ c }}{% if c == 1 %} best{% endif %}" aria-hidden="true"></div>
+          {%- endfor -%}
+
+          {%- for c in (1..3) -%}
+            {%- assign name_key = 'compare_col_' | append: c -%}
+            {%- assign img_key = 'compare_img_' | append: c -%}
+            {%- assign col_img = section.settings[img_key] -%}
+            <div class="cmp2-head cmp2-c{{ c }}{% if c == 1 %} best{% endif %}" style="grid-row:1" role="columnheader">
+              <div class="cmp2-img">
+                {%- if col_img != blank -%}
+                  {{ col_img | image_url: width: 300 | image_tag: loading: 'lazy', alt: section.settings[name_key] }}
+                {%- else -%}
+                  <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 9"/></svg>
+                {%- endif -%}
+              </div>
+              <p class="cmp2-name">{{ section.settings[name_key] }}</p>
+            </div>
+          {%- endfor -%}
+
+          {%- for block in compare_blocks -%}
+            {%- assign last_row = forloop.last -%}
+            {%- assign grid_row = forloop.index | plus: 1 -%}
+            {%- for c in (1..3) -%}
+              {%- assign has_key = 'col_' | append: c -%}
+              {%- assign has = block.settings[has_key] -%}
+              <div class="cmp2-cell cmp2-c{{ c }}{% if c == 1 %} best{% endif %}{% if last_row %} last{% endif %}" style="grid-row:{{ grid_row }}" role="cell" {% if c == 1 %}{{ block.shopify_attributes }}{% endif %}>
+                <span class="cmp2-ic{% if has %} yes{% else %} no{% endif %}" aria-label="{% if has %}Sí{% else %}No{% endif %}">
+                  {%- if has -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 12.5l3.5 3.5 7.5-8"/></svg>
+                  {%- else -%}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M8 8l8 8M16 8l-8 8"/></svg>
+                  {%- endif -%}
+                </span>
+                <span class="cmp2-label">{{ block.settings.label }}</span>
+              </div>
+            {%- endfor -%}
+          {%- endfor -%}
+        </div>
       </div>
     </section>
   {%- endif -%}
@@ -1248,6 +1325,39 @@
       "info": "Vacío = título de cada producto."
     },
     {
+      "type": "checkbox",
+      "id": "title_custom_font",
+      "label": "Elegir tipografía del nombre del producto",
+      "default": false,
+      "info": "Desactivado = Space Grotesk (la del diseño)."
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Tipografía del nombre",
+      "default": "helvetica_n7"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Tamaño del nombre (ordenador)",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "label": "Tamaño del nombre (móvil)",
+      "min": 20,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
       "type": "text",
       "id": "rating_text",
       "label": "Texto de reseñas junto a las estrellas",
@@ -1573,16 +1683,61 @@
       "default": "ONYX"
     },
     {
+      "type": "image_picker",
+      "id": "compare_img_1",
+      "label": "Foto columna 1"
+    },
+    {
       "type": "text",
       "id": "compare_col_2",
       "label": "Columna 2",
       "default": "Móvil"
     },
     {
+      "type": "image_picker",
+      "id": "compare_img_2",
+      "label": "Foto columna 2"
+    },
+    {
       "type": "text",
       "id": "compare_col_3",
       "label": "Columna 3",
       "default": "Smartwatch"
+    },
+    {
+      "type": "image_picker",
+      "id": "compare_img_3",
+      "label": "Foto columna 3"
+    },
+    {
+      "type": "color",
+      "id": "compare_bg",
+      "label": "Fondo de la tabla",
+      "default": "#111216"
+    },
+    {
+      "type": "color",
+      "id": "compare_text",
+      "label": "Texto columnas 2 y 3",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "compare_yes",
+      "label": "Icono sí (columnas 2 y 3)",
+      "default": "#22C55E"
+    },
+    {
+      "type": "color",
+      "id": "compare_no",
+      "label": "Icono no",
+      "default": "#EF4444"
+    },
+    {
+      "type": "color",
+      "id": "compare_best_icon",
+      "label": "Icono sí (columna destacada)",
+      "default": "#0A0A0C"
     },
     {
       "type": "header",
