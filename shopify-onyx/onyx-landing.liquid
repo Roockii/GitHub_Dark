@@ -322,9 +322,9 @@
 .onyx .socials a:hover{color:#fff;}
 
 /* ---------- Comparativa v2 (columnas con foto) ---------- */
-.onyx .cmp2{max-width:64rem;margin:0 auto;background:var(--cmp-bg);border-radius:1.5rem;padding:.75rem;}
+.onyx .cmp2{max-width:64rem;margin:0 auto;background:var(--cmp-bg);border-radius:1.5rem;padding:.75rem;border:1px solid #ececef;box-shadow:0 20px 50px -30px rgba(10,10,12,.25);}
 .onyx .cmp2-grid{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(var(--rows),auto);column-gap:.5rem;}
-.onyx .cmp2-colbg{grid-row:1 / -1;border-radius:1rem;background:rgba(255,255,255,.035);}
+.onyx .cmp2-colbg{grid-row:1 / -1;border-radius:1rem;background:var(--cmp-col-bg);}
 .onyx .cmp2-colbg.cmp2-c1{grid-column:1;}
 .onyx .cmp2-colbg.cmp2-c2{grid-column:2;}
 .onyx .cmp2-colbg.cmp2-c3{grid-column:3;}
@@ -332,11 +332,11 @@
 .onyx .cmp2-head,.onyx .cmp2-cell{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;color:var(--cmp-text);}
 .onyx .cmp2-c1{grid-column:1;}.onyx .cmp2-c2{grid-column:2;}.onyx .cmp2-c3{grid-column:3;}
 .onyx .cmp2-head{padding:1.25rem .5rem 1rem;gap:.75rem;}
-.onyx .cmp2-img{width:6rem;height:6rem;border-radius:.875rem;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.07);color:rgba(255,255,255,.35);}
+.onyx .cmp2-img{width:6rem;height:6rem;border-radius:.875rem;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff;color:#c4c6cc;}
 .onyx .cmp2-img img{width:100%;height:100%;object-fit:contain;}
 .onyx .best .cmp2-img{background:#f1f1f3;color:#9ca3af;}
 .onyx .cmp2-name{font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:.95rem;}
-.onyx .cmp2-cell{padding:1.25rem .5rem;gap:.7rem;border-top:1px solid rgba(255,255,255,.06);}
+.onyx .cmp2-cell{padding:1.25rem .5rem;gap:.7rem;border-top:1px solid rgba(10,10,12,.07);}
 .onyx .cmp2-cell .cmp2-label{font-weight:600;font-size:.95rem;line-height:1.3;}
 .onyx .best.cmp2-head,.onyx .best.cmp2-cell{color:var(--ink);}
 .onyx .best.cmp2-cell{border-top-color:#ececef;}
@@ -766,7 +766,7 @@
         class="fade-in cmp2"
         role="table"
         aria-label="{{ section.settings.compare_heading | escape }}"
-        style="--cmp-bg:{{ section.settings.compare_bg }};--cmp-text:{{ section.settings.compare_text }};--cmp-yes:{{ section.settings.compare_yes }};--cmp-no:{{ section.settings.compare_no }};--cmp-best-icon:{{ section.settings.compare_best_icon }};"
+        style="--cmp-bg:{{ section.settings.compare_bg }};--cmp-col-bg:{{ section.settings.compare_col_bg }};--cmp-text:{{ section.settings.compare_text }};--cmp-yes:{{ section.settings.compare_yes }};--cmp-no:{{ section.settings.compare_no }};--cmp-best-icon:{{ section.settings.compare_best_icon }};"
       >
         <div class="cmp2-grid" style="--rows:{{ cmp_rows }}">
           {%- for c in (1..3) -%}
@@ -1713,13 +1713,19 @@
       "type": "color",
       "id": "compare_bg",
       "label": "Fondo de la tabla",
-      "default": "#111216"
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "compare_col_bg",
+      "label": "Fondo columnas 2 y 3",
+      "default": "#F4F5F7"
     },
     {
       "type": "color",
       "id": "compare_text",
       "label": "Texto columnas 2 y 3",
-      "default": "#FFFFFF"
+      "default": "#0A0A0C"
     },
     {
       "type": "color",
