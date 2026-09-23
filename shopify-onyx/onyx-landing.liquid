@@ -481,6 +481,29 @@
   {%- if section.settings.title_custom_font -%}
     <style>{{ section.settings.title_font | font_face: font_display: 'swap' }}</style>
   {%- endif -%}
+  {%- comment -%} Tipografías de toda la landing (apartado "Tipografías") {%- endcomment -%}
+  {%- liquid
+    assign fh = section.settings.font_headings
+    assign fa = section.settings.font_accent
+    assign fb = section.settings.font_body
+    assign sid = '#onyx-' | append: section.id
+  -%}
+  <style>
+    {%- if section.settings.fonts_custom_headings and fh -%}
+      {{ fh | font_face: font_display: 'swap' }}
+      {{ sid }} h1,{{ sid }} h2,{{ sid }} h3,{{ sid }} .onyx-display{font-family:{{ fh.family }},{{ fh.fallback_families }};font-weight:{{ fh.weight }};font-style:{{ fh.style }};}
+    {%- endif -%}
+    {%- if section.settings.fonts_custom_body and fb -%}
+      {{ fb | font_face: font_display: 'swap' }}
+      {%- assign fb_bold = fb | font_modify: 'weight', 'bold' -%}
+      {%- if fb_bold -%}{{ fb_bold | font_face: font_display: 'swap' }}{%- endif -%}
+      {{ sid }},{{ sid }} button,{{ sid }} input,{{ sid }} select,{{ sid }} .offer-head h3{font-family:{{ fb.family }},{{ fb.fallback_families }};}
+    {%- endif -%}
+    {%- if section.settings.fonts_custom_accent and fa -%}
+      {{ fa | font_face: font_display: 'swap' }}
+      {{ sid }} em.onyx-serif{%- if section.settings.accent_all -%},{{ sid }} h2 .text-sunrise,{{ sid }} h3 .text-sunrise{%- endif -%}{font-family:{{ fa.family }},{{ fa.fallback_families }};font-weight:{{ fa.weight }};font-style:{{ fa.style }};}
+    {%- endif -%}
+  </style>
   <style>#onyx-{{ section.id }} .p-title{font-size:{{ section.settings.title_size_mobile }}px;}@media(min-width:768px){#onyx-{{ section.id }} .p-title{font-size:{{ section.settings.title_size }}px;}}</style>
   {%- if section.settings.show_progress -%}
     <div class="onyx-progress" aria-hidden="true"></div>
@@ -1346,6 +1369,59 @@
       "id": "show_progress",
       "label": "Barra de progreso de lectura arriba",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Tipografías"
+    },
+    {
+      "type": "paragraph",
+      "content": "Elige las fuentes de toda la landing. Si una opción está desactivada, se usa la fuente del diseño original."
+    },
+    {
+      "type": "checkbox",
+      "id": "fonts_custom_headings",
+      "label": "Cambiar tipografía de los títulos",
+      "default": false,
+      "info": "Todos los títulos de todas las secciones (y el nombre del producto, salvo que le pongas una propia)."
+    },
+    {
+      "type": "font_picker",
+      "id": "font_headings",
+      "label": "Tipografía de los títulos",
+      "default": "helvetica_n7"
+    },
+    {
+      "type": "checkbox",
+      "id": "fonts_custom_accent",
+      "label": "Cambiar tipografía del texto destacado",
+      "default": false,
+      "info": "La parte en cursiva de la sección de ondas (\"optimizadores y parejas enamoradas\")."
+    },
+    {
+      "type": "font_picker",
+      "id": "font_accent",
+      "label": "Tipografía del texto destacado",
+      "default": "helvetica_n4"
+    },
+    {
+      "type": "checkbox",
+      "id": "accent_all",
+      "label": "Usarla también en las demás partes destacadas en degradado de los títulos",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "fonts_custom_body",
+      "label": "Cambiar tipografía del texto normal",
+      "default": false,
+      "info": "Párrafos, preguntas, botones, precios, reseñas…"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_body",
+      "label": "Tipografía del texto normal",
+      "default": "helvetica_n4"
     },
     {
       "type": "header",
