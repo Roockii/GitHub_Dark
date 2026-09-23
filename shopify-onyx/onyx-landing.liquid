@@ -346,11 +346,9 @@
   if current_variant
     assign pct_left = 100 | minus: start_discount
     assign unit_price = current_variant.price | times: pct_left | divided_by: 100.0 | round
-    comment
-      Precio de comparación: el de los ajustes de la sección si está relleno;
-      si no, el "Precio de comparación" de la variante; si no, el precio normal
-      (así en las opciones de 2 y 3 unidades se ve el precio sin descuento tachado).
-    endcomment
+    # Precio de comparación: el de los ajustes de la sección si está relleno;
+    # si no, el "Precio de comparación" de la variante; si no, el precio normal
+    # (así en las opciones de 2 y 3 unidades se ve el precio sin descuento tachado).
     assign compare_override = 0
     if section.settings.compare_price_manual != blank
       assign compare_override = section.settings.compare_price_manual | remove: '€' | remove: '$' | strip | replace: ',', '.' | times: 100 | round
@@ -362,9 +360,7 @@
       assign base_compare = current_variant.compare_at_price
     endif
 
-    comment
-      Si la primera opción de cantidad tiene su propio "Precio tachado", manda ese.
-    endcomment
+    # Si la primera opción de cantidad tiene su propio "Precio tachado", manda ese.
     assign first_block_compare = 0
     if first_qty_block and first_qty_block.settings.compare_price != blank
       assign first_block_compare = first_qty_block.settings.compare_price | remove: '€' | remove: '$' | strip | replace: ',', '.' | times: 100 | round
@@ -399,6 +395,9 @@
   data-error-msg="{{ section.settings.error_message | escape }}"
   data-sold-out="{{ section.settings.sold_out_text | escape }}"
   data-compare-override="{{ compare_override | default: 0 }}"
+  data-variant-price="{{ current_variant.price }}"
+  data-variant-compare="{{ current_variant.compare_at_price }}"
+  data-variant-available="{{ current_variant.available }}"
   data-each-always="{{ section.settings.each_always }}"
   data-pct-suffix="{{ section.settings.pct_suffix | escape }}"
   data-sticky-offset="{{ section.settings.sticky_offset }}"
@@ -934,21 +933,51 @@
 
     function OnyxProduct(root) {
       this.root = root;
-      var json = root.querySelector('[data-product-json]');
-      this.product = json ? JSON.parse(json.textContent) : null;
+      var self = this;
       this.fmt = root.dataset.moneyFormat;
       this.qty = 1;
       this.discount = 0;
       var first = root.querySelector('.qty-opt');
       if (first) { this.qty = +first.dataset.qty || 1; this.discount = +first.dataset.discount || 0; }
+
+      // Selector de cantidad: se engancha lo primero y con delegación,
+      // para que funcione aunque otra parte del script o del tema falle.
+      root.addEventListener('click', function (e) {
+        var b = e.target.closest ? e.target.closest('.qty-opt') : null;
+        if (!b || !root.contains(b)) return;
+        e.preventDefault();
+        root.querySelectorAll('.qty-opt').forEach(function (o) {
+          o.classList.remove('is-selected'); o.setAttribute('aria-checked', 'false');
+        });
+        b.classList.add('is-selected'); b.setAttribute('aria-checked', 'true');
+        self.qty = +b.dataset.qty || 1;
+        self.discount = +b.dataset.discount || 0;
+        try { self.update(); } catch (err) { console.error('[Onyx]', err); }
+      });
+
+      this.product = null;
+      try {
+        var json = root.querySelector('[data-product-json]');
+        this.product = json ? JSON.parse(json.textContent) : null;
+      } catch (err) { console.error('[Onyx] product JSON', err); }
+
+      var idInput = root.querySelector('[data-variant-id]');
+      var id = idInput ? +idInput.value : null;
       this.variant = null;
-      if (this.product) {
-        var idInput = root.querySelector('[data-variant-id]');
-        var id = idInput ? +idInput.value : null;
+      if (this.product && this.product.variants) {
         this.variant = this.product.variants.find(function (v) { return v.id === id; }) || this.product.variants[0];
       }
-      this.bind();
-      this.update();
+      if (!this.variant && root.dataset.variantPrice) {
+        // Respaldo: datos de la variante escritos directamente en el HTML
+        this.variant = {
+          id: id,
+          price: +root.dataset.variantPrice,
+          compare_at_price: +root.dataset.variantCompare || null,
+          available: root.dataset.variantAvailable === 'true'
+        };
+      }
+      try { this.bind(); } catch (err) { console.error('[Onyx] bind', err); }
+      try { this.update(); } catch (err) { console.error('[Onyx] update', err); }
     }
 
     OnyxProduct.prototype.$ = function (sel) { return this.root.querySelector(sel); };
@@ -961,19 +990,6 @@
         t.addEventListener('click', function () { self.showMedia(+t.dataset.thumb); });
       });
       this.showMedia(0);
-
-      // Cantidades
-      root.querySelectorAll('.qty-opt').forEach(function (b) {
-        b.addEventListener('click', function () {
-          root.querySelectorAll('.qty-opt').forEach(function (o) {
-            o.classList.remove('is-selected'); o.setAttribute('aria-checked', 'false');
-          });
-          b.classList.add('is-selected'); b.setAttribute('aria-checked', 'true');
-          self.qty = +b.dataset.qty || 1;
-          self.discount = +b.dataset.discount || 0;
-          self.update();
-        });
-      });
 
       // Variantes
       var sel = this.$('[data-variant-select]');
