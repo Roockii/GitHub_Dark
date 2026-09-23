@@ -63,7 +63,7 @@
 .onyx .fade-in.in,.shopify-design-mode .onyx .fade-in{opacity:1;transform:none;filter:none;}
 @media (prefers-reduced-motion:reduce){
   .onyx .fade-in{opacity:1;transform:none;filter:none;transition:none;}
-  .onyx .ripple-ring,.onyx .vibrate,.onyx .ripple-glow,.onyx .ripple-section .dot{animation:none!important;}
+  .onyx .ripple-ring,.onyx .vibrate,.onyx .ripple-glow{animation:none!important;}
 }
 
 /* ---------- botón principal ---------- */
@@ -207,10 +207,14 @@
 .onyx .ripple-item.left{justify-content:flex-end;text-align:right;}
 .onyx .ripple-line{display:block;height:1px;width:2.5rem;}
 @media(min-width:1024px){.onyx .ripple-line{width:5rem;}}
-.onyx .ripple-item.left .ripple-line{background:linear-gradient(to right,transparent,rgba(255,255,255,.35));}
-.onyx .ripple-item.right .ripple-line{background:linear-gradient(to left,transparent,color-mix(in srgb,var(--sunrise-2) 75%,transparent));}
-.onyx .ripple-section .dot{width:.45rem;height:.45rem;background:var(--sunrise-2);box-shadow:0 0 0 3px color-mix(in srgb,var(--sunrise-2) 18%,transparent),0 0 10px 1px color-mix(in srgb,var(--sunrise-2) 70%,transparent);animation:onyx-dot 3s ease-in-out infinite;}
-@keyframes onyx-dot{0%,100%{box-shadow:0 0 0 3px color-mix(in srgb,var(--sunrise-2) 18%,transparent),0 0 10px 1px color-mix(in srgb,var(--sunrise-2) 70%,transparent);}50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--sunrise-2) 10%,transparent),0 0 16px 3px color-mix(in srgb,var(--sunrise-2) 85%,transparent);}}
+.onyx .ripple-line{background:rgba(255,255,255,.28);}
+.onyx .ripple-diamond{width:.42rem;height:.42rem;flex-shrink:0;background:rgba(255,255,255,.55);transform:rotate(45deg);border-radius:1px;}
+.onyx .ripple-item.left .ripple-diamond{margin-right:-.75rem;}
+.onyx .ripple-item.right .ripple-diamond{margin-left:-.75rem;}
+.onyx .ripple-section .ripple-item .dot{width:1.05rem;height:1.05rem;flex-shrink:0;border-radius:999px;background:#F3F1EA;border:3px solid #4B4B4F;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 12px rgba(255,255,255,.15);}
+.onyx .ripple-item.left .dot{margin-left:-.75rem;}
+.onyx .ripple-item.right .dot{margin-right:-.75rem;}
+.onyx .ripple-mobile .ripple-item .dot{width:.85rem;height:.85rem;border-width:2.5px;}
 .onyx .ripple-center{position:relative;width:19rem;height:19rem;margin:0 auto;display:flex;align-items:center;justify-content:center;}
 @media(min-width:768px){.onyx .ripple-center{width:23rem;height:23rem;}}
 .onyx .ripple-rings{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
@@ -684,7 +688,7 @@
           {%- for line in left_lines -%}
             {%- assign line = line | strip -%}
             {%- if line != blank -%}
-              <div class="ripple-item left"><span>{{ line }}</span><span class="ripple-line"></span><span class="dot"></span></div>
+              <div class="ripple-item left"><span>{{ line }}</span><span class="ripple-diamond"></span><span class="ripple-line"></span><span class="dot"></span></div>
             {%- endif -%}
           {%- endfor -%}
         </div>
@@ -710,7 +714,7 @@
           {%- for line in right_lines -%}
             {%- assign line = line | strip -%}
             {%- if line != blank -%}
-              <div class="ripple-item right"><span class="dot"></span><span class="ripple-line"></span><span>{{ line }}</span></div>
+              <div class="ripple-item right"><span class="dot"></span><span class="ripple-line"></span><span class="ripple-diamond"></span><span>{{ line }}</span></div>
             {%- endif -%}
           {%- endfor -%}
         </div>
