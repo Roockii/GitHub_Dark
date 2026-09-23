@@ -501,7 +501,42 @@
     {%- endif -%}
     {%- if section.settings.fonts_custom_accent and fa -%}
       {{ fa | font_face: font_display: 'swap' }}
-      {{ sid }} em.onyx-serif{%- if section.settings.accent_all -%},{{ sid }} h2 .text-sunrise,{{ sid }} h3 .text-sunrise{%- endif -%}{font-family:{{ fa.family }},{{ fa.fallback_families }};font-weight:{{ fa.weight }};font-style:{{ fa.style }};}
+      {{ sid }} em.onyx-serif{%- if section.settings.accent_all -%},{{ sid }} h2 .text-sunrise,{{ sid }} h3 .text-sunrise{%- endif -%}
+    {%- if section.settings.faq_custom_font -%}
+      {%- assign pf = section.settings.faq_font -%}
+      {{ pf | font_face: font_display: 'swap' }}
+      {{ sid }} #faq h2{font-family:{{ pf.family }},{{ pf.fallback_families }};font-weight:{{ pf.weight }};font-style:{{ pf.style }};}
+    {%- endif -%}
+    {%- if section.settings.ripple_custom_font -%}
+      {%- assign pf = section.settings.ripple_font -%}
+      {{ pf | font_face: font_display: 'swap' }}
+      {{ sid }} .ripple-section h2{font-family:{{ pf.family }},{{ pf.fallback_families }};font-weight:{{ pf.weight }};font-style:{{ pf.style }};}
+    {%- endif -%}
+    {%- if section.settings.features_custom_font -%}
+      {%- assign pf = section.settings.features_font -%}
+      {{ pf | font_face: font_display: 'swap' }}
+      {{ sid }} .features-section h2,{{ sid }} .features-section h3{font-family:{{ pf.family }},{{ pf.fallback_families }};font-weight:{{ pf.weight }};font-style:{{ pf.style }};}
+    {%- endif -%}
+    {%- if section.settings.compare_custom_font -%}
+      {%- assign pf = section.settings.compare_font -%}
+      {{ pf | font_face: font_display: 'swap' }}
+      {{ sid }} .cmp-section h2,{{ sid }} .cmp2-name{font-family:{{ pf.family }},{{ pf.fallback_families }};font-weight:{{ pf.weight }};font-style:{{ pf.style }};}
+    {%- endif -%}
+    {%- if section.settings.experts_custom_font -%}
+      {%- assign pf = section.settings.experts_font -%}
+      {{ pf | font_face: font_display: 'swap' }}
+      {{ sid }} .exp-section h2,{{ sid }} .exp-card .t{font-family:{{ pf.family }},{{ pf.fallback_families }};font-weight:{{ pf.weight }};font-style:{{ pf.style }};}
+    {%- endif -%}
+    {%- if section.settings.reviews_custom_font -%}
+      {%- assign pf = section.settings.reviews_font -%}
+      {{ pf | font_face: font_display: 'swap' }}
+      {{ sid }} #reviews h2,{{ sid }} .rev-card .t{font-family:{{ pf.family }},{{ pf.fallback_families }};font-weight:{{ pf.weight }};font-style:{{ pf.style }};}
+    {%- endif -%}
+    {%- if section.settings.footer_custom_font -%}
+      {%- assign pf = section.settings.footer_font -%}
+      {{ pf | font_face: font_display: 'swap' }}
+      {{ sid }} .onyx-footer .foot-logo{font-family:{{ pf.family }},{{ pf.fallback_families }};font-weight:{{ pf.weight }};font-style:{{ pf.style }};}
+    {%- endif -%}{font-family:{{ fa.family }},{{ fa.fallback_families }};font-weight:{{ fa.weight }};font-style:{{ fa.style }};}
     {%- endif -%}
   </style>
   <style>#onyx-{{ section.id }} .p-title{font-size:{{ section.settings.title_size_mobile }}px;}@media(min-width:768px){#onyx-{{ section.id }} .p-title{font-size:{{ section.settings.title_size }}px;}}</style>
@@ -799,7 +834,7 @@
   {%- comment -%} ================= 5. COMPARATIVA ================= {%- endcomment -%}
   {%- if section.settings.show_compare and compare_blocks.size > 0 -%}
     {%- assign cmp_rows = compare_blocks.size | plus: 1 -%}
-    <section class="onyx-wrap py-xl">
+    <section class="cmp-section onyx-wrap py-xl">
       <div class="fade-in cmp-head">
         {%- if section.settings.compare_eyebrow != blank -%}<p class="eyebrow text-sunrise">{{ section.settings.compare_eyebrow }}</p>{%- endif -%}
         <h2 class="h2-xl">{{ section.settings.compare_heading }}</h2>
@@ -858,7 +893,7 @@
 
   {%- comment -%} ================= 6. EXPERTOS ================= {%- endcomment -%}
   {%- if section.settings.show_experts and expert_blocks.size > 0 -%}
-    <section class="onyx-wrap py-xl bg-secondary">
+    <section class="exp-section onyx-wrap py-xl bg-secondary">
       <div class="fade-in exp-head">
         <h2 class="h2-xl">{{ section.settings.experts_heading }}</h2>
         {%- if section.settings.experts_text != blank -%}<div>{{ section.settings.experts_text }}</div>{%- endif -%}
@@ -1381,9 +1416,9 @@
     {
       "type": "checkbox",
       "id": "fonts_custom_headings",
-      "label": "Cambiar tipografía de los títulos",
+      "label": "Cambiar tipografía de todos los títulos",
       "default": false,
-      "info": "Todos los títulos de todas las secciones (y el nombre del producto, salvo que le pongas una propia)."
+      "info": "Afecta a todos los títulos. Cada sección puede tener además su propia tipografía en su apartado."
     },
     {
       "type": "font_picker",
@@ -1407,7 +1442,7 @@
     {
       "type": "checkbox",
       "id": "accent_all",
-      "label": "Usarla también en las demás partes destacadas en degradado de los títulos",
+      "label": "Usarla también en las partes en degradado de los títulos",
       "default": false
     },
     {
@@ -1671,6 +1706,18 @@
       "default": true
     },
     {
+      "type": "checkbox",
+      "id": "faq_custom_font",
+      "label": "Tipografía propia para los títulos de esta sección",
+      "default": false
+    },
+    {
+      "type": "font_picker",
+      "id": "faq_font",
+      "label": "Tipografía de los títulos",
+      "default": "helvetica_n7"
+    },
+    {
       "type": "text",
       "id": "faq_heading",
       "label": "Título",
@@ -1685,6 +1732,18 @@
       "id": "show_ripple",
       "label": "Mostrar",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "ripple_custom_font",
+      "label": "Tipografía propia para los títulos de esta sección",
+      "default": false
+    },
+    {
+      "type": "font_picker",
+      "id": "ripple_font",
+      "label": "Tipografía de los títulos",
+      "default": "helvetica_n7"
     },
     {
       "type": "textarea",
@@ -1738,6 +1797,18 @@
       "default": true
     },
     {
+      "type": "checkbox",
+      "id": "features_custom_font",
+      "label": "Tipografía propia para los títulos de esta sección",
+      "default": false
+    },
+    {
+      "type": "font_picker",
+      "id": "features_font",
+      "label": "Tipografía de los títulos",
+      "default": "helvetica_n7"
+    },
+    {
       "type": "text",
       "id": "features_heading",
       "label": "Título",
@@ -1776,6 +1847,18 @@
       "id": "show_compare",
       "label": "Mostrar",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "compare_custom_font",
+      "label": "Tipografía propia para los títulos de esta sección",
+      "default": false
+    },
+    {
+      "type": "font_picker",
+      "id": "compare_font",
+      "label": "Tipografía de los títulos",
+      "default": "helvetica_n7"
     },
     {
       "type": "text",
@@ -1875,6 +1958,18 @@
       "default": true
     },
     {
+      "type": "checkbox",
+      "id": "experts_custom_font",
+      "label": "Tipografía propia para los títulos de esta sección",
+      "default": false
+    },
+    {
+      "type": "font_picker",
+      "id": "experts_font",
+      "label": "Tipografía de los títulos",
+      "default": "helvetica_n7"
+    },
+    {
       "type": "text",
       "id": "experts_heading",
       "label": "Título",
@@ -1895,6 +1990,18 @@
       "id": "show_reviews",
       "label": "Mostrar",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "reviews_custom_font",
+      "label": "Tipografía propia para los títulos de esta sección",
+      "default": false
+    },
+    {
+      "type": "font_picker",
+      "id": "reviews_font",
+      "label": "Tipografía de los títulos",
+      "default": "helvetica_n7"
     },
     {
       "type": "text",
@@ -1981,6 +2088,18 @@
       "label": "Mostrar",
       "default": true,
       "info": "Desactívalo si tu tema ya tiene su propio pie de página."
+    },
+    {
+      "type": "checkbox",
+      "id": "footer_custom_font",
+      "label": "Tipografía propia para los títulos de esta sección",
+      "default": false
+    },
+    {
+      "type": "font_picker",
+      "id": "footer_font",
+      "label": "Tipografía de los títulos",
+      "default": "helvetica_n7"
     },
     {
       "type": "image_picker",
