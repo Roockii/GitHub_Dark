@@ -358,13 +358,31 @@
     elsif current_variant.compare_at_price > current_variant.price
       assign base_compare = current_variant.compare_at_price
     endif
+
+    comment
+      Si la primera opción de cantidad tiene su propio "Precio tachado", manda ese.
+    endcomment
+    assign first_block_compare = 0
+    if first_qty_block and first_qty_block.settings.compare_price != blank
+      assign first_block_compare = first_qty_block.settings.compare_price | remove: '€' | remove: '$' | strip | replace: ',', '.' | times: 100 | round
+    endif
+
+    assign current_compare = base_compare
+    if first_block_compare > 0
+      assign current_compare = first_block_compare
+    endif
     assign compare_price = nil
-    if base_compare > unit_price
-      assign compare_price = base_compare
+    if current_compare > unit_price
+      assign compare_price = current_compare
+    endif
+
+    assign offer_base = base_compare
+    if first_block_compare > 0
+      assign offer_base = first_block_compare
     endif
     assign offer_compare = nil
-    if base_compare > current_variant.price
-      assign offer_compare = base_compare
+    if offer_base > current_variant.price
+      assign offer_compare = offer_base
     endif
   endif
 -%}
@@ -492,7 +510,12 @@
               {%- if cols > 3 -%}{%- assign cols = 3 -%}{%- endif -%}
               <div class="qty-grid bg-secondary" style="--cols:{{ cols }}" role="radiogroup" aria-label="{{ section.settings.qty_heading | escape }}">
                 {%- for block in quantity_blocks -%}
-                  <button type="button" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" class="qty-opt{% if forloop.first %} is-selected{% endif %}" data-qty="{{ block.settings.qty }}" data-discount="{{ block.settings.discount }}" {{ block.shopify_attributes }}>
+                  <button type="button" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" class="qty-opt{% if forloop.first %} is-selected{% endif %}" data-qty="{{ block.settings.qty }}" data-discount="{{ block.settings.discount }}"
+                    {%- assign block_compare = 0 -%}
+                    {%- if block.settings.compare_price != blank -%}
+                      {%- assign block_compare = block.settings.compare_price | remove: '€' | remove: '$' | strip | replace: ',', '.' | times: 100 | round -%}
+                    {%- endif %}
+                    data-compare="{{ block_compare }}" {{ block.shopify_attributes }}>
                     {%- if block.settings.badge != blank -%}<span class="qty-badge">{{ block.settings.badge }}</span>{%- endif -%}
                     <span class="qty-radio"></span>
                     <span class="qty-label">{{ block.settings.label }}</span>
@@ -1009,8 +1032,15 @@
       var unit = Math.round(v.price * (100 - this.discount) / 100);
       var override = +root.dataset.compareOverride || 0;
       var base = override > 0 ? override : (v.compare_at_price && v.compare_at_price > v.price ? v.compare_at_price : v.price);
-      var compare = base > unit ? base : null;
-      var offerCompare = base > v.price ? base : null;
+      // "Precio tachado" propio de la opción elegida y de la primera opción
+      var selectedOpt = root.querySelector('.qty-opt.is-selected');
+      var firstOpt = root.querySelector('.qty-opt');
+      var selCompare = selectedOpt ? +selectedOpt.dataset.compare || 0 : 0;
+      var firstCompare = firstOpt ? +firstOpt.dataset.compare || 0 : 0;
+      var current = selCompare > 0 ? selCompare : base;
+      var compare = current > unit ? current : null;
+      var offerBase = firstCompare > 0 ? firstCompare : base;
+      var offerCompare = offerBase > v.price ? offerBase : null;
       var showEach = root.dataset.eachAlways === 'true' || this.qty > 1;
       root.querySelectorAll('[data-price-each]').forEach(function (el) { el.hidden = !showEach; });
 
@@ -1183,8 +1213,8 @@
     {
       "type": "text",
       "id": "compare_price_manual",
-      "label": "Precio de comparación (tachado)",
-      "info": "Ej: 85,00. Vacío = usa el 'Precio de comparación' del producto; si tampoco hay, en las opciones de 2 y 3 unidades se tacha el precio normal."
+      "label": "Precio de comparación general (tachado)",
+      "info": "Ej: 85,00. Se usa en las opciones de cantidad que no tengan su propio 'Precio tachado'. Vacío = usa el 'Precio de comparación' del producto."
     },
     {
       "type": "text",
@@ -1687,6 +1717,12 @@
           "step": 1,
           "unit": "%",
           "default": 0
+        },
+        {
+          "type": "text",
+          "id": "compare_price",
+          "label": "Precio tachado (por unidad)",
+          "info": "Ej: 85,00. Es el precio que sale tachado al elegir esta opción. Vacío = usa el precio de comparación general."
         }
       ]
     },
