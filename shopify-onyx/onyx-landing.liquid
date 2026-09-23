@@ -312,6 +312,9 @@
 
 {%- liquid
   assign p = product
+  if section.settings.product != blank
+    assign p = section.settings.product
+  endif
   if p != blank
     assign current_variant = p.selected_or_first_available_variant
   endif
@@ -1195,8 +1198,14 @@
       "content": "1 · Producto"
     },
     {
+      "type": "product",
+      "id": "product",
+      "label": "Producto",
+      "info": "Elige el producto de tu tienda que se mostrará (fotos, precio, variantes y botón de compra). Vacío = el producto de la página en la que estás."
+    },
+    {
       "type": "paragraph",
-      "content": "Fotos, precio, precio tachado y variantes salen de cada producto (Productos en el admin)."
+      "content": "Las fotos, el precio y las variantes se editan en la ficha del producto (Productos en el admin)."
     },
     {
       "type": "text",
@@ -2321,11 +2330,6 @@
         }
       ]
     }
-  ],
-  "enabled_on": {
-    "templates": [
-      "product"
-    ]
-  }
+  ]
 }
 {% endschema %}
