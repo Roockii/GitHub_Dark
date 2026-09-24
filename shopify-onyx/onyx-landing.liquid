@@ -161,7 +161,7 @@
   .onyx .cr-label{font-size:calc(0.85*var(--r,16px));}
 }
 
-.onyx .atc{width:100%;height:calc(3.5*var(--r,16px));font-size:calc(1.125*var(--r,16px));}
+.onyx .atc{width:100%;height:calc(var(--atc-h,64)*1px);font-size:calc(1.2*var(--r,16px));font-weight:700;}
 .onyx .atc-error{color:#dc2626;font-size:calc(.875*var(--r,16px));margin-top:calc(.5*var(--r,16px));}
 
 .onyx .offer-box{border-radius:calc(1*var(--r,16px));padding:calc(.5*var(--r,16px));}
@@ -541,23 +541,55 @@
   {%- comment -%} ================= 1. PRODUCTO ================= {%- endcomment -%}
   <section id="top" class="hero onyx-wrap">
     <div class="hero-gallery">
+      {%- liquid
+        # Fotos que son portada de alguna variante (color): se ocultan de la galería si así se elige
+        assign variant_media_ids = ''
+        if p != blank and section.settings.hide_variant_images
+          for v in p.variants
+            if v.featured_media
+              assign variant_media_ids = variant_media_ids | append: ',' | append: v.featured_media.id | append: ','
+            endif
+          endfor
+        endif
+        assign gallery_count = 0
+        if p != blank
+          for media in p.media
+            assign mid = ',' | append: media.id | append: ','
+            if media.preview_image
+              unless variant_media_ids contains mid
+                assign gallery_count = gallery_count | plus: 1
+              endunless
+            endif
+          endfor
+          # Si todas las fotos son de variantes, se muestran igualmente para no dejar la galería vacía
+          if gallery_count == 0
+            assign variant_media_ids = ''
+            assign gallery_count = p.media.size
+          endif
+        endif
+      -%}
       <div class="main-media placeholder-img" data-main-media>
-        {%- if p != blank and p.media.size > 0 -%}
+        {%- if p != blank and gallery_count > 0 -%}
+          {%- assign gi = 0 -%}
           {%- for media in p.media -%}
+            {%- assign mid = ',' | append: media.id | append: ',' -%}
             {%- if media.preview_image -%}
-              {%- assign media_alt = media.alt | default: p.title | escape -%}
-              {{
-                media.preview_image
-                | image_url: width: 1400
-                | image_tag:
-                  class: 'media-cover',
-                  loading: 'eager',
-                  sizes: '(min-width: 1024px) 45vw, 100vw',
-                  widths: '400, 700, 1000, 1400',
-                  alt: media_alt,
-                  data-media-index: forloop.index0,
-                  data-media-id: media.id
-              }}
+              {%- unless variant_media_ids contains mid -%}
+                {%- assign media_alt = media.alt | default: p.title | escape -%}
+                {{
+                  media.preview_image
+                  | image_url: width: 1400
+                  | image_tag:
+                    class: 'media-cover',
+                    loading: 'eager',
+                    sizes: '(min-width: 1024px) 45vw, 100vw',
+                    widths: '400, 700, 1000, 1400',
+                    alt: media_alt,
+                    data-media-index: gi,
+                    data-media-id: media.id
+                }}
+                {%- assign gi = gi | plus: 1 -%}
+              {%- endunless -%}
             {%- endif -%}
           {%- endfor -%}
         {%- else -%}
@@ -565,13 +597,18 @@
         {%- endif -%}
       </div>
 
-      {%- if p != blank and p.media.size > 1 -%}
+      {%- if gallery_count > 1 -%}
         <div class="thumbs no-scrollbar">
+          {%- assign gi = 0 -%}
           {%- for media in p.media -%}
+            {%- assign mid = ',' | append: media.id | append: ',' -%}
             {%- if media.preview_image -%}
-              <button type="button" class="thumb placeholder-img{% if forloop.first %} is-active{% endif %}" data-thumb="{{ forloop.index0 }}" aria-label="Imagen {{ forloop.index }}">
-                {{ media.preview_image | image_url: width: 200 | image_tag: class: 'media-cover', loading: 'lazy', alt: '' }}
-              </button>
+              {%- unless variant_media_ids contains mid -%}
+                <button type="button" class="thumb placeholder-img{% if gi == 0 %} is-active{% endif %}" data-thumb="{{ gi }}" aria-label="Imagen {{ gi | plus: 1 }}">
+                  {{ media.preview_image | image_url: width: 200 | image_tag: class: 'media-cover', loading: 'lazy', alt: '' }}
+                </button>
+                {%- assign gi = gi | plus: 1 -%}
+              {%- endunless -%}
             {%- endif -%}
           {%- endfor -%}
         </div>
@@ -684,7 +721,7 @@
             </div>
           {%- endif -%}
 
-          <button type="submit" name="add" class="btn-main atc{% if section.settings.wiggle %} wiggle{% endif %}" data-atc{% unless can_buy %} disabled{% endunless %}>
+          <button type="submit" name="add" style="--atc-h:{{ section.settings.atc_height | default: 64 }}" class="btn-main atc{% if section.settings.wiggle %} wiggle{% endif %}" data-atc{% unless can_buy %} disabled{% endunless %}>
             <span class="btn-bg"></span>
             <span class="btn-label" data-atc-label>{% if can_buy %}{{ section.settings.atc_text }}{% else %}{{ section.settings.sold_out_text }}{% endif %}</span>
           </button>
@@ -1505,6 +1542,13 @@
       "info": "Elige el producto de tu tienda que se mostrará (fotos, precio, variantes y botón de compra). Vacío = el producto de la página en la que estás."
     },
     {
+      "type": "checkbox",
+      "id": "hide_variant_images",
+      "label": "No mostrar en la galería las fotos de las variantes",
+      "default": true,
+      "info": "Las fotos asignadas a cada color solo salen en los cuadraditos de color, no en la galería principal."
+    },
+    {
       "type": "paragraph",
       "content": "Las fotos, el precio y las variantes se editan en la ficha del producto (Productos en el admin)."
     },
@@ -1592,13 +1636,6 @@
     },
     {
       "type": "text",
-      "id": "variant_label",
-      "label": "Texto de cada fila de color",
-      "default": "Choose Color",
-      "info": "Se añade el número: Choose Color 1, Choose Color 2…"
-    },
-    {
-      "type": "text",
       "id": "qty_heading",
       "label": "Título del selector de cantidad",
       "default": "Elige tu cantidad"
@@ -1614,6 +1651,13 @@
       "default": 100
     },
     {
+      "type": "text",
+      "id": "variant_label",
+      "label": "Texto de las filas de color (Choose Color)",
+      "default": "Choose Color",
+      "info": "Lo que pongas aquí sale en cada fila, seguido del número: Choose Color 1, Choose Color 2…"
+    },
+    {
       "type": "paragraph",
       "content": "El % de las 'Opciones de cantidad' solo cambia el precio mostrado. Para cobrarlo, crea un descuento automático por cantidad en Descuentos."
     },
@@ -1622,6 +1666,16 @@
       "id": "atc_text",
       "label": "Texto del botón",
       "default": "Añadir al carrito +"
+    },
+    {
+      "type": "range",
+      "id": "atc_height",
+      "label": "Altura del botón de añadir al carrito",
+      "min": 44,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 64
     },
     {
       "type": "checkbox",
