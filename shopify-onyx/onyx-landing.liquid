@@ -161,7 +161,7 @@
   .onyx .cr-label{font-size:calc(0.85*var(--r,16px));}
 }
 
-.onyx .atc{width:100%;height:calc(var(--atc-h,64)*1px);font-size:calc(1.2*var(--r,16px));font-weight:700;}
+.onyx .atc{width:100%;height:calc(var(--atc-h,72)*1px);font-size:calc(1.25*var(--r,16px));font-weight:700;letter-spacing:.01em;}
 .onyx .atc-error{color:#dc2626;font-size:calc(.875*var(--r,16px));margin-top:calc(.5*var(--r,16px));}
 
 .onyx .offer-box{border-radius:calc(1*var(--r,16px));padding:calc(.5*var(--r,16px));}
@@ -552,20 +552,19 @@
           endfor
         endif
         assign gallery_count = 0
+        assign first_gallery_media = nil
         if p != blank
           for media in p.media
             assign mid = ',' | append: media.id | append: ','
             if media.preview_image
               unless variant_media_ids contains mid
+                if gallery_count == 0
+                  assign first_gallery_media = media
+                endif
                 assign gallery_count = gallery_count | plus: 1
               endunless
             endif
           endfor
-          # Si todas las fotos son de variantes, se muestran igualmente para no dejar la galería vacía
-          if gallery_count == 0
-            assign variant_media_ids = ''
-            assign gallery_count = p.media.size
-          endif
         endif
       -%}
       <div class="main-media placeholder-img" data-main-media>
@@ -721,7 +720,7 @@
             </div>
           {%- endif -%}
 
-          <button type="submit" name="add" style="--atc-h:{{ section.settings.atc_height | default: 64 }}" class="btn-main atc{% if section.settings.wiggle %} wiggle{% endif %}" data-atc{% unless can_buy %} disabled{% endunless %}>
+          <button type="submit" name="add" style="--atc-h:{{ section.settings.atc_height | default: 72 }}" class="btn-main atc{% if section.settings.wiggle %} wiggle{% endif %}" data-atc{% unless can_buy %} disabled{% endunless %}>
             <span class="btn-bg"></span>
             <span class="btn-label" data-atc-label>{% if can_buy %}{{ section.settings.atc_text }}{% else %}{{ section.settings.sold_out_text }}{% endif %}</span>
           </button>
@@ -1082,8 +1081,8 @@
     <div class="sticky-bar" data-sticky-bar>
       <div class="sticky-inner">
         <div class="sticky-thumb placeholder-img">
-          {%- if p.featured_media -%}
-            {{ p.featured_media.preview_image | image_url: width: 120 | image_tag: class: 'media-cover', loading: 'lazy', alt: '' }}
+          {%- if first_gallery_media -%}
+            {{ first_gallery_media.preview_image | image_url: width: 120 | image_tag: class: 'media-cover', loading: 'lazy', alt: '' }}
           {%- endif -%}
         </div>
         <div class="sticky-info">
@@ -1546,7 +1545,7 @@
       "id": "hide_variant_images",
       "label": "No mostrar en la galería las fotos de las variantes",
       "default": true,
-      "info": "Las fotos asignadas a cada color solo salen en los cuadraditos de color, no en la galería principal."
+      "info": "Las fotos asignadas a cada color solo salen en los cuadraditos de color, nunca en la galería principal. Sube las fotos de la galería al producto sin asignarlas a ninguna variante."
     },
     {
       "type": "paragraph",
@@ -1672,10 +1671,10 @@
       "id": "atc_height",
       "label": "Altura del botón de añadir al carrito",
       "min": 44,
-      "max": 80,
+      "max": 96,
       "step": 2,
       "unit": "px",
-      "default": 64
+      "default": 72
     },
     {
       "type": "checkbox",
