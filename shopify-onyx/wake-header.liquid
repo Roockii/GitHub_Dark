@@ -15,9 +15,10 @@
     --wm-sun-3:     {{ section.settings.hd_sunrise_3 }};
     --wm-sunrise:   linear-gradient(135deg, var(--wm-sun-1) 0%, var(--wm-sun-2) 50%, var(--wm-sun-3) 100%);
     --wm-ink:       {{ section.settings.hd_text }};
-    --wm-page-bg:   {{ section.settings.hd_page_bg }};
+    --wm-page-bg:   {{ section.settings.hd_bg }};
+    --wm-logo-h:    {{ section.settings.logo_height | default: 40 }}px;
     --wm-card-bg:   {{ section.settings.hd_card_bg }};
-    --wm-border:    {{ section.settings.hd_border }};
+    --wm-border:    {{ section.settings.hd_border2 }};
     --wm-bar-bg:    {{ section.settings.hd_bar_bg }};
     --wm-bar-text:  {{ section.settings.hd_bar_text }};
     /* Usados por la animación del logo (igual que antes) */
@@ -67,21 +68,22 @@
   }
 
   /* ---------- Cabecera en tarjeta ---------- */
-  #wm-{{ section.id }} .wm-shell { padding: 12px 24px; }
+  #wm-{{ section.id }} .wm-shell { padding: 12px 24px 8px; }
   #wm-{{ section.id }} .wm-header-row {
     max-width: 1440px; margin: 0 auto;
     display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px;
     background: var(--wm-card-bg);
     border: 1px solid var(--wm-border);
-    border-radius: 16px;
-    padding: 4px 32px;
-    box-shadow: 0 10px 30px -24px rgba(10,10,12,.35);
+    border-radius: 12px;
+    min-height: 56px;
+    padding: 0 32px;
+    box-shadow: 0 1px 2px rgba(10,10,12,.04);
   }
 
   /* Enlaces izquierda */
   #wm-{{ section.id }} .wm-nav { display: flex; align-items: center; gap: 28px; min-width: 0; }
   #wm-{{ section.id }} .wm-nav a {
-    font-size: 16px; font-weight: 500; white-space: nowrap; position: relative; padding: 6px 0;
+    font-size: 16px; font-weight: 500; color: #2b2b2f; white-space: nowrap; position: relative; padding: 6px 0;
     transition: color .2s;
   }
   #wm-{{ section.id }} .wm-nav a::after {
@@ -139,51 +141,44 @@
   #wm-{{ section.id }} .wm-mobile-nav a { display: block; padding: 12px 20px; font-weight: 500; }
   #wm-{{ section.id }} .wm-mobile-nav a + a { border-top: 1px solid var(--wm-border); }
 
-  /* ---------- Logo con animación (igual que antes) ---------- */
+  /* ---------- Logo con animación (brillo + flotación), en tamaño compacto ---------- */
   #wm-{{ section.id }} .wm-logo-wrap {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    justify-self: center;
+    display: flex; align-items: center; justify-content: center; justify-self: center; gap: 8px;
   }
   #wm-{{ section.id }} .wm-logo-stage {
-    position: relative;
-    width: calc({{ section.settings.logo_size | default: 64 }}px * 2.3);
-    height: calc({{ section.settings.logo_size | default: 64 }}px * 2.3);
+    position: relative; display: flex; align-items: center; justify-content: center;
+    height: calc(var(--wm-logo-h) + 12px); padding: 0 10px;
   }
   #wm-{{ section.id }} .wm-sunrise-glow {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: calc({{ section.settings.logo_size | default: 64 }}px * 1.05);
-    height: calc({{ section.settings.logo_size | default: 64 }}px * 1.05);
+    width: calc(var(--wm-logo-h) * 1.5); height: calc(var(--wm-logo-h) * 1.5);
     border-radius: 50%;
     background: radial-gradient(circle, var(--wm-accent-3) 0%, var(--wm-accent-1) 55%, transparent 75%);
-    filter: blur(14px); opacity: .55;
+    filter: blur(12px); opacity: .45; pointer-events: none;
     {% if section.settings.enable_logo_animation %}
     animation: wm-pulse 4.5s ease-in-out infinite;
     {% endif %}
   }
   #wm-{{ section.id }} .wm-logo-img {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    z-index: 2;
-    width: calc({{ section.settings.logo_size | default: 64 }}px * 1.75);
-    height: auto; max-height: 92%; object-fit: contain; display: block;
+    position: relative; z-index: 2; display: block;
+    height: var(--wm-logo-h); width: auto; max-width: 240px; object-fit: contain;
     {% if section.settings.enable_logo_animation %}
     animation: wm-float 5.5s ease-in-out infinite;
     {% endif %}
   }
+  #wm-{{ section.id }} .wm-logo-text { position: relative; z-index: 2; font-size: calc(var(--wm-logo-h) * .7); font-weight: 800; letter-spacing: -.02em; }
   @keyframes wm-pulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(0.92); opacity: .45; }
-    50% { transform: translate(-50%, -50%) scale(1.08); opacity: .75; }
+    0%, 100% { transform: translate(-50%, -50%) scale(0.92); opacity: .35; }
+    50% { transform: translate(-50%, -50%) scale(1.08); opacity: .6; }
   }
   @keyframes wm-float {
-    0%, 100% { transform: translate(-50%, -50%) translateY(0px) rotate(0deg); }
-    50% { transform: translate(-50%, -50%) translateY(-6px) rotate(-2deg); }
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-3px) rotate(-1.5deg); }
   }
   #wm-{{ section.id }} .wm-wordmark {
-    margin-top: 4px;
-    text-align: center;
     font-family: {{ section.settings.tagline_font.family | default: 'Quicksand' }}, sans-serif;
     font-weight: {{ section.settings.tagline_font.weight | default: 700 }};
-    font-size: 13px;
-    color: var(--wm-text-soft);
+    font-size: 12px; color: var(--wm-text-soft); white-space: nowrap;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -198,18 +193,10 @@
     #wm-{{ section.id }} .wm-nav .wm-burger { display: inline-flex; }
     #wm-{{ section.id }} .wm-utils { gap: 8px; }
     #wm-{{ section.id }} .wm-util-btn svg { width: 20px; height: 20px; }
-    #wm-{{ section.id }} .wm-logo-stage {
-      width: calc({{ section.settings.logo_size | default: 64 }}px * 2.3 * 0.62);
-      height: calc({{ section.settings.logo_size | default: 64 }}px * 2.3 * 0.62);
-    }
-    #wm-{{ section.id }} .wm-sunrise-glow {
-      width: calc({{ section.settings.logo_size | default: 64 }}px * 1.05 * 0.62);
-      height: calc({{ section.settings.logo_size | default: 64 }}px * 1.05 * 0.62);
-    }
-    #wm-{{ section.id }} .wm-logo-img {
-      width: calc({{ section.settings.logo_size | default: 64 }}px * 1.75 * 0.62);
-    }
-    #wm-{{ section.id }} .wm-wordmark { font-size: 11.5px; }
+    #wm-{{ section.id }} { --wm-logo-h: calc({{ section.settings.logo_height | default: 40 }}px * .8); }
+    #wm-{{ section.id }} .wm-header-row { min-height: 52px; }
+    #wm-{{ section.id }} .wm-wordmark { display: none; }
+
   }
 {%- endstyle -%}
 
@@ -281,10 +268,12 @@
         <div class="wm-logo-stage">
           <div class="wm-sunrise-glow"></div>
           {%- if section.settings.logo_image != blank -%}
-            {{ section.settings.logo_image | image_url: width: 300 | image_tag: class: 'wm-logo-img', alt: shop.name }}
+            {{ section.settings.logo_image | image_url: width: 480 | image_tag: class: 'wm-logo-img', alt: shop.name }}
+          {%- else -%}
+            <span class="wm-logo-text">{{ shop.name }}</span>
           {%- endif -%}
         </div>
-        {%- if section.settings.logo_tagline != blank -%}
+        {%- if section.settings.show_tagline and section.settings.logo_tagline != blank -%}
           <div class="wm-wordmark">{{ section.settings.logo_tagline }}</div>
         {%- endif -%}
       </a>
@@ -397,53 +386,247 @@
 {
   "name": "Wake header",
   "settings": [
-    { "type": "header", "content": "Barra negra de mensajes" },
-    { "type": "checkbox", "id": "show_announce_bar", "label": "Mostrar barra de mensajes", "default": true },
-    { "type": "text", "id": "announce_1", "label": "Mensaje 1", "default": "Free shipping on all orders" },
-    { "type": "url", "id": "announce_1_link", "label": "Enlace mensaje 1 (opcional)" },
-    { "type": "text", "id": "announce_2", "label": "Mensaje 2", "default": "100-Night Risk-Free Trial" },
-    { "type": "url", "id": "announce_2_link", "label": "Enlace mensaje 2 (opcional)" },
-    { "type": "text", "id": "announce_3", "label": "Mensaje 3", "default": "Wake up silently, without disturbing anyone" },
-    { "type": "url", "id": "announce_3_link", "label": "Enlace mensaje 3 (opcional)" },
-    { "type": "text", "id": "announce_4", "label": "Mensaje 4", "default": "Over 3,600 happy sleepers" },
-    { "type": "url", "id": "announce_4_link", "label": "Enlace mensaje 4 (opcional)" },
-    { "type": "range", "id": "announce_speed", "label": "Cambiar de mensaje cada", "min": 2, "max": 10, "step": 1, "unit": "s", "default": 4 },
-
-    { "type": "header", "content": "Enlaces de la izquierda" },
-    { "type": "text", "id": "nav_1_label", "label": "Enlace 1: texto", "default": "Our Story" },
-    { "type": "url", "id": "nav_1_url", "label": "Enlace 1: destino" },
-    { "type": "text", "id": "nav_2_label", "label": "Enlace 2: texto", "default": "Support" },
-    { "type": "url", "id": "nav_2_url", "label": "Enlace 2: destino" },
-    { "type": "text", "id": "nav_3_label", "label": "Enlace 3: texto (opcional)" },
-    { "type": "url", "id": "nav_3_url", "label": "Enlace 3: destino" },
-    { "type": "link_list", "id": "menu", "label": "O usar un menú de Shopify", "info": "Si eliges un menú, se usan sus enlaces en lugar de los de arriba." },
-
-    { "type": "header", "content": "Logo y animación" },
-    { "type": "checkbox", "id": "show_logo", "label": "Mostrar logo", "default": true },
-    { "type": "image_picker", "id": "logo_image", "label": "Logo" },
-    { "type": "checkbox", "id": "enable_logo_animation", "label": "Animar logo (brillo + flotación)", "default": true },
-    { "type": "range", "id": "logo_size", "min": 40, "max": 160, "step": 4, "unit": "px", "label": "Tamaño del logo", "default": 88 },
-    { "type": "text", "id": "logo_tagline", "label": "Texto pequeño bajo el logo", "default": "wake gently" },
-    { "type": "font_picker", "id": "tagline_font", "label": "Tipografía del texto bajo el logo", "default": "quicksand_n7" },
-
-    { "type": "header", "content": "Iconos de la derecha" },
-    { "type": "checkbox", "id": "show_search", "label": "Mostrar buscador", "default": true },
-    { "type": "text", "id": "search_placeholder", "label": "Texto del buscador", "default": "Search…" },
-    { "type": "checkbox", "id": "show_cart", "label": "Mostrar carrito", "default": true },
-
-    { "type": "header", "content": "Colores" },
-    { "type": "color", "id": "hd_bar_bg", "label": "Fondo de la barra de mensajes", "default": "#0A0A0C" },
-    { "type": "color", "id": "hd_bar_text", "label": "Texto de la barra de mensajes", "default": "#FFFFFF" },
-    { "type": "color", "id": "hd_page_bg", "label": "Fondo detrás de la cabecera", "default": "#F8F9FB" },
-    { "type": "color", "id": "hd_card_bg", "label": "Fondo de la cabecera", "default": "#FFFFFF" },
-    { "type": "color", "id": "hd_border", "label": "Borde de la cabecera", "default": "#ECECEF" },
-    { "type": "color", "id": "hd_text", "label": "Texto e iconos", "default": "#0A0A0C" },
-    { "type": "color", "id": "hd_sunrise_1", "label": "Degradado 1", "default": "#FFD93D" },
-    { "type": "color", "id": "hd_sunrise_2", "label": "Degradado 2 (principal)", "default": "#FF9F1C" },
-    { "type": "color", "id": "hd_sunrise_3", "label": "Degradado 3", "default": "#FF5E3A" }
+    {
+      "type": "header",
+      "content": "Barra negra de mensajes"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announce_bar",
+      "label": "Mostrar barra de mensajes",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "announce_1",
+      "label": "Mensaje 1",
+      "default": "Free shipping on all orders"
+    },
+    {
+      "type": "url",
+      "id": "announce_1_link",
+      "label": "Enlace mensaje 1 (opcional)"
+    },
+    {
+      "type": "text",
+      "id": "announce_2",
+      "label": "Mensaje 2",
+      "default": "100-Night Risk-Free Trial"
+    },
+    {
+      "type": "url",
+      "id": "announce_2_link",
+      "label": "Enlace mensaje 2 (opcional)"
+    },
+    {
+      "type": "text",
+      "id": "announce_3",
+      "label": "Mensaje 3",
+      "default": "Wake up silently, without disturbing anyone"
+    },
+    {
+      "type": "url",
+      "id": "announce_3_link",
+      "label": "Enlace mensaje 3 (opcional)"
+    },
+    {
+      "type": "text",
+      "id": "announce_4",
+      "label": "Mensaje 4",
+      "default": "Over 3,600 happy sleepers"
+    },
+    {
+      "type": "url",
+      "id": "announce_4_link",
+      "label": "Enlace mensaje 4 (opcional)"
+    },
+    {
+      "type": "range",
+      "id": "announce_speed",
+      "label": "Cambiar de mensaje cada",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Enlaces de la izquierda"
+    },
+    {
+      "type": "text",
+      "id": "nav_1_label",
+      "label": "Enlace 1: texto",
+      "default": "Our Story"
+    },
+    {
+      "type": "url",
+      "id": "nav_1_url",
+      "label": "Enlace 1: destino"
+    },
+    {
+      "type": "text",
+      "id": "nav_2_label",
+      "label": "Enlace 2: texto",
+      "default": "Support"
+    },
+    {
+      "type": "url",
+      "id": "nav_2_url",
+      "label": "Enlace 2: destino"
+    },
+    {
+      "type": "text",
+      "id": "nav_3_label",
+      "label": "Enlace 3: texto (opcional)"
+    },
+    {
+      "type": "url",
+      "id": "nav_3_url",
+      "label": "Enlace 3: destino"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "O usar un menú de Shopify",
+      "info": "Si eliges un menú, se usan sus enlaces en lugar de los de arriba."
+    },
+    {
+      "type": "header",
+      "content": "Logo y animación"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_logo",
+      "label": "Mostrar logo",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_logo_animation",
+      "label": "Animar logo (brillo + flotación)",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Altura del logo",
+      "default": 40
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tagline",
+      "label": "Mostrar texto pequeño junto al logo",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "logo_tagline",
+      "label": "Texto pequeño bajo el logo",
+      "default": "wake gently"
+    },
+    {
+      "type": "font_picker",
+      "id": "tagline_font",
+      "label": "Tipografía del texto bajo el logo",
+      "default": "quicksand_n7"
+    },
+    {
+      "type": "header",
+      "content": "Iconos de la derecha"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Mostrar buscador",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Texto del buscador",
+      "default": "Search…"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart",
+      "label": "Mostrar carrito",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "hd_bar_bg",
+      "label": "Fondo de la barra de mensajes",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "color",
+      "id": "hd_bar_text",
+      "label": "Texto de la barra de mensajes",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "hd_bg",
+      "label": "Fondo alrededor de la cabecera",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "hd_card_bg",
+      "label": "Fondo de la cabecera",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "hd_border2",
+      "label": "Borde de la cabecera",
+      "default": "#E8E8EC"
+    },
+    {
+      "type": "color",
+      "id": "hd_text",
+      "label": "Texto e iconos",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "color",
+      "id": "hd_sunrise_1",
+      "label": "Degradado 1",
+      "default": "#FFD93D"
+    },
+    {
+      "type": "color",
+      "id": "hd_sunrise_2",
+      "label": "Degradado 2 (principal)",
+      "default": "#FF9F1C"
+    },
+    {
+      "type": "color",
+      "id": "hd_sunrise_3",
+      "label": "Degradado 3",
+      "default": "#FF5E3A"
+    }
   ],
   "presets": [
-    { "name": "Wake header" }
+    {
+      "name": "Wake header"
+    }
   ]
 }
+
 {% endschema %}
