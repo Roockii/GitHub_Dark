@@ -16,7 +16,9 @@
     --wm-sunrise:   linear-gradient(135deg, var(--wm-sun-1) 0%, var(--wm-sun-2) 50%, var(--wm-sun-3) 100%);
     --wm-ink:       {{ section.settings.hd_text }};
     --wm-page-bg:   {{ section.settings.hd_bg }};
-    --wm-logo-h:    {{ section.settings.logo_h | default: 50 }}px;
+    --wm-logo-h:    {{ section.settings.logo_height_px | default: 64 }}px;
+    --wm-bar-h:     {{ section.settings.bar_height | default: 76 }}px;
+    --wm-nav-size:  {{ section.settings.nav_size | default: 18 }}px;
     --wm-logo-zoom: {{ section.settings.logo_zoom | default: 250 | divided_by: 100.0 }};
     --wm-card-bg:   {{ section.settings.hd_card_bg }};
     --wm-border:    {{ section.settings.hd_border2 }};
@@ -76,7 +78,7 @@
     background: var(--wm-card-bg);
     border: 1px solid var(--wm-border);
     border-radius: 12px;
-    height: 58px;
+    height: var(--wm-bar-h);
     padding: 0 36px;
     box-shadow: 0 1px 2px rgba(10,10,12,.04);
   }
@@ -84,7 +86,7 @@
   /* Enlaces izquierda */
   #wm-{{ section.id }} .wm-nav { display: flex; align-items: center; gap: 24px; min-width: 0; }
   #wm-{{ section.id }} .wm-nav a {
-    font-size: 17px; font-weight: 500; color: #2b2b2f; white-space: nowrap; position: relative; padding: 6px 0;
+    font-size: var(--wm-nav-size); font-weight: 500; color: #2b2b2f; white-space: nowrap; position: relative; padding: 6px 0;
     transition: color .2s;
   }
   #wm-{{ section.id }} .wm-nav a::after {
@@ -102,7 +104,7 @@
     color: var(--wm-ink); position: relative; line-height: 0; border-radius: 999px; transition: background .2s;
   }
   #wm-{{ section.id }} .wm-util-btn:hover { background: rgba(10,10,12,.05); }
-  #wm-{{ section.id }} .wm-util-btn svg { width: 24px; height: 24px; display: block; }
+  #wm-{{ section.id }} .wm-util-btn svg { width: calc(var(--wm-nav-size) + 8px); height: calc(var(--wm-nav-size) + 8px); display: block; }
 
   #wm-{{ section.id }} .wm-search-wrap { position: relative; }
   #wm-{{ section.id }} .wm-search-form {
@@ -199,8 +201,8 @@
     #wm-{{ section.id }} .wm-nav .wm-burger { display: inline-flex; }
     #wm-{{ section.id }} .wm-utils { gap: 8px; }
     #wm-{{ section.id }} .wm-util-btn svg { width: 20px; height: 20px; }
-    #wm-{{ section.id }} { --wm-logo-h: calc({{ section.settings.logo_h | default: 50 }}px * .8); }
-    #wm-{{ section.id }} .wm-header-row { height: 52px; }
+    #wm-{{ section.id }} { --wm-logo-h: calc({{ section.settings.logo_height_px | default: 64 }}px * .75); }
+    #wm-{{ section.id }} .wm-header-row { height: calc({{ section.settings.bar_height | default: 76 }}px * .8); }
     #wm-{{ section.id }} .wm-wordmark { display: none; }
 
   }
@@ -521,14 +523,34 @@
     },
     {
       "type": "range",
-      "id": "logo_h",
+      "id": "bar_height",
+      "min": 48,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Altura de la barra blanca",
+      "default": 76
+    },
+    {
+      "type": "range",
+      "id": "logo_height_px",
       "min": 24,
-      "max": 58,
+      "max": 110,
       "step": 2,
       "unit": "px",
       "label": "Altura del logo",
-      "default": 50,
-      "info": "La barra mide 58 px de alto, como la de la competencia."
+      "default": 64,
+      "info": "Mejor un poco menos que la altura de la barra."
+    },
+    {
+      "type": "range",
+      "id": "nav_size",
+      "min": 13,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño de los enlaces e iconos",
+      "default": 18
     },
     {
       "type": "range",
