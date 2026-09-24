@@ -121,18 +121,43 @@
 .onyx .label-sm{font-size:.875rem;font-weight:600;margin-bottom:.75rem;}
 
 .onyx .variant-select{width:100%;height:3rem;border-radius:.75rem;border:1px solid #e5e7eb;padding:0 1rem;font:inherit;background:#fff;color:var(--ink);}
-.onyx .qty-grid{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:.5rem;padding:.5rem;border-radius:1rem;}
-.onyx .qty-opt{position:relative;border-radius:.75rem;background:#fff;padding:1.75rem .5rem 1rem;text-align:center;transition:all .2s;border:2px solid transparent;}
-.onyx .qty-opt:hover{border-color:#e5e7eb;}
-.onyx .qty-opt.is-selected{border:2px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--sunrise) border-box;box-shadow:0 4px 6px -1px rgba(0,0,0,.1);}
-.onyx .qty-badge{position:absolute;top:0;left:0;right:0;font-size:11px;font-weight:600;padding:.25rem 0;border-radius:10px 10px 0 0;background:var(--secondary);color:#4b5563;}
-.onyx .qty-opt.is-selected .qty-badge{background-image:var(--sunrise);color:var(--ink);}
-.onyx .qty-radio{margin:0 auto .5rem;display:flex;width:1rem;height:1rem;border-radius:999px;align-items:center;justify-content:center;border:1px solid #9ca3af;}
-.onyx .qty-opt.is-selected .qty-radio{border:0;background-image:var(--sunrise);}
-.onyx .qty-opt.is-selected .qty-radio::after{content:"";width:.375rem;height:.375rem;border-radius:999px;background:#fff;}
-.onyx .qty-label{font-weight:600;font-size:.875rem;display:block;}
-@media(min-width:768px){.onyx .qty-label{font-size:1rem;}}
-.onyx .qty-sub{display:block;font-size:.75rem;color:#6b7280;margin-top:.25rem;}
+.onyx .qty-list{display:flex;flex-direction:column;gap:.5rem;padding:.5rem;border-radius:1rem;}
+.onyx .qty-card{position:relative;background:#fff;border-radius:.875rem;border:2px solid transparent;cursor:pointer;transition:box-shadow .25s,border-color .25s;}
+.onyx .qty-card:hover{border-color:#ececef;}
+.onyx .qty-card.is-selected{border:2px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--sunrise) border-box;box-shadow:0 10px 30px -18px color-mix(in srgb,var(--sunrise-2) 80%,transparent);}
+.onyx .qty-head{display:flex;align-items:center;gap:.875rem;padding:.9rem 1rem;}
+.onyx .qty-radio{flex-shrink:0;display:flex;width:1.15rem;height:1.15rem;border-radius:999px;align-items:center;justify-content:center;border:1.5px solid #9ca3af;background:#fff;}
+.onyx .qty-card.is-selected .qty-radio{border:0;background-image:var(--sunrise);}
+.onyx .qty-card.is-selected .qty-radio::after{content:"";width:.42rem;height:.42rem;border-radius:999px;background:#fff;}
+.onyx .qty-img{width:3.5rem;height:3.5rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.onyx .qty-img img{width:100%;height:100%;object-fit:contain;}
+.onyx .qty-info{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:.3rem;}
+.onyx .qty-label{font-weight:600;font-size:1rem;line-height:1.2;}
+.onyx .qty-save{display:inline-block;font-size:.72rem;font-weight:700;line-height:1;padding:.3rem .6rem;border-radius:999px;background-image:var(--sunrise);color:var(--ink);box-shadow:0 4px 12px -6px color-mix(in srgb,var(--sunrise-2) 80%,transparent);}
+.onyx .qty-sub{display:block;font-size:.8rem;color:#6b7280;}
+.onyx .qty-prices{flex-shrink:0;text-align:right;line-height:1.25;}
+.onyx .qp-now{display:block;font-weight:700;font-size:1.05rem;}
+.onyx .qp-old{display:block;font-size:.8rem;color:#9ca3af;text-decoration:line-through;}
+.onyx .qty-colors{display:none;border-top:1px solid #f1ece8;cursor:default;}
+.onyx .qty-card.is-selected .qty-colors{display:block;}
+.onyx .color-row{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.7rem 1rem;}
+.onyx .color-row+.color-row{border-top:1px solid #f3f3f5;}
+.onyx .cr-label{font-size:.875rem;font-weight:600;white-space:nowrap;}
+.onyx .swatches{display:flex;gap:.45rem;flex-wrap:wrap;justify-content:flex-end;}
+.onyx .swatch{width:2.75rem;height:2.75rem;border-radius:.55rem;background:#f1f1f3;border:2px solid transparent;overflow:hidden;padding:2px;display:flex;align-items:center;justify-content:center;transition:border-color .2s;}
+.onyx .swatch:hover{border-color:#d9d9de;}
+.onyx .swatch.is-active{border:2px solid transparent;background:linear-gradient(#f1f1f3,#f1f1f3) padding-box,var(--sunrise) border-box;}
+.onyx .swatch img{width:100%;height:100%;object-fit:contain;border-radius:.35rem;}
+.onyx .swatch .sw-txt{font-size:.58rem;font-weight:600;line-height:1.1;text-align:center;padding:0 .1rem;}
+.onyx .swatch[disabled]{opacity:.35;cursor:not-allowed;}
+@media(max-width:480px){
+  .onyx .qty-head{gap:.6rem;padding:.8rem .75rem;}
+  .onyx .qty-img{width:2.9rem;height:2.9rem;}
+  .onyx .qty-label{font-size:.95rem;}
+  .onyx .color-row{padding:.6rem .75rem;}
+  .onyx .swatch{width:2.4rem;height:2.4rem;}
+  .onyx .cr-label{font-size:.8rem;}
+}
 
 .onyx .atc{width:100%;height:3.5rem;font-size:1.125rem;}
 .onyx .atc-error{color:#dc2626;font-size:.875rem;margin-top:.5rem;}
@@ -591,39 +616,68 @@
           <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
           <input type="hidden" name="quantity" value="{{ start_qty }}" data-qty-input>
 
-          {%- if section.settings.show_variant_picker and p.has_only_default_variant == false -%}
-            <div style="margin-bottom:1.5rem">
-              <p class="label-sm">{{ section.settings.variant_label }}</p>
-              <select class="variant-select" data-variant-select aria-label="{{ section.settings.variant_label | escape }}">
-                {%- for v in p.variants -%}
-                  <option value="{{ v.id }}"{% if v.id == current_variant.id %} selected{% endif %}{% unless v.available or section.settings.ignore_stock %} disabled{% endunless %}>
-                    {{ v.title }}{% unless v.available or section.settings.ignore_stock %} — {{ section.settings.sold_out_text }}{% endunless %}
-                  </option>
-                {%- endfor -%}
-              </select>
-            </div>
-          {%- endif -%}
-
+          {%- liquid
+            assign show_colors = false
+            if section.settings.show_variant_picker and p.has_only_default_variant == false
+              assign show_colors = true
+            endif
+          -%}
           {%- if quantity_blocks.size > 0 -%}
             <div style="margin-bottom:1.5rem">
               {%- if section.settings.qty_heading != blank -%}
                 <p class="label-sm">{{ section.settings.qty_heading }}</p>
               {%- endif -%}
-              {%- assign cols = quantity_blocks.size -%}
-              {%- if cols > 3 -%}{%- assign cols = 3 -%}{%- endif -%}
-              <div class="qty-grid bg-secondary" style="--cols:{{ cols }}" role="radiogroup" aria-label="{{ section.settings.qty_heading | escape }}">
+              <div class="qty-list bg-secondary" role="radiogroup" aria-label="{{ section.settings.qty_heading | escape }}">
                 {%- for block in quantity_blocks -%}
-                  <button type="button" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" class="qty-opt{% if forloop.first %} is-selected{% endif %}" data-qty="{{ block.settings.qty }}" data-discount="{{ block.settings.discount }}"
-                    {%- assign block_compare = 0 -%}
-                    {%- if block.settings.compare_price != blank -%}
-                      {%- assign block_compare = block.settings.compare_price | remove: '€' | remove: '$' | strip | replace: ',', '.' | times: 100 | round -%}
-                    {%- endif %}
-                    data-compare="{{ block_compare }}" {{ block.shopify_attributes }}>
-                    {%- if block.settings.badge != blank -%}<span class="qty-badge">{{ block.settings.badge }}</span>{%- endif -%}
-                    <span class="qty-radio"></span>
-                    <span class="qty-label">{{ block.settings.label }}</span>
-                    {%- if block.settings.subtitle != blank -%}<span class="qty-sub">{{ block.settings.subtitle }}</span>{%- endif -%}
-                  </button>
+                  {%- liquid
+                    assign block_compare = 0
+                    if block.settings.compare_price != blank
+                      assign block_compare = block.settings.compare_price | remove: '€' | remove: '$' | strip | replace: ',', '.' | times: 100 | round
+                    endif
+                    assign opt_left = 100 | minus: block.settings.discount
+                    assign opt_unit = current_variant.price | times: opt_left | divided_by: 100.0 | round
+                    assign opt_compare = base_compare
+                    if block_compare > 0
+                      assign opt_compare = block_compare
+                    endif
+                  -%}
+                  <div class="qty-opt qty-card{% if forloop.first %} is-selected{% endif %}" data-qty="{{ block.settings.qty }}" data-discount="{{ block.settings.discount }}" data-compare="{{ block_compare }}" {{ block.shopify_attributes }}>
+                    <div class="qty-head" role="radio" tabindex="0" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}">
+                      <span class="qty-radio"></span>
+                      {%- if block.settings.image != blank -%}
+                        <span class="qty-img">{{ block.settings.image | image_url: width: 160 | image_tag: loading: 'lazy', alt: block.settings.label }}</span>
+                      {%- endif -%}
+                      <span class="qty-info">
+                        <span class="qty-label">{{ block.settings.label }}</span>
+                        {%- if block.settings.badge != blank -%}<span class="qty-save">{{ block.settings.badge }}</span>{%- endif -%}
+                        {%- if block.settings.subtitle != blank -%}<span class="qty-sub">{{ block.settings.subtitle }}</span>{%- endif -%}
+                      </span>
+                      <span class="qty-prices">
+                        <span class="qp-now" data-opt-price>{{ opt_unit | money }}</span>
+                        <span class="qp-old" data-opt-compare{% unless opt_compare > opt_unit %} hidden{% endunless %}>{{ opt_compare | money }}</span>
+                      </span>
+                    </div>
+                    {%- if show_colors -%}
+                      <div class="qty-colors">
+                        {%- for n in (1..block.settings.qty) -%}
+                          <div class="color-row" data-color-row>
+                            <span class="cr-label">{{ section.settings.variant_label }} {{ n }}</span>
+                            <div class="swatches">
+                              {%- for v in p.variants -%}
+                                <button type="button" class="swatch{% if v.id == current_variant.id %} is-active{% endif %}" data-variant="{{ v.id }}" title="{{ v.title | escape }}" aria-label="{{ v.title | escape }}"{% unless v.available or section.settings.ignore_stock %} disabled{% endunless %}>
+                                  {%- if v.featured_image -%}
+                                    {{ v.featured_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: v.title }}
+                                  {%- else -%}
+                                    <span class="sw-txt">{{ v.title | truncate: 12 }}</span>
+                                  {%- endif -%}
+                                </button>
+                              {%- endfor -%}
+                            </div>
+                          </div>
+                        {%- endfor -%}
+                      </div>
+                    {%- endif -%}
+                  </div>
                 {%- endfor -%}
               </div>
             </div>
@@ -1089,17 +1143,39 @@
 
       // Selector de cantidad: se engancha lo primero y con delegación,
       // para que funcione aunque otra parte del script o del tema falle.
-      root.addEventListener('click', function (e) {
-        var b = e.target.closest ? e.target.closest('.qty-opt') : null;
-        if (!b || !root.contains(b)) return;
-        e.preventDefault();
+      function selectOption(b) {
         root.querySelectorAll('.qty-opt').forEach(function (o) {
-          o.classList.remove('is-selected'); o.setAttribute('aria-checked', 'false');
+          o.classList.remove('is-selected');
+          var h = o.querySelector('[role="radio"]'); if (h) h.setAttribute('aria-checked', 'false');
         });
-        b.classList.add('is-selected'); b.setAttribute('aria-checked', 'true');
+        b.classList.add('is-selected');
+        var head = b.querySelector('[role="radio"]'); if (head) head.setAttribute('aria-checked', 'true');
         self.qty = +b.dataset.qty || 1;
         self.discount = +b.dataset.discount || 0;
+      }
+      root.addEventListener('click', function (e) {
+        if (!e.target.closest) return;
+        var b = e.target.closest('.qty-opt');
+        if (!b || !root.contains(b)) return;
+        var sw = e.target.closest('.swatch');
+        if (sw && sw.disabled) return;
+        e.preventDefault();
+        if (!b.classList.contains('is-selected')) selectOption(b);
+        if (sw) {
+          var row = sw.closest('[data-color-row]');
+          row.querySelectorAll('.swatch').forEach(function (x) { x.classList.remove('is-active'); });
+          sw.classList.add('is-active');
+          self.pickVariant(+sw.dataset.variant, true);
+        } else {
+          self.syncVariantFromCard();
+        }
         try { self.update(); } catch (err) { console.error('[Onyx]', err); }
+      });
+      root.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        var h = e.target.closest && e.target.closest('.qty-head');
+        if (!h) return;
+        e.preventDefault(); h.click();
       });
 
       this.product = null;
@@ -1129,6 +1205,37 @@
 
     OnyxProduct.prototype.canBuy = function (v) {
       return !!v && (v.available || this.root.dataset.ignoreStock === 'true');
+    };
+
+    // Variante activa = la elegida en la primera fila de color de la opción seleccionada
+    OnyxProduct.prototype.pickVariant = function (id, showImage) {
+      if (!this.product || !this.product.variants) return;
+      var v = this.product.variants.find(function (x) { return x.id === id; });
+      if (!v) return;
+      this.variant = v;
+      if (showImage && v.featured_media) {
+        var img = this.root.querySelector('[data-media-id="' + v.featured_media.id + '"]');
+        if (img) this.showMedia(+img.dataset.mediaIndex);
+      }
+    };
+    OnyxProduct.prototype.syncVariantFromCard = function () {
+      var card = this.root.querySelector('.qty-opt.is-selected');
+      var sw = card && card.querySelector('[data-color-row] .swatch.is-active');
+      if (sw) this.pickVariant(+sw.dataset.variant, false);
+    };
+    OnyxProduct.prototype.cartItems = function () {
+      var card = this.root.querySelector('.qty-opt.is-selected');
+      var rows = card ? card.querySelectorAll('[data-color-row]') : [];
+      if (!rows.length) return [{ id: this.variant.id, quantity: this.qty }];
+      var counts = {}, order = [];
+      rows.forEach(function (row) {
+        var sw = row.querySelector('.swatch.is-active') || row.querySelector('.swatch:not([disabled])');
+        if (!sw) return;
+        var id = +sw.dataset.variant;
+        if (!counts[id]) { counts[id] = 0; order.push(id); }
+        counts[id]++;
+      });
+      return order.map(function (id) { return { id: id, quantity: counts[id] }; });
     };
 
     OnyxProduct.prototype.$ = function (sel) { return this.root.querySelector(sel); };
@@ -1232,6 +1339,14 @@
           el.hidden = !!hide;
         });
       }
+      root.querySelectorAll('.qty-opt').forEach(function (o) {
+        var d = +o.dataset.discount || 0;
+        var u = Math.round(v.price * (100 - d) / 100);
+        var c = (+o.dataset.compare || 0) > 0 ? +o.dataset.compare : base;
+        var pn = o.querySelector('[data-opt-price]'); if (pn) pn.textContent = formatMoney(u, fmt);
+        var pc = o.querySelector('[data-opt-compare]');
+        if (pc) { pc.textContent = formatMoney(c, fmt); pc.hidden = !(c > u); }
+      });
       set('[data-price-now]', formatMoney(unit, fmt));
       set('[data-sticky-price]', formatMoney(unit, fmt));
       set('[data-offer-price]', formatMoney(unit, fmt));
@@ -1271,7 +1386,7 @@
       fetch(root.dataset.cartAddUrl + '.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ items: [{ id: v.id, quantity: self.qty }] })
+        body: JSON.stringify({ items: self.cartItems() })
       })
         .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
         .then(function (res) {
@@ -1470,14 +1585,16 @@
     {
       "type": "checkbox",
       "id": "show_variant_picker",
-      "label": "Mostrar selector de variantes",
-      "default": true
+      "label": "Mostrar selector de color en cada unidad",
+      "default": true,
+      "info": "Solo aparece si el producto tiene variantes (colores). Las fotos salen de la imagen de cada variante."
     },
     {
       "type": "text",
       "id": "variant_label",
-      "label": "Texto del selector de variantes",
-      "default": "Elige tu opción"
+      "label": "Texto de cada fila de color",
+      "default": "Choose Color",
+      "info": "Se añade el número: Choose Color 1, Choose Color 2…"
     },
     {
       "type": "text",
@@ -2027,6 +2144,12 @@
           "default": "1 Alarma"
         },
         {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Foto de la opción",
+          "info": "Ej: 1, 2 o 3 pulseras. Mejor PNG sin fondo."
+        },
+        {
           "type": "text",
           "id": "subtitle",
           "label": "Subtexto (opcional)"
@@ -2034,8 +2157,8 @@
         {
           "type": "text",
           "id": "badge",
-          "label": "Etiqueta superior",
-          "info": "Ej: AHORRA 10%"
+          "label": "Etiqueta de ahorro (degradado)",
+          "info": "Ej: Save 10%"
         },
         {
           "type": "range",
