@@ -1,0 +1,215 @@
+{%- comment -%}
+  WAKE FOOTER — estructura como la competencia, con la estética de la tienda.
+  · Izquierda: logo, frase grande y email de soporte
+  · Derecha: 3 columnas de enlaces (bloques "Enlace", se elige la columna en cada uno)
+  · Abajo: iconos de pago automáticos y copyright
+{%- endcomment -%}
+
+{%- style -%}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  #wf-{{ section.id }} {
+    --wf-bg: {{ section.settings.bg }};
+    --wf-text: {{ section.settings.text }};
+    --wf-muted: {{ section.settings.muted }};
+    --wf-line: {{ section.settings.line }};
+    --wf-sun: linear-gradient(135deg, {{ section.settings.sun_1 }} 0%, {{ section.settings.sun_2 }} 50%, {{ section.settings.sun_3 }} 100%);
+    background: var(--wf-bg);
+    color: var(--wf-text);
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  #wf-{{ section.id }} * { box-sizing: border-box; }
+  #wf-{{ section.id }} a { color: inherit; text-decoration: none; }
+  #wf-{{ section.id }} .wf-wrap { max-width: 1344px; margin: 0 auto; padding: 72px 24px 32px; }
+
+  #wf-{{ section.id }} .wf-top { display: grid; grid-template-columns: 1fr; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid var(--wf-line); }
+  @media (min-width: 990px) { #wf-{{ section.id }} .wf-top { grid-template-columns: 5fr 7fr; gap: 64px; } }
+
+  /* Marca */
+  #wf-{{ section.id }} .wf-logo { display: inline-block; line-height: 0; }
+  #wf-{{ section.id }} .wf-logo img { width: {{ section.settings.logo_width }}px; height: auto; display: block; }
+  #wf-{{ section.id }} .wf-logo-text { font-size: 40px; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+  #wf-{{ section.id }} .wf-logo-text span { background-image: var(--wf-sun); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #wf-{{ section.id }} .wf-tagline {
+    margin: 36px 0 0; font-size: 40px; line-height: 1.12; font-weight: 700; letter-spacing: -.035em; max-width: 12em;
+  }
+  #wf-{{ section.id }} .wf-tagline em { font-style: normal; background-image: var(--wf-sun); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #wf-{{ section.id }} .wf-support { margin-top: 40px; font-size: 15px; font-weight: 600; color: var(--wf-text); }
+  #wf-{{ section.id }} .wf-support p { margin: 0; }
+  #wf-{{ section.id }} .wf-support a { display: inline-block; margin-top: 2px; }
+  #wf-{{ section.id }} .wf-support a:hover { text-decoration: underline; }
+
+  /* Columnas */
+  #wf-{{ section.id }} .wf-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; padding-top: 8px; }
+  #wf-{{ section.id }} .wf-col h4 {
+    margin: 0 0 28px; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--wf-muted);
+  }
+  #wf-{{ section.id }} .wf-col h4 .wf-num { background-image: var(--wf-sun); -webkit-background-clip: text; background-clip: text; color: transparent; margin-right: 4px; }
+  #wf-{{ section.id }} .wf-col ul { list-style: none; margin: 0; padding: 0; }
+  #wf-{{ section.id }} .wf-col li + li { margin-top: 14px; }
+  #wf-{{ section.id }} .wf-col a { font-size: 15px; font-weight: 600; position: relative; transition: opacity .2s; }
+  #wf-{{ section.id }} .wf-col a::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 2px; border-radius: 2px;
+    background-image: var(--wf-sun); transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
+  }
+  #wf-{{ section.id }} .wf-col a:hover::after { transform: scaleX(1); }
+
+  /* Parte de abajo */
+  #wf-{{ section.id }} .wf-pay { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; padding: 24px 0; border-bottom: 1px solid var(--wf-line); }
+  #wf-{{ section.id }} .wf-pay svg { width: 38px; height: 24px; display: block; }
+  #wf-{{ section.id }} .wf-copy { padding-top: 22px; font-size: 13px; font-weight: 600; color: var(--wf-muted); }
+
+  @media (max-width: 749px) {
+    #wf-{{ section.id }} .wf-wrap { padding: 56px 20px 28px; }
+    #wf-{{ section.id }} .wf-tagline { font-size: 32px; margin-top: 28px; }
+    #wf-{{ section.id }} .wf-cols { grid-template-columns: 1fr 1fr; row-gap: 40px; }
+    #wf-{{ section.id }} .wf-col h4 { margin-bottom: 18px; }
+    #wf-{{ section.id }} .wf-pay { justify-content: flex-start; }
+  }
+{%- endstyle -%}
+
+<footer id="wf-{{ section.id }}" class="wf">
+  <div class="wf-wrap">
+    <div class="wf-top">
+
+      {%- comment -%} Marca {%- endcomment -%}
+      <div class="wf-brand">
+        <a href="{{ routes.root_url }}" class="wf-logo" aria-label="{{ shop.name | escape }}">
+          {%- if section.settings.logo != blank -%}
+            {{ section.settings.logo | image_url: width: 600 | image_tag: loading: 'lazy', alt: shop.name }}
+          {%- else -%}
+            <span class="wf-logo-text">{{ shop.name | downcase }}<span>.</span></span>
+          {%- endif -%}
+        </a>
+
+        {%- if section.settings.tagline != blank -%}
+          <p class="wf-tagline">
+            {{ section.settings.tagline }}
+            {%- if section.settings.tagline_highlight != blank %} <em>{{ section.settings.tagline_highlight }}</em>{%- endif -%}
+          </p>
+        {%- endif -%}
+
+        {%- if section.settings.support_email != blank -%}
+          <div class="wf-support">
+            {%- if section.settings.support_label != blank -%}<p>{{ section.settings.support_label }}</p>{%- endif -%}
+            <a href="mailto:{{ section.settings.support_email }}">{{ section.settings.support_email }}</a>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Columnas de enlaces {%- endcomment -%}
+      <div class="wf-cols">
+        {%- for c in (1..3) -%}
+          {%- assign head_key = 'col_' | append: c | append: '_title' -%}
+          {%- assign col_str = c | append: '' -%}
+          <div class="wf-col">
+            {%- if section.settings[head_key] != blank -%}
+              <h4><span class="wf-num">[0{{ c }}]</span>{{ section.settings[head_key] }}</h4>
+            {%- endif -%}
+            <ul>
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'link' and block.settings.column == col_str -%}
+                  <li {{ block.shopify_attributes }}>
+                    <a href="{{ block.settings.url | default: '#' }}">{{ block.settings.label }}</a>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- if section.settings.show_payment -%}
+      <div class="wf-pay" aria-label="Métodos de pago">
+        {%- for type in shop.enabled_payment_types -%}
+          {{ type | payment_type_svg_tag }}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.copyright != blank -%}
+      {%- assign year = 'now' | date: '%Y' -%}
+      <p class="wf-copy">{{ section.settings.copyright | replace: '[year]', year }}</p>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Wake footer",
+  "tag": "div",
+  "class": "wake-footer-section",
+  "settings": [
+    { "type": "header", "content": "Marca" },
+    { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Usa la versión en blanco (PNG sin fondo) para que se vea sobre el negro." },
+    { "type": "range", "id": "logo_width", "label": "Ancho del logo", "min": 60, "max": 300, "step": 5, "unit": "px", "default": 150 },
+    { "type": "textarea", "id": "tagline", "label": "Frase grande", "default": "Wake up gently," },
+    { "type": "text", "id": "tagline_highlight", "label": "Frase grande: parte en degradado (opcional)", "default": "own every morning." },
+    { "type": "text", "id": "support_label", "label": "Texto encima del email", "default": "Our only support e-mail is:" },
+    { "type": "text", "id": "support_email", "label": "Email de soporte", "default": "wakemute@gmail.com" },
+
+    { "type": "header", "content": "Títulos de las columnas" },
+    { "type": "text", "id": "col_1_title", "label": "Columna 1", "default": "Shop" },
+    { "type": "text", "id": "col_2_title", "label": "Columna 2", "default": "Important links" },
+    { "type": "text", "id": "col_3_title", "label": "Columna 3", "default": "Legal pages" },
+    { "type": "paragraph", "content": "Los enlaces de cada columna se añaden como bloques \"Enlace\" (debajo de la sección)." },
+
+    { "type": "header", "content": "Parte de abajo" },
+    { "type": "checkbox", "id": "show_payment", "label": "Mostrar iconos de métodos de pago", "default": true, "info": "Salen solos según los pagos activados en tu tienda." },
+    { "type": "text", "id": "copyright", "label": "Copyright", "default": "© [year], WAKEMUTE", "info": "[year] = año actual" },
+
+    { "type": "header", "content": "Colores" },
+    { "type": "color", "id": "bg", "label": "Fondo", "default": "#0A0A0C" },
+    { "type": "color", "id": "text", "label": "Texto y enlaces", "default": "#FFFFFF" },
+    { "type": "color", "id": "muted", "label": "Títulos de columna y copyright", "default": "#9CA3AF" },
+    { "type": "color", "id": "line", "label": "Líneas separadoras", "default": "#26262B" },
+    { "type": "color", "id": "sun_1", "label": "Degradado 1", "default": "#FFD93D" },
+    { "type": "color", "id": "sun_2", "label": "Degradado 2", "default": "#FF9F1C" },
+    { "type": "color", "id": "sun_3", "label": "Degradado 3", "default": "#FF5E3A" }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Enlace",
+      "settings": [
+        {
+          "type": "select", "id": "column", "label": "Columna", "default": "1",
+          "options": [
+            { "value": "1", "label": "Columna 1" },
+            { "value": "2", "label": "Columna 2" },
+            { "value": "3", "label": "Columna 3" }
+          ]
+        },
+        { "type": "text", "id": "label", "label": "Texto", "default": "Enlace" },
+        { "type": "text", "id": "url", "label": "Enlace (URL)", "info": "Ej: /products/vyra-vibrating-alarm, /pages/our-story, /policies/privacy-policy" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wake footer",
+      "blocks": [
+        { "type": "link", "settings": { "column": "1", "label": "Vyra Vibrating Alarm", "url": "/products/vyra-vibrating-alarm" } },
+
+        { "type": "link", "settings": { "column": "2", "label": "Track Your Order", "url": "/pages/track-your-order" } },
+        { "type": "link", "settings": { "column": "2", "label": "Our Story", "url": "/pages/our-story" } },
+        { "type": "link", "settings": { "column": "2", "label": "Search", "url": "/search" } },
+        { "type": "link", "settings": { "column": "2", "label": "Terms of Service", "url": "/policies/terms-of-service" } },
+        { "type": "link", "settings": { "column": "2", "label": "Store Locator", "url": "/pages/store-locator" } },
+
+        { "type": "link", "settings": { "column": "3", "label": "Your Privacy Choices", "url": "/pages/data-sharing-opt-out" } },
+        { "type": "link", "settings": { "column": "3", "label": "Terms of Service", "url": "/policies/terms-of-service" } },
+        { "type": "link", "settings": { "column": "3", "label": "Shipping Policy", "url": "/policies/shipping-policy" } },
+        { "type": "link", "settings": { "column": "3", "label": "Privacy Policy", "url": "/policies/privacy-policy" } },
+        { "type": "link", "settings": { "column": "3", "label": "Order Cancellation Policy", "url": "/pages/order-cancellation-policy" } },
+        { "type": "link", "settings": { "column": "3", "label": "Return & Refund Policy", "url": "/policies/refund-policy" } },
+        { "type": "link", "settings": { "column": "3", "label": "Subscription Policy", "url": "/policies/subscription-policy" } }
+      ]
+    }
+  ],
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

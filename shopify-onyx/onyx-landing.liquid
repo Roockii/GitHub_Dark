@@ -361,22 +361,6 @@
 .onyx .more-wrap{text-align:center;margin-top:calc(2*var(--r,16px));}
 .onyx .btn-outline{display:inline-block;padding:calc(.75*var(--r,16px)) calc(2*var(--r,16px));border-radius:999px;font-weight:600;transition:box-shadow .3s;}
 
-/* =========================================================
-   FOOTER
-   ========================================================= */
-.onyx .onyx-footer{background:var(--ink);color:#fff;padding-top:calc(5*var(--r,16px));padding-bottom:calc(7*var(--r,16px));}
-.onyx .foot-top{display:grid;gap:calc(3*var(--r,16px));padding-bottom:calc(3*var(--r,16px));border-bottom:1px solid rgba(255,255,255,.1);}
-@media(min-width:768px){.onyx .foot-top{grid-template-columns:1fr 1fr;}}
-.onyx .foot-logo{font-size:calc(2.25*var(--r,16px));font-weight:700;}
-.onyx .foot-logo img{max-height:calc(3*var(--r,16px));width:auto;}
-.onyx .foot-desc{color:rgba(255,255,255,.6);margin-top:calc(1*var(--r,16px));max-width:calc(24*var(--r,16px));}
-.onyx .foot-nav{display:grid;grid-template-columns:1fr 1fr;gap:calc(.75*var(--r,16px));align-content:start;}
-.onyx .foot-nav a{color:rgba(255,255,255,.7);transition:color .2s;}
-.onyx .foot-nav a:hover{color:#fff;}
-.onyx .foot-bottom{display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:calc(1*var(--r,16px));padding-top:calc(2*var(--r,16px));font-size:calc(.875*var(--r,16px));color:rgba(255,255,255,.5);}
-@media(min-width:768px){.onyx .foot-bottom{flex-direction:row;}}
-.onyx .socials{display:flex;gap:calc(1*var(--r,16px));}
-.onyx .socials a:hover{color:#fff;}
 
 /* ---------- Comparativa v2 (columnas con foto) ---------- */
 .onyx .cmp2{max-width:calc(64*var(--r,16px));margin:0 auto;background:var(--cmp-bg);border-radius:calc(1.5*var(--r,16px));padding:calc(.75*var(--r,16px));border:1px solid #ececef;box-shadow:0 20px 50px -30px rgba(10,10,12,.25);}
@@ -443,8 +427,6 @@
   assign compare_blocks = section.blocks | where: 'type', 'compare_row'
   assign expert_blocks = section.blocks | where: 'type', 'expert'
   assign review_blocks = section.blocks | where: 'type', 'review'
-  assign link_blocks = section.blocks | where: 'type', 'footer_link'
-  assign social_blocks = section.blocks | where: 'type', 'social'
 
   assign first_qty_block = quantity_blocks | first
   assign start_qty = 1
@@ -1066,38 +1048,6 @@
         </div>
       {%- endif -%}
     </section>
-  {%- endif -%}
-
-  {%- comment -%} ================= 8. PIE DE PÁGINA ================= {%- endcomment -%}
-  {%- if section.settings.show_footer -%}
-    <footer class="onyx-footer onyx-wrap" style="background:{{ section.settings.footer_bg }};color:{{ section.settings.footer_text }};">
-      <div class="foot-top">
-        <div>
-          <p class="foot-logo onyx-display">
-            {%- if section.settings.footer_logo != blank -%}
-              {{ section.settings.footer_logo | image_url: width: 400 | image_tag: loading: 'lazy', alt: shop.name }}
-            {%- else -%}
-              {{ section.settings.footer_logo_text }}<span class="text-sunrise">{{ section.settings.footer_logo_accent }}</span>
-            {%- endif -%}
-          </p>
-          {%- if section.settings.footer_desc != blank -%}<div class="foot-desc">{{ section.settings.footer_desc }}</div>{%- endif -%}
-        </div>
-        <nav class="foot-nav" aria-label="Pie de página">
-          {%- for block in link_blocks -%}
-            <a href="{{ block.settings.url }}" {{ block.shopify_attributes }}>{{ block.settings.label }}</a>
-          {%- endfor -%}
-        </nav>
-      </div>
-      <div class="foot-bottom">
-        {%- assign year = 'now' | date: '%Y' -%}
-        <p>{{ section.settings.footer_copyright | replace: '[year]', year }}</p>
-        <div class="socials">
-          {%- for block in social_blocks -%}
-            <a href="{{ block.settings.url }}" target="_blank" rel="noopener" {{ block.shopify_attributes }}>{{ block.settings.label }}</a>
-          {%- endfor -%}
-        </div>
-      </div>
-    </footer>
   {%- endif -%}
 
   {%- comment -%} ================= BARRA FIJA + AVISO ================= {%- endcomment -%}
@@ -2168,59 +2118,6 @@
       "id": "reviews_more",
       "label": "Texto del botón 'ver más'",
       "default": "Ver más reseñas"
-    },
-    {
-      "type": "header",
-      "content": "8 · Pie de página"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_footer",
-      "label": "Mostrar",
-      "default": true,
-      "info": "Desactívalo si tu tema ya tiene su propio pie de página."
-    },
-    {
-      "type": "image_picker",
-      "id": "footer_logo",
-      "label": "Logo (imagen)"
-    },
-    {
-      "type": "text",
-      "id": "footer_logo_text",
-      "label": "Logo (texto si no hay imagen)",
-      "default": "onyx"
-    },
-    {
-      "type": "text",
-      "id": "footer_logo_accent",
-      "label": "Logo: acento en degradado",
-      "default": "."
-    },
-    {
-      "type": "richtext",
-      "id": "footer_desc",
-      "label": "Descripción",
-      "default": "<p>La alarma de pulsera silenciosa para despertar con calma, energía y sin molestar a nadie.</p>"
-    },
-    {
-      "type": "text",
-      "id": "footer_copyright",
-      "label": "Copyright",
-      "default": "© [year] Onyx Sleep. Todos los derechos reservados.",
-      "info": "[year] = año actual"
-    },
-    {
-      "type": "color",
-      "id": "footer_bg",
-      "label": "Fondo",
-      "default": "#0A0A0C"
-    },
-    {
-      "type": "color",
-      "id": "footer_text",
-      "label": "Texto",
-      "default": "#FFFFFF"
     }
   ],
   "blocks": [
@@ -2496,7 +2393,7 @@
     },
     {
       "type": "footer_link",
-      "name": "8 · Enlace pie",
+      "name": "Sin uso · puedes borrarlo",
       "settings": [
         {
           "type": "text",
@@ -2513,7 +2410,7 @@
     },
     {
       "type": "social",
-      "name": "8 · Red social",
+      "name": "Sin uso · red social (borrar)",
       "settings": [
         {
           "type": "text",
@@ -2828,52 +2725,6 @@
             "name": "Milan W.",
             "title": "Muy útil",
             "text": "<p>Me ha ayudado mucho por las mañanas. Muy recomendable si te cuesta salir de la cama.</p>"
-          }
-        },
-        {
-          "type": "footer_link",
-          "settings": {
-            "label": "Producto",
-            "url": "#top"
-          }
-        },
-        {
-          "type": "footer_link",
-          "settings": {
-            "label": "Reseñas",
-            "url": "#reviews"
-          }
-        },
-        {
-          "type": "footer_link",
-          "settings": {
-            "label": "Preguntas frecuentes",
-            "url": "#faq"
-          }
-        },
-        {
-          "type": "footer_link",
-          "settings": {
-            "label": "Contacto",
-            "url": "mailto:hola@onyxsleep.com"
-          }
-        },
-        {
-          "type": "social",
-          "settings": {
-            "label": "IG"
-          }
-        },
-        {
-          "type": "social",
-          "settings": {
-            "label": "YT"
-          }
-        },
-        {
-          "type": "social",
-          "settings": {
-            "label": "✉"
           }
         }
       ]
