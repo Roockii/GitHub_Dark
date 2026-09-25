@@ -1,0 +1,275 @@
+{%- comment -%}
+  WAKE FEATURED PRODUCT — tarjeta de producto destacado (imagen + etiqueta a la izquierda,
+  nombre, precio y botón a la derecha). El botón lleva a la página del producto.
+{%- endcomment -%}
+
+{%- liquid
+  assign p = section.settings.product
+  if p != blank
+    assign v = p.selected_or_first_available_variant
+    assign compare = nil
+    if section.settings.compare_price != blank
+      assign compare = section.settings.compare_price | remove: '€' | remove: '$' | strip | replace: ',', '.' | times: 100 | round
+    elsif v.compare_at_price > v.price
+      assign compare = v.compare_at_price
+    endif
+    if compare and compare <= v.price
+      assign compare = nil
+    endif
+  endif
+-%}
+
+{%- style -%}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  #wfp-{{ section.id }} {
+    --wfp-sun: linear-gradient(135deg, {{ section.settings.sun_1 }} 0%, {{ section.settings.sun_2 }} 50%, {{ section.settings.sun_3 }} 100%);
+    background: {{ section.settings.bg }}; color: {{ section.settings.text_color }};
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 16px; line-height: 1.4;
+    padding: {{ section.settings.pad_top }}px 20px {{ section.settings.pad_bottom }}px;
+    -webkit-font-smoothing: antialiased;
+  }
+  #wfp-{{ section.id }} * { box-sizing: border-box; }
+  #wfp-{{ section.id }} .wfp-box {
+    max-width: 1120px; margin: 0 auto; padding: 12px; border-radius: 22px; background: {{ section.settings.box_bg }};
+    display: grid; grid-template-columns: 1fr; gap: 12px;
+  }
+  @media (min-width: 900px) { #wfp-{{ section.id }} .wfp-box { grid-template-columns: 1fr 1fr; } }
+  #wfp-{{ section.id }} .wfp-media { position: relative; border-radius: 16px; overflow: hidden; background: {{ section.settings.media_bg }}; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; }
+  #wfp-{{ section.id }} .wfp-media img { width: 100%; height: 100%; object-fit: {{ section.settings.image_fit }}; display: block; }
+  #wfp-{{ section.id }} .wfp-badge {
+    position: absolute; top: 14px; left: 14px; z-index: 1; padding: 5px 11px; border-radius: 999px;
+    background-image: var(--wfp-sun); color: {{ section.settings.button_text_dark }}; font-size: 12px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase;
+  }
+  #wfp-{{ section.id }} .wfp-info { border-radius: 16px; background: {{ section.settings.info_bg }}; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
+  #wfp-{{ section.id }} .wfp-title { margin: 0; font-size: clamp(28px, 3vw, 40px); font-weight: 700; letter-spacing: -.04em; line-height: 1.1; }
+  #wfp-{{ section.id }} .wfp-text { margin-top: 10px; color: #6b7280; font-size: 16px; }
+  #wfp-{{ section.id }} .wfp-price { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+  #wfp-{{ section.id }} .wfp-now { font-size: 28px; font-weight: 700; letter-spacing: -.03em; }
+  #wfp-{{ section.id }} .wfp-old { font-size: 26px; color: #9ca3af; text-decoration: line-through; letter-spacing: -.03em; }
+  #wfp-{{ section.id }} .wfp-off { padding: 4px 9px; border-radius: 5px; font-size: 13px; font-weight: 800; background-image: var(--wfp-sun); color: {{ section.settings.button_text_dark }}; }
+  #wfp-{{ section.id }} .wfp-btn {
+    display: flex; align-items: center; justify-content: center; margin-top: 24px; height: 56px; border-radius: 999px;
+    background: {{ section.settings.button_bg }}; color: {{ section.settings.button_text }}; font-size: 19px; font-weight: 700; text-decoration: none;
+    position: relative; overflow: hidden; transition: color .35s ease;
+  }
+  #wfp-{{ section.id }} .wfp-btn::before { content: ""; position: absolute; inset: 0; background-image: var(--wfp-sun); opacity: 0; transition: opacity .35s ease; }
+  #wfp-{{ section.id }} .wfp-btn span { position: relative; }
+  #wfp-{{ section.id }} .wfp-btn:hover { color: {{ section.settings.button_text_dark }}; }
+  #wfp-{{ section.id }} .wfp-btn:hover::before { opacity: 1; }
+  @media (max-width: 749px) {
+    #wfp-{{ section.id }} .wfp-info { padding: 28px 20px; }
+  }
+{%- endstyle -%}
+
+<section id="wfp-{{ section.id }}" class="wfp">
+  <div class="wfp-box">
+    <a class="wfp-media" href="{% if p != blank %}{{ p.url }}{% else %}#{% endif %}">
+      {%- if section.settings.badge != blank -%}<span class="wfp-badge">{{ section.settings.badge }}</span>{%- endif -%}
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 900px) 540px, 100vw', alt: section.settings.image.alt }}
+      {%- elsif p != blank and p.featured_media -%}
+        {{ p.featured_media.preview_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 900px) 540px, 100vw', alt: p.title }}
+      {%- endif -%}
+    </a>
+
+    <div class="wfp-info">
+      <h2 class="wfp-title">{{ section.settings.title | default: p.title | default: 'Tu producto' }}</h2>
+      {%- if section.settings.text != blank -%}<div class="wfp-text">{{ section.settings.text }}</div>{%- endif -%}
+
+      {%- if p != blank -%}
+        <div class="wfp-price">
+          <span class="wfp-now">{{ v.price | money }}</span>
+          {%- if compare -%}
+            <span class="wfp-old">{{ compare | money }}</span>
+            {%- if section.settings.show_pct -%}
+              {%- assign pct = v.price | times: 100.0 | divided_by: compare | round -%}
+              {%- assign pct = 100 | minus: pct -%}
+              <span class="wfp-off">{{ pct }}{{ section.settings.pct_suffix }}</span>
+            {%- endif -%}
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank -%}
+        <a class="wfp-btn" href="{% if p != blank %}{{ p.url }}{% else %}#{% endif %}"><span>{{ section.settings.button_label }}</span></a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Wake producto destacado",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Producto",
+      "info": "El precio sale de aquí y el botón lleva a este producto."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Imagen (opcional)",
+      "info": "Vacío = la foto principal del producto."
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Ajuste de la imagen",
+      "default": "cover",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Rellenar el recuadro"
+        },
+        {
+          "value": "contain",
+          "label": "Mostrar entera"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Etiqueta",
+      "default": "NEW"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "info": "Vacío = nombre del producto."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texto bajo el título (opcional)"
+    },
+    {
+      "type": "text",
+      "id": "compare_price",
+      "label": "Precio tachado (opcional)",
+      "info": "Ej: 79,95. Vacío = el 'Precio de comparación' del producto."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pct",
+      "label": "Mostrar % de descuento",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "pct_suffix",
+      "label": "Texto tras el %",
+      "default": "% OFF"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Texto del botón",
+      "default": "Shop now"
+    },
+    {
+      "type": "header",
+      "content": "Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "pad_top",
+      "label": "Margen arriba",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "pad_bottom",
+      "label": "Margen abajo",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Fondo de la sección",
+      "default": "#F8F8F9"
+    },
+    {
+      "type": "color",
+      "id": "box_bg",
+      "label": "Fondo de la tarjeta",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "media_bg",
+      "label": "Fondo de la imagen",
+      "default": "#F1F1F3"
+    },
+    {
+      "type": "color",
+      "id": "info_bg",
+      "label": "Fondo de la parte derecha",
+      "default": "#F8F8F9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Texto",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Botón: fondo",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Botón: texto",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_text_dark",
+      "label": "Texto sobre el degradado",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "color",
+      "id": "sun_1",
+      "label": "Degradado 1",
+      "default": "#FFD93D"
+    },
+    {
+      "type": "color",
+      "id": "sun_2",
+      "label": "Degradado 2",
+      "default": "#FF9F1C"
+    },
+    {
+      "type": "color",
+      "id": "sun_3",
+      "label": "Degradado 3",
+      "default": "#FF5E3A"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wake producto destacado"
+    }
+  ]
+}
+{% endschema %}

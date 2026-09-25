@@ -1,0 +1,450 @@
+{%- comment -%}
+  WAKE HERO — portada tipo competencia con los colores de la marca.
+  Titular gigante + palabra enorme de fondo + foto (fondo y recorte opcional delante)
+  + valoración + botón que lleva al producto + tira de testimonios opcional.
+{%- endcomment -%}
+
+{%- liquid
+  assign p = section.settings.product
+  assign btn_url = section.settings.button_url
+  if btn_url == blank and p != blank
+    assign btn_url = p.url
+  endif
+  if btn_url == blank
+    assign btn_url = routes.all_products_collection_url
+  endif
+-%}
+
+{%- style -%}
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap');
+  #wh-{{ section.id }} {
+    --wh-sun: linear-gradient(135deg, {{ section.settings.sun_1 }} 0%, {{ section.settings.sun_2 }} 50%, {{ section.settings.sun_3 }} 100%);
+    --wh-sun-2: {{ section.settings.sun_2 }};
+    position: relative; overflow: hidden; isolation: isolate;
+    background: {{ section.settings.bg }};
+    color: {{ section.settings.text }};
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px; line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+  #wh-{{ section.id }} * { box-sizing: border-box; }
+  #wh-{{ section.id }} .wh-stage { position: relative; min-height: {{ section.settings.height }}px; display: flex; align-items: center; }
+
+  /* Fondo */
+  #wh-{{ section.id }} .wh-bg { position: absolute; inset: 0; z-index: 0; }
+  #wh-{{ section.id }} .wh-bg img { width: 100%; height: 100%; object-fit: cover; object-position: {{ section.settings.bg_position }}; display: block;
+    {% if section.settings.grayscale %}filter: grayscale(1) contrast(1.05);{% endif %} }
+  #wh-{{ section.id }} .wh-bg::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(0,0,0,{{ section.settings.overlay | divided_by: 100.0 }}) 0%, rgba(0,0,0,{{ section.settings.overlay | divided_by: 200.0 }}) 55%, rgba(0,0,0,0) 100%); }
+
+  /* Palabra gigante */
+  #wh-{{ section.id }} .wh-bigword {
+    position: absolute; z-index: 1; right: 2%; bottom: 10%;
+    font-family: 'Anton', 'Impact', sans-serif; font-size: clamp(120px, 22vw, 380px); line-height: .8; letter-spacing: -.01em;
+    color: {{ section.settings.bigword_color }}; white-space: nowrap; pointer-events: none; text-transform: uppercase;
+  }
+  /* Recorte delante de la palabra */
+  #wh-{{ section.id }} .wh-cutout { position: absolute; z-index: 2; right: 8%; bottom: 0; height: 92%; pointer-events: none; }
+  #wh-{{ section.id }} .wh-cutout img { height: 100%; width: auto; display: block; {% if section.settings.grayscale %}filter: grayscale(1);{% endif %} }
+
+  /* Contenido */
+  #wh-{{ section.id }} .wh-content { position: relative; z-index: 3; width: 100%; max-width: 1640px; margin: 0 auto; padding: 72px 24px; }
+  @media (min-width: 990px) { #wh-{{ section.id }} .wh-content { padding: 80px 7.5vw; } }
+  #wh-{{ section.id }} .wh-title {
+    margin: 0; font-family: 'Anton', 'Impact', sans-serif; font-weight: 400; text-transform: uppercase;
+    font-size: clamp(56px, 7.2vw, 132px); line-height: .88; letter-spacing: .005em; max-width: 9.5em;
+  }
+  #wh-{{ section.id }} .wh-title span { display: block; }
+  #wh-{{ section.id }} .wh-title .wh-hl { background-image: var(--wh-sun); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #wh-{{ section.id }} .wh-sub {
+    margin: 28px 0 0; max-width: 34em; font-size: clamp(15px, 1.35vw, 21px); line-height: 1.5; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase; opacity: .85;
+  }
+  #wh-{{ section.id }} .wh-rating { display: flex; align-items: center; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
+  #wh-{{ section.id }} .wh-score { font-size: clamp(30px, 2.6vw, 42px); font-weight: 700; letter-spacing: -.03em; }
+  #wh-{{ section.id }} .wh-stars { display: inline-flex; gap: 3px; }
+  #wh-{{ section.id }} .wh-star { width: 25px; height: 25px; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; background-image: var(--wh-sun); }
+  #wh-{{ section.id }} .wh-star svg { width: 16px; height: 16px; fill: #fff; }
+  #wh-{{ section.id }} .wh-count { font-size: 17px; line-height: 1.15; }
+  #wh-{{ section.id }} .wh-count strong { display: block; font-weight: 500; }
+  #wh-{{ section.id }} .wh-btn {
+    display: inline-flex; align-items: center; justify-content: center; margin-top: 36px;
+    height: 64px; padding: 0 42px; border-radius: 10px; font-size: 26px; font-weight: 700; letter-spacing: -.01em;
+    color: {{ section.settings.button_text }}; text-decoration: none; background-image: var(--wh-sun);
+    box-shadow: 0 16px 40px -16px var(--wh-sun-2); transition: transform .2s ease, box-shadow .2s ease;
+  }
+  #wh-{{ section.id }} .wh-btn:hover { transform: translateY(-2px); box-shadow: 0 22px 46px -16px var(--wh-sun-2); }
+
+  /* Tira de testimonios */
+  #wh-{{ section.id }} .wh-strip { position: relative; z-index: 3; background: {{ section.settings.strip_bg }}; color: {{ section.settings.strip_text }}; overflow: hidden; padding: 22px 0; }
+  #wh-{{ section.id }} .wh-track { display: flex; gap: 48px; width: max-content; animation: wh-marquee {{ section.settings.strip_speed }}s linear infinite; }
+  #wh-{{ section.id }} .wh-strip:hover .wh-track { animation-play-state: paused; }
+  #wh-{{ section.id }} .wh-person { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+  #wh-{{ section.id }} .wh-avatar { width: 40px; height: 40px; border-radius: 999px; overflow: hidden; flex: none; background-image: var(--wh-sun); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; }
+  #wh-{{ section.id }} .wh-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  #wh-{{ section.id }} .wh-pname { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 6px; }
+  #wh-{{ section.id }} .wh-pname svg { width: 16px; height: 16px; }
+  #wh-{{ section.id }} .wh-prole { font-size: 13px; background-image: var(--wh-sun); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 600; }
+  @keyframes wh-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { #wh-{{ section.id }} .wh-track { animation: none; } }
+
+  @media (max-width: 749px) {
+    #wh-{{ section.id }} .wh-stage { min-height: {{ section.settings.height_mobile }}px; align-items: flex-end; }
+    #wh-{{ section.id }} .wh-bigword { font-size: 44vw; right: -4%; bottom: auto; top: 6%; opacity: .14; }
+    #wh-{{ section.id }} .wh-cutout { right: -6%; height: 60%; opacity: .95; }
+    #wh-{{ section.id }} .wh-content { padding: 56px 20px 40px; }
+    #wh-{{ section.id }} .wh-btn { height: 56px; font-size: 21px; width: 100%; }
+  }
+{%- endstyle -%}
+
+<section id="wh-{{ section.id }}" class="wh">
+  <div class="wh-stage">
+    {%- if section.settings.bg_image != blank -%}
+      <div class="wh-bg">
+        {{ section.settings.bg_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '750, 1100, 1600, 2400', sizes: '100vw', alt: section.settings.bg_image.alt }}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.big_word != blank -%}
+      <div class="wh-bigword" aria-hidden="true">{{ section.settings.big_word }}</div>
+    {%- endif -%}
+
+    {%- if section.settings.cutout_image != blank -%}
+      <div class="wh-cutout" aria-hidden="true">
+        {{ section.settings.cutout_image | image_url: width: 1400 | image_tag: loading: 'eager', alt: '' }}
+      </div>
+    {%- endif -%}
+
+    <div class="wh-content">
+      <h1 class="wh-title">
+        {%- if section.settings.title_1 != blank -%}<span>{{ section.settings.title_1 }}</span>{%- endif -%}
+        {%- if section.settings.title_2 != blank -%}<span class="{% if section.settings.title_2_gradient %}wh-hl{% endif %}">{{ section.settings.title_2 }}</span>{%- endif -%}
+      </h1>
+
+      {%- if section.settings.subtitle != blank -%}
+        <p class="wh-sub">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.show_rating -%}
+        <div class="wh-rating">
+          <span class="wh-score">{{ section.settings.score }}</span>
+          <span class="wh-stars" aria-label="5 estrellas">
+            {%- for i in (1..5) -%}
+              <span class="wh-star"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg></span>
+            {%- endfor -%}
+          </span>
+          <span class="wh-count"><strong>{{ section.settings.count_top }}</strong>{{ section.settings.count_bottom }}</span>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank -%}
+        <a class="wh-btn" href="{{ btn_url }}">{{ section.settings.button_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="wh-strip">
+      <div class="wh-track">
+        {%- for round in (1..2) -%}
+          {%- for block in section.blocks -%}
+            <div class="wh-person" {% if round == 1 %}{{ block.shopify_attributes }}{% else %}aria-hidden="true"{% endif %}>
+              <span class="wh-avatar">
+                {%- if block.settings.avatar != blank -%}
+                  {{ block.settings.avatar | image_url: width: 96 | image_tag: loading: 'lazy', alt: '' }}
+                {%- else -%}
+                  {{ block.settings.name | slice: 0 }}
+                {%- endif -%}
+              </span>
+              <span>
+                <span class="wh-pname">{{ block.settings.name }}
+                  {%- if block.settings.verified -%}<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="{{ section.settings.sun_2 }}"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>{%- endif -%}
+                </span>
+                <span class="wh-prole">{{ block.settings.role }}</span>
+              </span>
+            </div>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Wake hero",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Imágenes"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Imagen de fondo"
+    },
+    {
+      "type": "select",
+      "id": "bg_position",
+      "label": "Posición de la imagen",
+      "default": "center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Izquierda"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        },
+        {
+          "value": "right",
+          "label": "Derecha"
+        }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "cutout_image",
+      "label": "Recorte delante de la palabra gigante (opcional)",
+      "info": "PNG sin fondo (persona o producto). Se coloca delante de la palabra gigante, como en la competencia."
+    },
+    {
+      "type": "checkbox",
+      "id": "grayscale",
+      "label": "Fotos en blanco y negro",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Oscurecer la foto (lado izquierdo)",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 70
+    },
+    {
+      "type": "header",
+      "content": "Textos"
+    },
+    {
+      "type": "text",
+      "id": "title_1",
+      "label": "Titular línea 1",
+      "default": "Wake up silently."
+    },
+    {
+      "type": "text",
+      "id": "title_2",
+      "label": "Titular línea 2",
+      "default": "Own your morning."
+    },
+    {
+      "type": "checkbox",
+      "id": "title_2_gradient",
+      "label": "Línea 2 en degradado",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "big_word",
+      "label": "Palabra gigante de fondo",
+      "default": "CALM"
+    },
+    {
+      "type": "color",
+      "id": "bigword_color",
+      "label": "Color de la palabra gigante",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "No noise. No stress. Just a gentle vibration on your wrist that wakes you, and only you."
+    },
+    {
+      "type": "header",
+      "content": "Valoración"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Mostrar valoración",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "score",
+      "label": "Nota",
+      "default": "4.8/ 5"
+    },
+    {
+      "type": "text",
+      "id": "count_top",
+      "label": "Texto 1 (junto a las estrellas)",
+      "default": "3,600+"
+    },
+    {
+      "type": "text",
+      "id": "count_bottom",
+      "label": "Texto 2",
+      "default": "Happy Sleepers"
+    },
+    {
+      "type": "header",
+      "content": "Botón"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Texto del botón",
+      "default": "Shop Now"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Producto al que lleva el botón"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "O un enlace personalizado",
+      "info": "Si lo dejas vacío, el botón lleva al producto elegido arriba."
+    },
+    {
+      "type": "header",
+      "content": "Tamaño"
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Altura (ordenador)",
+      "min": 500,
+      "max": 1000,
+      "step": 20,
+      "unit": "px",
+      "default": 760
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "label": "Altura (móvil)",
+      "min": 400,
+      "max": 900,
+      "step": 20,
+      "unit": "px",
+      "default": 640
+    },
+    {
+      "type": "header",
+      "content": "Tira de testimonios"
+    },
+    {
+      "type": "paragraph",
+      "content": "Añade bloques \"Persona\" para mostrar una tira que se desliza bajo la portada. Sin bloques no se muestra."
+    },
+    {
+      "type": "range",
+      "id": "strip_speed",
+      "label": "Velocidad (más alto = más lento)",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "s",
+      "default": 35
+    },
+    {
+      "type": "color",
+      "id": "strip_bg",
+      "label": "Fondo de la tira",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "strip_text",
+      "label": "Texto de la tira",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Fondo",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "color",
+      "id": "text",
+      "label": "Texto",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Texto del botón",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "color",
+      "id": "sun_1",
+      "label": "Degradado 1",
+      "default": "#FFD93D"
+    },
+    {
+      "type": "color",
+      "id": "sun_2",
+      "label": "Degradado 2",
+      "default": "#FF9F1C"
+    },
+    {
+      "type": "color",
+      "id": "sun_3",
+      "label": "Degradado 3",
+      "default": "#FF5E3A"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "person",
+      "name": "Persona",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Foto"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Nombre",
+          "default": "Nombre"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Descripción",
+          "default": "Verified buyer"
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Insignia de verificado",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wake hero"
+    }
+  ]
+}
+{% endschema %}
