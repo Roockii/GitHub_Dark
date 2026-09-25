@@ -17,65 +17,62 @@
 
 {%- style -%}
   @import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap');
+  {{ section.settings.title_font | font_face: font_display: 'swap' }}
   #wh-{{ section.id }} {
     --wh-sun: linear-gradient(135deg, {{ section.settings.sun_1 }} 0%, {{ section.settings.sun_2 }} 50%, {{ section.settings.sun_3 }} 100%);
     --wh-sun-2: {{ section.settings.sun_2 }};
+    --wh-display: {{ section.settings.title_font.family }}, 'Anton', 'Impact', 'Arial Narrow', sans-serif;
     position: relative; overflow: hidden; isolation: isolate;
     background: {{ section.settings.bg }};
     color: {{ section.settings.text }};
-    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-    font-size: 16px; line-height: 1.4;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 16px; line-height: 1.4;
     -webkit-font-smoothing: antialiased;
   }
   #wh-{{ section.id }} * { box-sizing: border-box; }
-  #wh-{{ section.id }} .wh-stage { position: relative; min-height: {{ section.settings.height }}px; display: flex; align-items: center; }
+  #wh-{{ section.id }} .wh-stage { position: relative; min-height: {{ section.settings.height }}px; }
 
-  /* Fondo */
   #wh-{{ section.id }} .wh-bg { position: absolute; inset: 0; z-index: 0; }
   #wh-{{ section.id }} .wh-bg img { width: 100%; height: 100%; object-fit: cover; object-position: {{ section.settings.bg_position }}; display: block;
     {% if section.settings.grayscale %}filter: grayscale(1) contrast(1.05);{% endif %} }
   #wh-{{ section.id }} .wh-bg::after { content: ""; position: absolute; inset: 0;
-    background: linear-gradient(90deg, rgba(0,0,0,{{ section.settings.overlay | divided_by: 100.0 }}) 0%, rgba(0,0,0,{{ section.settings.overlay | divided_by: 200.0 }}) 55%, rgba(0,0,0,0) 100%); }
+    background:
+      radial-gradient(ellipse at 60% 45%, rgba(0,0,0,0) 0%, rgba(0,0,0,{{ section.settings.overlay | divided_by: 200.0 }}) 60%, rgba(0,0,0,{{ section.settings.overlay | divided_by: 100.0 }}) 100%),
+      linear-gradient(90deg, rgba(0,0,0,{{ section.settings.overlay | divided_by: 120.0 }}) 0%, rgba(0,0,0,0) 60%); }
 
-  /* Palabra gigante */
+  #wh-{{ section.id }} .wh-content { position: relative; margin: 0 auto; padding: 72px 7.6vw 72px; }
+  #wh-{{ section.id }} .wh-title, #wh-{{ section.id }} .wh-sub, #wh-{{ section.id }} .wh-rating, #wh-{{ section.id }} .wh-btn { position: relative; z-index: 3; }
+  #wh-{{ section.id }} .wh-title { margin: 0; font-family: var(--wh-display); font-weight: 400; text-transform: uppercase; line-height: .86; letter-spacing: 0; }
+  #wh-{{ section.id }} .wh-l1, #wh-{{ section.id }} .wh-l2 { display: block; font-size: clamp(56px, 7.4vw, 142px); white-space: nowrap; }
+  #wh-{{ section.id }} .wh-l2wrap { position: relative; display: inline-block; font-size: clamp(56px, 7.4vw, 142px); }
+  #wh-{{ section.id }} .wh-l2wrap .wh-l2 { font-size: 1em; }
+  #wh-{{ section.id }} .wh-title { position: static; }
+  #wh-{{ section.id }} .wh-title .wh-l1, #wh-{{ section.id }} .wh-title .wh-l2 { position: relative; z-index: 3; }
+  #wh-{{ section.id }} .wh-hl { background-image: var(--wh-sun); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
   #wh-{{ section.id }} .wh-bigword {
-    position: absolute; z-index: 1; right: 2%; bottom: 10%;
-    font-family: 'Anton', 'Impact', sans-serif; font-size: clamp(120px, 22vw, 380px); line-height: .8; letter-spacing: -.01em;
-    color: {{ section.settings.bigword_color }}; white-space: nowrap; pointer-events: none; text-transform: uppercase;
+    position: absolute; z-index: 1; left: calc(100% + .12em); top: .02em;
+    font-family: var(--wh-display); font-size: 2.62em; line-height: .8; text-transform: uppercase;
+    color: {{ section.settings.bigword_color }}; white-space: nowrap; pointer-events: none;
   }
-  /* Recorte delante de la palabra */
-  #wh-{{ section.id }} .wh-cutout { position: absolute; z-index: 2; right: 8%; bottom: 0; height: 92%; pointer-events: none; }
-  #wh-{{ section.id }} .wh-cutout img { height: 100%; width: auto; display: block; {% if section.settings.grayscale %}filter: grayscale(1);{% endif %} }
+  #wh-{{ section.id }} .wh-cutout { position: absolute; z-index: 2; left: {{ section.settings.cutout_x }}%; bottom: 0; height: {{ section.settings.cutout_h }}%; transform: translateX(-50%); pointer-events: none; }
+  #wh-{{ section.id }} .wh-cutout img { height: 100%; width: auto; display: block; {% if section.settings.grayscale %}filter: grayscale(1) contrast(1.05);{% endif %} }
 
-  /* Contenido */
-  #wh-{{ section.id }} .wh-content { position: relative; z-index: 3; width: 100%; max-width: 1640px; margin: 0 auto; padding: 72px 24px; }
-  @media (min-width: 990px) { #wh-{{ section.id }} .wh-content { padding: 80px 7.5vw; } }
-  #wh-{{ section.id }} .wh-title {
-    margin: 0; font-family: 'Anton', 'Impact', sans-serif; font-weight: 400; text-transform: uppercase;
-    font-size: clamp(56px, 7.2vw, 132px); line-height: .88; letter-spacing: .005em; max-width: 9.5em;
-  }
-  #wh-{{ section.id }} .wh-title span { display: block; }
-  #wh-{{ section.id }} .wh-title .wh-hl { background-image: var(--wh-sun); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  #wh-{{ section.id }} .wh-sub {
-    margin: 28px 0 0; max-width: 34em; font-size: clamp(15px, 1.35vw, 21px); line-height: 1.5; font-weight: 500;
-    letter-spacing: .12em; text-transform: uppercase; opacity: .85;
-  }
-  #wh-{{ section.id }} .wh-rating { display: flex; align-items: center; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
-  #wh-{{ section.id }} .wh-score { font-size: clamp(30px, 2.6vw, 42px); font-weight: 700; letter-spacing: -.03em; }
+  #wh-{{ section.id }} .wh-sub { margin: 40px 0 0; max-width: max(300px, 25vw); font-size: clamp(15px, 1.2vw, 22px); line-height: 1.55; font-weight: 500; letter-spacing: .13em; text-transform: uppercase; opacity: .82; }
+  #wh-{{ section.id }} .wh-rating { display: flex; align-items: center; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+  #wh-{{ section.id }} .wh-score { font-size: clamp(30px, 2.3vw, 42px); font-weight: 700; letter-spacing: -.03em; }
   #wh-{{ section.id }} .wh-stars { display: inline-flex; gap: 3px; }
   #wh-{{ section.id }} .wh-star { width: 25px; height: 25px; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; background-image: var(--wh-sun); }
   #wh-{{ section.id }} .wh-star svg { width: 16px; height: 16px; fill: #fff; }
-  #wh-{{ section.id }} .wh-count { font-size: 17px; line-height: 1.15; }
+  #wh-{{ section.id }} .wh-count { font-size: 17px; line-height: 1.12; }
   #wh-{{ section.id }} .wh-count strong { display: block; font-weight: 500; }
   #wh-{{ section.id }} .wh-btn {
-    display: inline-flex; align-items: center; justify-content: center; margin-top: 36px;
-    height: 64px; padding: 0 42px; border-radius: 10px; font-size: 26px; font-weight: 700; letter-spacing: -.01em;
+    display: inline-flex; align-items: center; justify-content: center; margin-top: 34px;
+    height: 64px; padding: 0 42px; border-radius: 10px; font-size: 27px; font-weight: 700; letter-spacing: -.01em;
     color: {{ section.settings.button_text }}; text-decoration: none; background-image: var(--wh-sun);
     box-shadow: 0 16px 40px -16px var(--wh-sun-2); transition: transform .2s ease, box-shadow .2s ease;
   }
   #wh-{{ section.id }} .wh-btn:hover { transform: translateY(-2px); box-shadow: 0 22px 46px -16px var(--wh-sun-2); }
 
-  /* Tira de testimonios */
   #wh-{{ section.id }} .wh-strip { position: relative; z-index: 3; background: {{ section.settings.strip_bg }}; color: {{ section.settings.strip_text }}; overflow: hidden; padding: 22px 0; }
   #wh-{{ section.id }} .wh-track { display: flex; gap: 48px; width: max-content; animation: wh-marquee {{ section.settings.strip_speed }}s linear infinite; }
   #wh-{{ section.id }} .wh-strip:hover .wh-track { animation-play-state: paused; }
@@ -89,11 +86,16 @@
   @media (prefers-reduced-motion: reduce) { #wh-{{ section.id }} .wh-track { animation: none; } }
 
   @media (max-width: 749px) {
-    #wh-{{ section.id }} .wh-stage { min-height: {{ section.settings.height_mobile }}px; align-items: flex-end; }
-    #wh-{{ section.id }} .wh-bigword { font-size: 44vw; right: -4%; bottom: auto; top: 6%; opacity: .14; }
-    #wh-{{ section.id }} .wh-cutout { right: -6%; height: 60%; opacity: .95; }
-    #wh-{{ section.id }} .wh-content { padding: 56px 20px 40px; }
-    #wh-{{ section.id }} .wh-btn { height: 56px; font-size: 21px; width: 100%; }
+    #wh-{{ section.id }} .wh-stage { min-height: {{ section.settings.height_mobile }}px; }
+    #wh-{{ section.id }} .wh-content { padding: 48px 20px 36px; }
+    #wh-{{ section.id }} .wh-l1, #wh-{{ section.id }} .wh-l2, #wh-{{ section.id }} .wh-l2wrap { font-size: 15.5vw; white-space: normal; }
+    #wh-{{ section.id }} .wh-l2wrap .wh-l2 { font-size: 1em; }
+    #wh-{{ section.id }} .wh-bigword { left: auto; right: auto; top: auto; position: relative; display: block; font-size: 2.5em; margin-top: .06em; }
+    #wh-{{ section.id }} .wh-l2wrap { display: block; }
+    #wh-{{ section.id }} .wh-sub { max-width: 22em; }
+    #wh-{{ section.id }} .wh-cutout { left: 72%; height: 58%; }
+    #wh-{{ section.id }} .wh-sub { margin-top: 24px; font-size: 14px; max-width: 22em; }
+    #wh-{{ section.id }} .wh-btn { height: 56px; font-size: 21px; }
   }
 {%- endstyle -%}
 
@@ -105,9 +107,6 @@
       </div>
     {%- endif -%}
 
-    {%- if section.settings.big_word != blank -%}
-      <div class="wh-bigword" aria-hidden="true">{{ section.settings.big_word }}</div>
-    {%- endif -%}
 
     {%- if section.settings.cutout_image != blank -%}
       <div class="wh-cutout" aria-hidden="true">
@@ -117,8 +116,11 @@
 
     <div class="wh-content">
       <h1 class="wh-title">
-        {%- if section.settings.title_1 != blank -%}<span>{{ section.settings.title_1 }}</span>{%- endif -%}
-        {%- if section.settings.title_2 != blank -%}<span class="{% if section.settings.title_2_gradient %}wh-hl{% endif %}">{{ section.settings.title_2 }}</span>{%- endif -%}
+        {%- if section.settings.title_1 != blank -%}<span class="wh-l1">{{ section.settings.title_1 }}</span>{%- endif -%}
+        <span class="wh-l2wrap">
+          {%- if section.settings.title_2 != blank -%}<span class="wh-l2{% if section.settings.title_2_gradient %} wh-hl{% endif %}">{{ section.settings.title_2 }}</span>{%- endif -%}
+          {%- if section.settings.big_word != blank -%}<span class="wh-bigword" aria-hidden="true">{{ section.settings.big_word }}</span>{%- endif -%}
+        </span>
       </h1>
 
       {%- if section.settings.subtitle != blank -%}
@@ -211,6 +213,26 @@
       "info": "PNG sin fondo (persona o producto). Se coloca delante de la palabra gigante, como en la competencia."
     },
     {
+      "type": "range",
+      "id": "cutout_x",
+      "label": "Posición horizontal del recorte",
+      "min": 30,
+      "max": 90,
+      "step": 1,
+      "unit": "%",
+      "default": 62
+    },
+    {
+      "type": "range",
+      "id": "cutout_h",
+      "label": "Altura del recorte",
+      "min": 50,
+      "max": 110,
+      "step": 2,
+      "unit": "%",
+      "default": 96
+    },
+    {
       "type": "checkbox",
       "id": "grayscale",
       "label": "Fotos en blanco y negro",
@@ -224,7 +246,7 @@
       "max": 90,
       "step": 5,
       "unit": "%",
-      "default": 70
+      "default": 75
     },
     {
       "type": "header",
@@ -233,20 +255,26 @@
     {
       "type": "text",
       "id": "title_1",
-      "label": "Titular línea 1",
-      "default": "Wake up silently."
+      "label": "Titular línea 1 (larga)",
+      "default": "Deep sleepers"
     },
     {
       "type": "text",
       "id": "title_2",
-      "label": "Titular línea 2",
-      "default": "Own your morning."
+      "label": "Titular línea 2 (junto a la palabra gigante)",
+      "default": "Deserve"
     },
     {
       "type": "checkbox",
       "id": "title_2_gradient",
       "label": "Línea 2 en degradado",
       "default": false
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Tipografía del titular",
+      "default": "anton_n4"
     },
     {
       "type": "text",
@@ -264,7 +292,7 @@
       "type": "textarea",
       "id": "subtitle",
       "label": "Subtítulo",
-      "default": "No noise. No stress. Just a gentle vibration on your wrist that wakes you, and only you."
+      "default": "No blaring alarms. No stress. Just a silent vibration on your wrist that wakes you, and only you."
     },
     {
       "type": "header",
@@ -327,7 +355,7 @@
       "max": 1000,
       "step": 20,
       "unit": "px",
-      "default": 760
+      "default": 800
     },
     {
       "type": "range",
