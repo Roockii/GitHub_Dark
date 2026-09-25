@@ -62,13 +62,13 @@
 
   #wh-{{ section.id }} .wh-bigword {
     position: absolute; z-index: 1; left: calc(100% + .12em); top: .02em;
-    font-family: var(--wh-display); font-weight: var(--wh-weight); font-stretch: var(--wh-stretch); letter-spacing: var(--wh-track); font-size: {{ section.settings.h_bigword_size | divided_by: 100.0 }}em; line-height: .78; text-transform: uppercase;
+    font-family: var(--wh-display); font-weight: var(--wh-weight); font-stretch: {% if section.settings.h_title_style == 'wide' %}{{ section.settings.h_bigword_width }}%{% else %}var(--wh-stretch){% endif %}; letter-spacing: -.02em; font-size: {{ section.settings.h_bigword_size | divided_by: 100.0 }}em; line-height: .78; text-transform: uppercase;
     color: {{ section.settings.h_bigword_color }}; white-space: nowrap; pointer-events: none;
   }
   #wh-{{ section.id }} .wh-cutout { position: absolute; z-index: 2; left: {{ section.settings.h_cutout_x }}%; bottom: 0; height: {{ section.settings.h_cutout_h }}%; transform: translateX(-50%); pointer-events: none; }
   #wh-{{ section.id }} .wh-cutout img { height: 100%; width: auto; display: block; {% if section.settings.h_grayscale %}filter: grayscale(1) contrast(1.05);{% endif %} }
 
-  #wh-{{ section.id }} .wh-sub { margin: 40px 0 0; max-width: max(300px, 25vw); font-size: clamp(15px, 1.2vw, 22px); line-height: 1.55; font-weight: 500; letter-spacing: .13em; text-transform: uppercase; opacity: .82; }
+  #wh-{{ section.id }} .wh-sub { margin: 40px 0 0; max-width: max(300px, 25vw); font-size: clamp(15px, 1.2vw, 22px); line-height: 1.55; font-weight: 400; letter-spacing: .12em; text-transform: uppercase; opacity: .78; }
   #wh-{{ section.id }} .wh-rating { display: flex; align-items: center; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
   #wh-{{ section.id }} .wh-score { font-size: clamp(30px, 2.3vw, 42px); font-weight: 700; letter-spacing: -.03em; }
   #wh-{{ section.id }} .wh-stars { display: inline-flex; gap: 3px; }
@@ -560,7 +560,7 @@
       "max": 125,
       "step": 1,
       "unit": "%",
-      "default": 75,
+      "default": 70,
       "info": "Solo para \"Ancha y gruesa\"."
     },
     {
@@ -577,7 +577,17 @@
       "max": 320,
       "step": 5,
       "unit": "%",
-      "default": 230
+      "default": 238
+    },
+    {
+      "type": "range",
+      "id": "h_bigword_width",
+      "label": "Anchura de la palabra gigante",
+      "min": 62,
+      "max": 125,
+      "step": 1,
+      "unit": "%",
+      "default": 88
     },
     {
       "type": "text",
