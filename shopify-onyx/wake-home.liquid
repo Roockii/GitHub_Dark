@@ -1,0 +1,1057 @@
+{%- comment -%}
+  WAKE · INICIO — página de inicio en una sola sección:
+  1 · Portada (hero)  ·  2 · Producto destacado  ·  3 · Preguntas
+  Cada parte se puede ocultar con su casilla "Mostrar".
+{%- endcomment -%}
+
+{%- if section.settings.show_hero -%}
+{%- comment -%}
+  WAKE HERO — portada tipo competencia con los colores de la marca.
+  Titular gigante + palabra enorme de fondo + foto (fondo y recorte opcional delante)
+  + valoración + botón que lleva al producto + tira de testimonios opcional.
+{%- endcomment -%}
+
+{%- liquid
+  assign p = section.settings.h_product
+  assign btn_url = section.settings.h_button_url
+  if btn_url == blank and p != blank
+    assign btn_url = p.url
+  endif
+  if btn_url == blank
+    assign btn_url = routes.all_products_collection_url
+  endif
+-%}
+
+{%- style -%}
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap');
+  {{ section.settings.h_title_font | font_face: font_display: 'swap' }}
+  #wh-{{ section.id }} {
+    --wh-sun: linear-gradient(135deg, {{ section.settings.sun_1 }} 0%, {{ section.settings.sun_2 }} 50%, {{ section.settings.sun_3 }} 100%);
+    --wh-sun-2: {{ section.settings.sun_2 }};
+    --wh-display: {{ section.settings.h_title_font.family }}, 'Anton', 'Impact', 'Arial Narrow', sans-serif;
+    position: relative; overflow: hidden; isolation: isolate;
+    background: {{ section.settings.h_bg }};
+    color: {{ section.settings.h_text }};
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 16px; line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+  #wh-{{ section.id }} * { box-sizing: border-box; }
+  #wh-{{ section.id }} .wh-stage { position: relative; min-height: {{ section.settings.h_height }}px; }
+
+  #wh-{{ section.id }} .wh-bg { position: absolute; inset: 0; z-index: 0; }
+  #wh-{{ section.id }} .wh-bg img { width: 100%; height: 100%; object-fit: cover; object-position: {{ section.settings.h_bg_position }}; display: block;
+    {% if section.settings.h_grayscale %}filter: grayscale(1) contrast(1.05);{% endif %} }
+  #wh-{{ section.id }} .wh-bg::after { content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 60% 45%, rgba(0,0,0,0) 0%, rgba(0,0,0,{{ section.settings.h_overlay | divided_by: 200.0 }}) 60%, rgba(0,0,0,{{ section.settings.h_overlay | divided_by: 100.0 }}) 100%),
+      linear-gradient(90deg, rgba(0,0,0,{{ section.settings.h_overlay | divided_by: 120.0 }}) 0%, rgba(0,0,0,0) 60%); }
+
+  #wh-{{ section.id }} .wh-content { position: relative; margin: 0 auto; padding: 72px 7.6vw 72px; }
+  #wh-{{ section.id }} .wh-title, #wh-{{ section.id }} .wh-sub, #wh-{{ section.id }} .wh-rating, #wh-{{ section.id }} .wh-btn { position: relative; z-index: 3; }
+  #wh-{{ section.id }} .wh-title { margin: 0; font-family: var(--wh-display); font-weight: 400; text-transform: uppercase; line-height: .86; letter-spacing: 0; }
+  #wh-{{ section.id }} .wh-l1, #wh-{{ section.id }} .wh-l2 { display: block; font-size: clamp(56px, 7.4vw, 142px); white-space: nowrap; }
+  #wh-{{ section.id }} .wh-l2wrap { position: relative; display: inline-block; font-size: clamp(56px, 7.4vw, 142px); }
+  #wh-{{ section.id }} .wh-l2wrap .wh-l2 { font-size: 1em; }
+  #wh-{{ section.id }} .wh-title { position: static; }
+  #wh-{{ section.id }} .wh-title .wh-l1, #wh-{{ section.id }} .wh-title .wh-l2 { position: relative; z-index: 3; }
+  #wh-{{ section.id }} .wh-hl { background-image: var(--wh-sun); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  #wh-{{ section.id }} .wh-bigword {
+    position: absolute; z-index: 1; left: calc(100% + .12em); top: .02em;
+    font-family: var(--wh-display); font-size: 2.62em; line-height: .8; text-transform: uppercase;
+    color: {{ section.settings.h_bigword_color }}; white-space: nowrap; pointer-events: none;
+  }
+  #wh-{{ section.id }} .wh-cutout { position: absolute; z-index: 2; left: {{ section.settings.h_cutout_x }}%; bottom: 0; height: {{ section.settings.h_cutout_h }}%; transform: translateX(-50%); pointer-events: none; }
+  #wh-{{ section.id }} .wh-cutout img { height: 100%; width: auto; display: block; {% if section.settings.h_grayscale %}filter: grayscale(1) contrast(1.05);{% endif %} }
+
+  #wh-{{ section.id }} .wh-sub { margin: 40px 0 0; max-width: max(300px, 25vw); font-size: clamp(15px, 1.2vw, 22px); line-height: 1.55; font-weight: 500; letter-spacing: .13em; text-transform: uppercase; opacity: .82; }
+  #wh-{{ section.id }} .wh-rating { display: flex; align-items: center; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+  #wh-{{ section.id }} .wh-score { font-size: clamp(30px, 2.3vw, 42px); font-weight: 700; letter-spacing: -.03em; }
+  #wh-{{ section.id }} .wh-stars { display: inline-flex; gap: 3px; }
+  #wh-{{ section.id }} .wh-star { width: 25px; height: 25px; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; background-image: var(--wh-sun); }
+  #wh-{{ section.id }} .wh-star svg { width: 16px; height: 16px; fill: #fff; }
+  #wh-{{ section.id }} .wh-count { font-size: 17px; line-height: 1.12; }
+  #wh-{{ section.id }} .wh-count strong { display: block; font-weight: 500; }
+  #wh-{{ section.id }} .wh-btn {
+    display: inline-flex; align-items: center; justify-content: center; margin-top: 34px;
+    height: 64px; padding: 0 42px; border-radius: 10px; font-size: 27px; font-weight: 700; letter-spacing: -.01em;
+    color: {{ section.settings.h_button_text }}; text-decoration: none; background-image: var(--wh-sun);
+    box-shadow: 0 16px 40px -16px var(--wh-sun-2); transition: transform .2s ease, box-shadow .2s ease;
+  }
+  #wh-{{ section.id }} .wh-btn:hover { transform: translateY(-2px); box-shadow: 0 22px 46px -16px var(--wh-sun-2); }
+
+  #wh-{{ section.id }} .wh-strip { position: relative; z-index: 3; background: {{ section.settings.h_strip_bg }}; color: {{ section.settings.h_strip_text }}; overflow: hidden; padding: 22px 0; }
+  #wh-{{ section.id }} .wh-track { display: flex; gap: 48px; width: max-content; animation: wh-marquee {{ section.settings.h_strip_speed }}s linear infinite; }
+  #wh-{{ section.id }} .wh-strip:hover .wh-track { animation-play-state: paused; }
+  #wh-{{ section.id }} .wh-person { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+  #wh-{{ section.id }} .wh-avatar { width: 40px; height: 40px; border-radius: 999px; overflow: hidden; flex: none; background-image: var(--wh-sun); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; }
+  #wh-{{ section.id }} .wh-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  #wh-{{ section.id }} .wh-pname { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 6px; }
+  #wh-{{ section.id }} .wh-pname svg { width: 16px; height: 16px; }
+  #wh-{{ section.id }} .wh-prole { font-size: 13px; background-image: var(--wh-sun); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 600; }
+  @keyframes wh-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { #wh-{{ section.id }} .wh-track { animation: none; } }
+
+  @media (max-width: 749px) {
+    #wh-{{ section.id }} .wh-stage { min-height: {{ section.settings.h_height_mobile }}px; }
+    #wh-{{ section.id }} .wh-content { padding: 48px 20px 36px; }
+    #wh-{{ section.id }} .wh-l1, #wh-{{ section.id }} .wh-l2, #wh-{{ section.id }} .wh-l2wrap { font-size: 15.5vw; white-space: normal; }
+    #wh-{{ section.id }} .wh-l2wrap .wh-l2 { font-size: 1em; }
+    #wh-{{ section.id }} .wh-bigword { left: auto; right: auto; top: auto; position: relative; display: block; font-size: 2.5em; margin-top: .06em; }
+    #wh-{{ section.id }} .wh-l2wrap { display: block; }
+    #wh-{{ section.id }} .wh-sub { max-width: 22em; }
+    #wh-{{ section.id }} .wh-cutout { left: 72%; height: 58%; }
+    #wh-{{ section.id }} .wh-sub { margin-top: 24px; font-size: 14px; max-width: 22em; }
+    #wh-{{ section.id }} .wh-btn { height: 56px; font-size: 21px; }
+  }
+{%- endstyle -%}
+
+<section id="wh-{{ section.id }}" class="wh">
+  <div class="wh-stage">
+    {%- if section.settings.h_bg_image != blank -%}
+      <div class="wh-bg">
+        {{ section.settings.h_bg_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '750, 1100, 1600, 2400', sizes: '100vw', alt: section.settings.h_bg_image.alt }}
+      </div>
+    {%- endif -%}
+
+
+    {%- if section.settings.h_cutout_image != blank -%}
+      <div class="wh-cutout" aria-hidden="true">
+        {{ section.settings.h_cutout_image | image_url: width: 1400 | image_tag: loading: 'eager', alt: '' }}
+      </div>
+    {%- endif -%}
+
+    <div class="wh-content">
+      <h1 class="wh-title">
+        {%- if section.settings.h_title_1 != blank -%}<span class="wh-l1">{{ section.settings.h_title_1 }}</span>{%- endif -%}
+        <span class="wh-l2wrap">
+          {%- if section.settings.h_title_2 != blank -%}<span class="wh-l2{% if section.settings.h_title_2_gradient %} wh-hl{% endif %}">{{ section.settings.h_title_2 }}</span>{%- endif -%}
+          {%- if section.settings.h_big_word != blank -%}<span class="wh-bigword" aria-hidden="true">{{ section.settings.h_big_word }}</span>{%- endif -%}
+        </span>
+      </h1>
+
+      {%- if section.settings.h_subtitle != blank -%}
+        <p class="wh-sub">{{ section.settings.h_subtitle }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.h_show_rating -%}
+        <div class="wh-rating">
+          <span class="wh-score">{{ section.settings.h_score }}</span>
+          <span class="wh-stars" aria-label="5 estrellas">
+            {%- for i in (1..5) -%}
+              <span class="wh-star"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg></span>
+            {%- endfor -%}
+          </span>
+          <span class="wh-count"><strong>{{ section.settings.h_count_top }}</strong>{{ section.settings.h_count_bottom }}</span>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.h_button_label != blank -%}
+        <a class="wh-btn" href="{{ btn_url }}">{{ section.settings.h_button_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- assign person_blocks = section.blocks | where: 'type', 'person' -%}
+  {%- if person_blocks.size > 0 -%}
+    <div class="wh-strip">
+      <div class="wh-track">
+        {%- for round in (1..2) -%}
+          {%- for block in person_blocks -%}
+            <div class="wh-person" {% if round == 1 %}{{ block.shopify_attributes }}{% else %}aria-hidden="true"{% endif %}>
+              <span class="wh-avatar">
+                {%- if block.settings.avatar != blank -%}
+                  {{ block.settings.avatar | image_url: width: 96 | image_tag: loading: 'lazy', alt: '' }}
+                {%- else -%}
+                  {{ block.settings.name | slice: 0 }}
+                {%- endif -%}
+              </span>
+              <span>
+                <span class="wh-pname">{{ block.settings.name }}
+                  {%- if block.settings.verified -%}<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="{{ section.settings.sun_2 }}"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>{%- endif -%}
+                </span>
+                <span class="wh-prole">{{ block.settings.role }}</span>
+              </span>
+            </div>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+{%- endif -%}
+
+{%- if section.settings.show_product -%}
+{%- comment -%}
+  WAKE FEATURED PRODUCT — tarjeta de producto destacado (imagen + etiqueta a la izquierda,
+  nombre, precio y botón a la derecha). El botón lleva a la página del producto.
+{%- endcomment -%}
+
+{%- liquid
+  assign p = section.settings.p_product
+  if p != blank
+    assign v = p.selected_or_first_available_variant
+    assign compare = nil
+    if section.settings.p_compare_price != blank
+      assign compare = section.settings.p_compare_price | remove: '€' | remove: '$' | strip | replace: ',', '.' | times: 100 | round
+    elsif v.compare_at_price > v.price
+      assign compare = v.compare_at_price
+    endif
+    if compare and compare <= v.price
+      assign compare = nil
+    endif
+  endif
+-%}
+
+{%- style -%}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  #wfp-{{ section.id }} {
+    --wfp-sun: linear-gradient(135deg, {{ section.settings.sun_1 }} 0%, {{ section.settings.sun_2 }} 50%, {{ section.settings.sun_3 }} 100%);
+    background: {{ section.settings.p_bg }}; color: {{ section.settings.p_text_color }};
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 16px; line-height: 1.4;
+    padding: {{ section.settings.p_pad_top }}px 20px {{ section.settings.p_pad_bottom }}px;
+    -webkit-font-smoothing: antialiased;
+  }
+  #wfp-{{ section.id }} * { box-sizing: border-box; }
+  #wfp-{{ section.id }} .wfp-box {
+    max-width: 1120px; margin: 0 auto; padding: 12px; border-radius: 22px; background: {{ section.settings.p_box_bg }};
+    display: grid; grid-template-columns: 1fr; gap: 12px;
+  }
+  @media (min-width: 900px) { #wfp-{{ section.id }} .wfp-box { grid-template-columns: 1fr 1fr; } }
+  #wfp-{{ section.id }} .wfp-media { position: relative; border-radius: 16px; overflow: hidden; background: {{ section.settings.p_media_bg }}; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; }
+  #wfp-{{ section.id }} .wfp-media img { width: 100%; height: 100%; object-fit: {{ section.settings.p_image_fit }}; display: block; }
+  #wfp-{{ section.id }} .wfp-badge {
+    position: absolute; top: 14px; left: 14px; z-index: 1; padding: 5px 11px; border-radius: 999px;
+    background-image: var(--wfp-sun); color: {{ section.settings.p_button_text_dark }}; font-size: 12px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase;
+  }
+  #wfp-{{ section.id }} .wfp-info { border-radius: 16px; background: {{ section.settings.p_info_bg }}; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
+  #wfp-{{ section.id }} .wfp-title { margin: 0; font-size: clamp(28px, 3vw, 40px); font-weight: 700; letter-spacing: -.04em; line-height: 1.1; }
+  #wfp-{{ section.id }} .wfp-text { margin-top: 10px; color: #6b7280; font-size: 16px; }
+  #wfp-{{ section.id }} .wfp-price { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+  #wfp-{{ section.id }} .wfp-now { font-size: 28px; font-weight: 700; letter-spacing: -.03em; }
+  #wfp-{{ section.id }} .wfp-old { font-size: 26px; color: #9ca3af; text-decoration: line-through; letter-spacing: -.03em; }
+  #wfp-{{ section.id }} .wfp-off { padding: 4px 9px; border-radius: 5px; font-size: 13px; font-weight: 800; background-image: var(--wfp-sun); color: {{ section.settings.p_button_text_dark }}; }
+  #wfp-{{ section.id }} .wfp-btn {
+    display: flex; align-items: center; justify-content: center; margin-top: 24px; height: 56px; border-radius: 999px;
+    background: {{ section.settings.p_button_bg }}; color: {{ section.settings.p_button_text }}; font-size: 19px; font-weight: 700; text-decoration: none;
+    position: relative; overflow: hidden; transition: color .35s ease;
+  }
+  #wfp-{{ section.id }} .wfp-btn::before { content: ""; position: absolute; inset: 0; background-image: var(--wfp-sun); opacity: 0; transition: opacity .35s ease; }
+  #wfp-{{ section.id }} .wfp-btn span { position: relative; }
+  #wfp-{{ section.id }} .wfp-btn:hover { color: {{ section.settings.p_button_text_dark }}; }
+  #wfp-{{ section.id }} .wfp-btn:hover::before { opacity: 1; }
+  @media (max-width: 749px) {
+    #wfp-{{ section.id }} .wfp-info { padding: 28px 20px; }
+  }
+{%- endstyle -%}
+
+<section id="wfp-{{ section.id }}" class="wfp">
+  <div class="wfp-box">
+    <a class="wfp-media" href="{% if p != blank %}{{ p.url }}{% else %}#{% endif %}">
+      {%- if section.settings.p_badge != blank -%}<span class="wfp-badge">{{ section.settings.p_badge }}</span>{%- endif -%}
+      {%- if section.settings.p_image != blank -%}
+        {{ section.settings.p_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 900px) 540px, 100vw', alt: section.settings.p_image.alt }}
+      {%- elsif p != blank and p.featured_media -%}
+        {{ p.featured_media.preview_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 900px) 540px, 100vw', alt: p.title }}
+      {%- endif -%}
+    </a>
+
+    <div class="wfp-info">
+      <h2 class="wfp-title">{{ section.settings.p_title | default: p.title | default: 'Tu producto' }}</h2>
+      {%- if section.settings.p_text != blank -%}<div class="wfp-text">{{ section.settings.p_text }}</div>{%- endif -%}
+
+      {%- if p != blank -%}
+        <div class="wfp-price">
+          <span class="wfp-now">{{ v.price | money }}</span>
+          {%- if compare -%}
+            <span class="wfp-old">{{ compare | money }}</span>
+            {%- if section.settings.p_show_pct -%}
+              {%- assign pct = v.price | times: 100.0 | divided_by: compare | round -%}
+              {%- assign pct = 100 | minus: pct -%}
+              <span class="wfp-off">{{ pct }}{{ section.settings.p_pct_suffix }}</span>
+            {%- endif -%}
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.p_button_label != blank -%}
+        <a class="wfp-btn" href="{% if p != blank %}{{ p.url }}{% else %}#{% endif %}"><span>{{ section.settings.p_button_label }}</span></a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{%- if section.settings.show_faq -%}
+{%- comment -%}
+  WAKE FAQ (inicio) — título, texto, fotos de clientes y botón a la izquierda;
+  preguntas desplegables (bloques) a la derecha. La primera sale abierta.
+{%- endcomment -%}
+
+{%- style -%}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  #wfq-{{ section.id }} {
+    --wfq-sun: linear-gradient(135deg, {{ section.settings.sun_1 }} 0%, {{ section.settings.sun_2 }} 50%, {{ section.settings.sun_3 }} 100%);
+    background: {{ section.settings.q_bg }}; color: {{ section.settings.q_text_color }};
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; font-size: 16px; line-height: 1.5;
+    padding: {{ section.settings.q_pad_top }}px 20px {{ section.settings.q_pad_bottom }}px;
+    -webkit-font-smoothing: antialiased;
+  }
+  #wfq-{{ section.id }} * { box-sizing: border-box; }
+  #wfq-{{ section.id }} .wfq-grid { max-width: 1344px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 40px; }
+  @media (min-width: 990px) { #wfq-{{ section.id }} .wfq-grid { grid-template-columns: 1fr 1fr; gap: 64px; padding: 0 3vw; } }
+  #wfq-{{ section.id }} .wfq-title { margin: 0; font-size: clamp(30px, 3vw, 44px); font-weight: 700; letter-spacing: -.045em; line-height: 1.08; }
+  #wfq-{{ section.id }} .wfq-title .wfq-hl { background-image: var(--wfq-sun); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #wfq-{{ section.id }} .wfq-text { margin-top: 16px; max-width: 24em; font-size: 18px; color: {{ section.settings.q_muted }}; }
+  #wfq-{{ section.id }} .wfq-text p { margin: 0; }
+  #wfq-{{ section.id }} .wfq-avatars { display: flex; margin-top: 26px; }
+  #wfq-{{ section.id }} .wfq-avatars span { width: 46px; height: 46px; border-radius: 999px; overflow: hidden; border: 3px solid {{ section.settings.q_bg }}; background-image: var(--wfq-sun); }
+  #wfq-{{ section.id }} .wfq-avatars span + span { margin-left: -10px; }
+  #wfq-{{ section.id }} .wfq-avatars img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #wfq-{{ section.id }} .wfq-btn {
+    display: inline-flex; align-items: center; justify-content: center; margin-top: 40px; height: 56px; padding: 0 32px; border-radius: 999px;
+    background: {{ section.settings.q_button_bg }}; color: {{ section.settings.q_button_text }}; font-size: 18px; font-weight: 700; text-decoration: none;
+    position: relative; overflow: hidden; transition: color .35s ease;
+  }
+  #wfq-{{ section.id }} .wfq-btn::before { content: ""; position: absolute; inset: 0; background-image: var(--wfq-sun); opacity: 0; transition: opacity .35s ease; }
+  #wfq-{{ section.id }} .wfq-btn span { position: relative; }
+  #wfq-{{ section.id }} .wfq-btn:hover { color: #0A0A0C; }
+  #wfq-{{ section.id }} .wfq-btn:hover::before { opacity: 1; }
+
+  #wfq-{{ section.id }} .wfq-list { background: {{ section.settings.q_list_bg }}; border-radius: 16px; padding: 8px; display: flex; flex-direction: column; gap: 8px; align-self: start; }
+  #wfq-{{ section.id }} .wfq-item { background: {{ section.settings.q_item_bg }}; border-radius: 10px; }
+  #wfq-{{ section.id }} .wfq-q {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 16px;
+    background: none; border: 0; cursor: pointer; text-align: left; font: inherit; font-size: 17px; font-weight: 600; color: inherit;
+  }
+  #wfq-{{ section.id }} .wfq-icon { position: relative; width: 14px; height: 14px; flex: none; transition: transform .3s ease; }
+  #wfq-{{ section.id }} .wfq-icon::before, #wfq-{{ section.id }} .wfq-icon::after { content: ""; position: absolute; left: 50%; top: 50%; width: 14px; height: 2px; border-radius: 2px; background: currentColor; transform: translate(-50%,-50%); }
+  #wfq-{{ section.id }} .wfq-icon::after { transform: translate(-50%,-50%) rotate(90deg); }
+  #wfq-{{ section.id }} .wfq-item.is-open .wfq-icon { transform: rotate(45deg); }
+  #wfq-{{ section.id }} .wfq-item.is-open .wfq-icon::before, #wfq-{{ section.id }} .wfq-item.is-open .wfq-icon::after { background-image: var(--wfq-sun); }
+  #wfq-{{ section.id }} .wfq-a { overflow: hidden; max-height: 0; transition: max-height .35s ease; }
+  #wfq-{{ section.id }} .wfq-a-inner { padding: 0 16px 20px; color: {{ section.settings.q_muted }}; font-size: 15px; line-height: 1.6; }
+  #wfq-{{ section.id }} .wfq-a-inner p { margin: 0; }
+  #wfq-{{ section.id }} .wfq-a-inner p + p { margin-top: 14px; }
+  @media (max-width: 749px) { #wfq-{{ section.id }} .wfq-btn { width: 100%; } }
+{%- endstyle -%}
+
+<section id="wfq-{{ section.id }}" class="wfq" data-wfq>
+  <div class="wfq-grid">
+    <div>
+      <h2 class="wfq-title">{{ section.settings.q_title }}{% if section.settings.q_title_highlight != blank %} <span class="wfq-hl">{{ section.settings.q_title_highlight }}</span>{% endif %}</h2>
+      {%- if section.settings.q_text != blank -%}<div class="wfq-text">{{ section.settings.q_text }}</div>{%- endif -%}
+
+      {%- if section.settings.q_avatar_1 != blank or section.settings.q_avatar_2 != blank or section.settings.q_avatar_3 != blank -%}
+        <div class="wfq-avatars">
+          {%- for i in (1..3) -%}
+            {%- assign key = 'q_avatar_' | append: i -%}
+            {%- if section.settings[key] != blank -%}
+              <span>{{ section.settings[key] | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.q_button_label != blank -%}
+        <a class="wfq-btn" href="{{ section.settings.q_button_url | default: '#' }}"><span>{{ section.settings.q_button_label }}</span></a>
+      {%- endif -%}
+    </div>
+
+    <div class="wfq-list">
+      {%- assign question_blocks = section.blocks | where: 'type', 'question' -%}
+      {%- for block in question_blocks -%}
+        <div class="wfq-item{% if forloop.first and section.settings.q_open_first %} is-open{% endif %}" {{ block.shopify_attributes }}>
+          <button type="button" class="wfq-q" aria-expanded="{% if forloop.first and section.settings.q_open_first %}true{% else %}false{% endif %}">
+            <span>{{ block.settings.question }}</span><span class="wfq-icon" aria-hidden="true"></span>
+          </button>
+          <div class="wfq-a"{% if forloop.first and section.settings.q_open_first %} style="max-height:none"{% endif %}>
+            <div class="wfq-a-inner">{{ block.settings.answer }}</div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    function init(root) {
+      if (!root || root.__wfq) return; root.__wfq = true;
+      root.addEventListener('click', function (e) {
+        var btn = e.target.closest && e.target.closest('.wfq-q'); if (!btn) return;
+        var item = btn.parentElement, open = item.classList.contains('is-open');
+        root.querySelectorAll('.wfq-item').forEach(function (it) {
+          it.classList.remove('is-open'); it.querySelector('.wfq-a').style.maxHeight = '0px';
+          it.querySelector('.wfq-q').setAttribute('aria-expanded', 'false');
+        });
+        if (!open) {
+          var a = item.querySelector('.wfq-a');
+          item.classList.add('is-open'); a.style.maxHeight = a.scrollHeight + 'px'; btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    }
+    document.querySelectorAll('[data-wfq]').forEach(init);
+    document.addEventListener('shopify:section:load', function (e) { init(e.target.querySelector('[data-wfq]')); });
+  })();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Wake · Inicio",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colores de marca"
+    },
+    {
+      "type": "color",
+      "id": "sun_1",
+      "label": "Degradado 1",
+      "default": "#FFD93D"
+    },
+    {
+      "type": "color",
+      "id": "sun_2",
+      "label": "Degradado 2",
+      "default": "#FF9F1C"
+    },
+    {
+      "type": "color",
+      "id": "sun_3",
+      "label": "Degradado 3",
+      "default": "#FF5E3A"
+    },
+    {
+      "type": "header",
+      "content": "1 · Portada"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hero",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "1 · Portada · Imágenes"
+    },
+    {
+      "type": "image_picker",
+      "id": "h_bg_image",
+      "label": "Imagen de fondo"
+    },
+    {
+      "type": "select",
+      "id": "h_bg_position",
+      "label": "Posición de la imagen",
+      "default": "center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Izquierda"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        },
+        {
+          "value": "right",
+          "label": "Derecha"
+        }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "h_cutout_image",
+      "label": "Recorte delante de la palabra gigante (opcional)",
+      "info": "PNG sin fondo (persona o producto). Se coloca delante de la palabra gigante, como en la competencia."
+    },
+    {
+      "type": "range",
+      "id": "h_cutout_x",
+      "label": "Posición horizontal del recorte",
+      "min": 30,
+      "max": 90,
+      "step": 1,
+      "unit": "%",
+      "default": 62
+    },
+    {
+      "type": "range",
+      "id": "h_cutout_h",
+      "label": "Altura del recorte",
+      "min": 50,
+      "max": 110,
+      "step": 2,
+      "unit": "%",
+      "default": 96
+    },
+    {
+      "type": "checkbox",
+      "id": "h_grayscale",
+      "label": "Fotos en blanco y negro",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "h_overlay",
+      "label": "Oscurecer la foto (lado izquierdo)",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 75
+    },
+    {
+      "type": "header",
+      "content": "1 · Portada · Textos"
+    },
+    {
+      "type": "text",
+      "id": "h_title_1",
+      "label": "Titular línea 1 (larga)",
+      "default": "Deep sleepers"
+    },
+    {
+      "type": "text",
+      "id": "h_title_2",
+      "label": "Titular línea 2 (junto a la palabra gigante)",
+      "default": "Deserve"
+    },
+    {
+      "type": "checkbox",
+      "id": "h_title_2_gradient",
+      "label": "Línea 2 en degradado",
+      "default": false
+    },
+    {
+      "type": "font_picker",
+      "id": "h_title_font",
+      "label": "Tipografía del titular",
+      "default": "anton_n4"
+    },
+    {
+      "type": "text",
+      "id": "h_big_word",
+      "label": "Palabra gigante de fondo",
+      "default": "CALM"
+    },
+    {
+      "type": "color",
+      "id": "h_bigword_color",
+      "label": "Color de la palabra gigante",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "textarea",
+      "id": "h_subtitle",
+      "label": "Subtítulo",
+      "default": "No blaring alarms. No stress. Just a silent vibration on your wrist that wakes you, and only you."
+    },
+    {
+      "type": "header",
+      "content": "1 · Portada · Valoración"
+    },
+    {
+      "type": "checkbox",
+      "id": "h_show_rating",
+      "label": "Mostrar valoración",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "h_score",
+      "label": "Nota",
+      "default": "4.8/ 5"
+    },
+    {
+      "type": "text",
+      "id": "h_count_top",
+      "label": "Texto 1 (junto a las estrellas)",
+      "default": "3,600+"
+    },
+    {
+      "type": "text",
+      "id": "h_count_bottom",
+      "label": "Texto 2",
+      "default": "Happy Sleepers"
+    },
+    {
+      "type": "header",
+      "content": "1 · Portada · Botón"
+    },
+    {
+      "type": "text",
+      "id": "h_button_label",
+      "label": "Texto del botón",
+      "default": "Shop Now"
+    },
+    {
+      "type": "product",
+      "id": "h_product",
+      "label": "Producto al que lleva el botón"
+    },
+    {
+      "type": "url",
+      "id": "h_button_url",
+      "label": "O un enlace personalizado",
+      "info": "Si lo dejas vacío, el botón lleva al producto elegido arriba."
+    },
+    {
+      "type": "header",
+      "content": "1 · Portada · Tamaño"
+    },
+    {
+      "type": "range",
+      "id": "h_height",
+      "label": "Altura (ordenador)",
+      "min": 500,
+      "max": 1000,
+      "step": 20,
+      "unit": "px",
+      "default": 800
+    },
+    {
+      "type": "range",
+      "id": "h_height_mobile",
+      "label": "Altura (móvil)",
+      "min": 400,
+      "max": 900,
+      "step": 20,
+      "unit": "px",
+      "default": 640
+    },
+    {
+      "type": "header",
+      "content": "1 · Portada · Tira de testimonios"
+    },
+    {
+      "type": "paragraph",
+      "content": "Añade bloques \"Persona\" para mostrar una tira que se desliza bajo la portada. Sin bloques no se muestra."
+    },
+    {
+      "type": "range",
+      "id": "h_strip_speed",
+      "label": "Velocidad (más alto = más lento)",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "s",
+      "default": 35
+    },
+    {
+      "type": "color",
+      "id": "h_strip_bg",
+      "label": "Fondo de la tira",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "h_strip_text",
+      "label": "Texto de la tira",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "header",
+      "content": "1 · Portada · colores"
+    },
+    {
+      "type": "color",
+      "id": "h_bg",
+      "label": "Fondo",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "color",
+      "id": "h_text",
+      "label": "Texto",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "h_button_text",
+      "label": "Texto del botón",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "header",
+      "content": "2 · Producto destacado"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "product",
+      "id": "p_product",
+      "label": "Producto",
+      "info": "El precio sale de aquí y el botón lleva a este producto."
+    },
+    {
+      "type": "image_picker",
+      "id": "p_image",
+      "label": "Imagen (opcional)",
+      "info": "Vacío = la foto principal del producto."
+    },
+    {
+      "type": "select",
+      "id": "p_image_fit",
+      "label": "Ajuste de la imagen",
+      "default": "cover",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Rellenar el recuadro"
+        },
+        {
+          "value": "contain",
+          "label": "Mostrar entera"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "p_badge",
+      "label": "Etiqueta",
+      "default": "NEW"
+    },
+    {
+      "type": "text",
+      "id": "p_title",
+      "label": "Título",
+      "info": "Vacío = nombre del producto."
+    },
+    {
+      "type": "richtext",
+      "id": "p_text",
+      "label": "Texto bajo el título (opcional)"
+    },
+    {
+      "type": "text",
+      "id": "p_compare_price",
+      "label": "Precio tachado (opcional)",
+      "info": "Ej: 79,95. Vacío = el 'Precio de comparación' del producto."
+    },
+    {
+      "type": "checkbox",
+      "id": "p_show_pct",
+      "label": "Mostrar % de descuento",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "p_pct_suffix",
+      "label": "Texto tras el %",
+      "default": "% OFF"
+    },
+    {
+      "type": "text",
+      "id": "p_button_label",
+      "label": "Texto del botón",
+      "default": "Shop now"
+    },
+    {
+      "type": "header",
+      "content": "2 · Producto destacado · Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "p_pad_top",
+      "label": "Margen arriba",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "p_pad_bottom",
+      "label": "Margen abajo",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "header",
+      "content": "2 · Producto destacado · colores"
+    },
+    {
+      "type": "color",
+      "id": "p_bg",
+      "label": "Fondo de la sección",
+      "default": "#F8F8F9"
+    },
+    {
+      "type": "color",
+      "id": "p_box_bg",
+      "label": "Fondo de la tarjeta",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "p_media_bg",
+      "label": "Fondo de la imagen",
+      "default": "#F1F1F3"
+    },
+    {
+      "type": "color",
+      "id": "p_info_bg",
+      "label": "Fondo de la parte derecha",
+      "default": "#F8F8F9"
+    },
+    {
+      "type": "color",
+      "id": "p_text_color",
+      "label": "Texto",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "color",
+      "id": "p_button_bg",
+      "label": "Botón: fondo",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "color",
+      "id": "p_button_text",
+      "label": "Botón: texto",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "p_button_text_dark",
+      "label": "Texto sobre el degradado",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "header",
+      "content": "3 · Preguntas"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_faq",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "q_title",
+      "label": "Título",
+      "default": "Got Questions About"
+    },
+    {
+      "type": "text",
+      "id": "q_title_highlight",
+      "label": "Título: parte en degradado",
+      "default": "WakeMute?"
+    },
+    {
+      "type": "richtext",
+      "id": "q_text",
+      "label": "Texto",
+      "default": "<p>Quick answers to the most common questions, from shipping to how it works.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "q_avatar_1",
+      "label": "Foto de cliente 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "q_avatar_2",
+      "label": "Foto de cliente 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "q_avatar_3",
+      "label": "Foto de cliente 3"
+    },
+    {
+      "type": "text",
+      "id": "q_button_label",
+      "label": "Texto del botón",
+      "default": "Go to Support Centre"
+    },
+    {
+      "type": "url",
+      "id": "q_button_url",
+      "label": "Enlace del botón"
+    },
+    {
+      "type": "checkbox",
+      "id": "q_open_first",
+      "label": "Primera pregunta abierta",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "3 · Preguntas · Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "q_pad_top",
+      "label": "Margen arriba",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "q_pad_bottom",
+      "label": "Margen abajo",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "header",
+      "content": "3 · Preguntas · colores"
+    },
+    {
+      "type": "color",
+      "id": "q_bg",
+      "label": "Fondo",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "q_text_color",
+      "label": "Texto",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "color",
+      "id": "q_muted",
+      "label": "Texto secundario",
+      "default": "#4B5563"
+    },
+    {
+      "type": "color",
+      "id": "q_list_bg",
+      "label": "Fondo de la lista",
+      "default": "#F4F4F5"
+    },
+    {
+      "type": "color",
+      "id": "q_item_bg",
+      "label": "Fondo de cada pregunta",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "q_button_bg",
+      "label": "Botón: fondo",
+      "default": "#0A0A0C"
+    },
+    {
+      "type": "color",
+      "id": "q_button_text",
+      "label": "Botón: texto",
+      "default": "#FFFFFF"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "person",
+      "name": "1 · Persona (tira)",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Foto"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Nombre",
+          "default": "Nombre"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Descripción",
+          "default": "Verified buyer"
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Insignia de verificado",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "question",
+      "name": "3 · Pregunta",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Pregunta",
+          "default": "Do you ship overseas?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Respuesta",
+          "default": "<p>Yes, we ship internationally.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wake · Inicio",
+      "blocks": [
+        {
+          "type": "question",
+          "settings": {
+            "question": "Do you ship overseas?",
+            "answer": "<p>Yes! We ship internationally, and shipping costs are calculated at checkout.</p><p>We run discounts and promotions all year, so keep an eye out for free-shipping deals.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "How long will it take to get my order?",
+            "answer": "<p>Orders are processed in 1–3 business days. Delivery usually takes 5–10 business days depending on your location. You'll receive a tracking number by email.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Will it really wake me up?",
+            "answer": "<p>Yes. The vibration builds gradually on your wrist, which your brain can't tune out like sound. It's made especially for heavy sleepers.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "What is the money-back guarantee?",
+            "answer": "<p>If you're not happy, contact us within the guarantee period and we'll help you with a return and refund.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "Other questions?",
+            "answer": "<p>Write to us at wakemute@gmail.com and we'll get back to you as soon as possible.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
