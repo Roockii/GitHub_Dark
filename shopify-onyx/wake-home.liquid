@@ -23,12 +23,16 @@
 -%}
 
 {%- style -%}
-  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap');
-  {{ section.settings.h_title_font | font_face: font_display: 'swap' }}
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wdth,wght@62..125,800..900&family=Inter:wght@400;500;600;700;800&display=swap');
+  {%- if section.settings.h_title_style == 'custom' -%}{{ section.settings.h_title_font | font_face: font_display: 'swap' }}{%- endif -%}
   #wh-{{ section.id }} {
     --wh-sun: linear-gradient(135deg, {{ section.settings.sun_1 }} 0%, {{ section.settings.sun_2 }} 50%, {{ section.settings.sun_3 }} 100%);
     --wh-sun-2: {{ section.settings.sun_2 }};
-    --wh-display: {{ section.settings.h_title_font.family }}, 'Anton', 'Impact', 'Arial Narrow', sans-serif;
+    {%- case section.settings.h_title_style -%}
+      {%- when 'anton' -%}--wh-display: 'Anton', 'Impact', sans-serif; --wh-weight: 400; --wh-stretch: 100%; --wh-track: 0;
+      {%- when 'custom' -%}--wh-display: {{ section.settings.h_title_font.family }}, {{ section.settings.h_title_font.fallback_families }}; --wh-weight: {{ section.settings.h_title_font.weight }}; --wh-stretch: 100%; --wh-track: -.01em;
+      {%- else -%}--wh-display: 'Archivo', 'Archivo Black', 'Arial Black', sans-serif; --wh-weight: 900; --wh-stretch: {{ section.settings.h_width }}%; --wh-track: -.035em;
+    {%- endcase -%}
     position: relative; overflow: hidden; isolation: isolate;
     background: {{ section.settings.h_bg }};
     color: {{ section.settings.h_text }};
@@ -48,7 +52,7 @@
 
   #wh-{{ section.id }} .wh-content { position: relative; margin: 0 auto; padding: 72px 7.6vw 72px; }
   #wh-{{ section.id }} .wh-title, #wh-{{ section.id }} .wh-sub, #wh-{{ section.id }} .wh-rating, #wh-{{ section.id }} .wh-btn { position: relative; z-index: 3; }
-  #wh-{{ section.id }} .wh-title { margin: 0; font-family: var(--wh-display); font-weight: 400; text-transform: uppercase; line-height: .86; letter-spacing: 0; }
+  #wh-{{ section.id }} .wh-title { margin: 0; font-family: var(--wh-display); font-weight: var(--wh-weight); font-stretch: var(--wh-stretch); text-transform: uppercase; line-height: .86; letter-spacing: var(--wh-track); word-spacing: .1em; }
   #wh-{{ section.id }} .wh-l1, #wh-{{ section.id }} .wh-l2 { display: block; font-size: clamp(56px, 7.4vw, 142px); white-space: nowrap; }
   #wh-{{ section.id }} .wh-l2wrap { position: relative; display: inline-block; font-size: clamp(56px, 7.4vw, 142px); }
   #wh-{{ section.id }} .wh-l2wrap .wh-l2 { font-size: 1em; }
@@ -58,7 +62,7 @@
 
   #wh-{{ section.id }} .wh-bigword {
     position: absolute; z-index: 1; left: calc(100% + .12em); top: .02em;
-    font-family: var(--wh-display); font-size: 2.62em; line-height: .8; text-transform: uppercase;
+    font-family: var(--wh-display); font-weight: var(--wh-weight); font-stretch: var(--wh-stretch); letter-spacing: var(--wh-track); font-size: {{ section.settings.h_bigword_size | divided_by: 100.0 }}em; line-height: .78; text-transform: uppercase;
     color: {{ section.settings.h_bigword_color }}; white-space: nowrap; pointer-events: none;
   }
   #wh-{{ section.id }} .wh-cutout { position: absolute; z-index: 2; left: {{ section.settings.h_cutout_x }}%; bottom: 0; height: {{ section.settings.h_cutout_h }}%; transform: translateX(-50%); pointer-events: none; }
@@ -477,7 +481,8 @@
       "max": 90,
       "step": 1,
       "unit": "%",
-      "default": 62
+      "default": 58,
+      "info": "Colócalo sobre una letra del centro de la palabra gigante (como la O de la competencia)."
     },
     {
       "type": "range",
@@ -528,10 +533,51 @@
       "default": false
     },
     {
+      "type": "select",
+      "id": "h_title_style",
+      "label": "Tipo de letra del titular",
+      "default": "wide",
+      "options": [
+        {
+          "value": "wide",
+          "label": "Ancha y gruesa (como la competencia)"
+        },
+        {
+          "value": "anton",
+          "label": "Estrecha (Anton)"
+        },
+        {
+          "value": "custom",
+          "label": "Elegir en la biblioteca de Shopify"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "h_width",
+      "label": "Anchura de la letra",
+      "min": 62,
+      "max": 125,
+      "step": 1,
+      "unit": "%",
+      "default": 75,
+      "info": "Solo para \"Ancha y gruesa\"."
+    },
+    {
       "type": "font_picker",
       "id": "h_title_font",
-      "label": "Tipografía del titular",
-      "default": "anton_n4"
+      "label": "Tipografía (si eliges biblioteca)",
+      "default": "archivo_n9"
+    },
+    {
+      "type": "range",
+      "id": "h_bigword_size",
+      "label": "Tamaño de la palabra gigante",
+      "min": 150,
+      "max": 320,
+      "step": 5,
+      "unit": "%",
+      "default": 230
     },
     {
       "type": "text",
