@@ -64,7 +64,16 @@
     position: absolute; z-index: 1; left: calc(100% + .12em); top: .02em;
     font-family: var(--wh-display); font-weight: var(--wh-weight); font-stretch: {% if section.settings.h_title_style == 'wide' %}{{ section.settings.h_bigword_width }}%{% else %}var(--wh-stretch){% endif %}; letter-spacing: -.02em; font-size: {{ section.settings.h_bigword_size | divided_by: 100.0 }}em; line-height: .78; text-transform: uppercase;
     color: {{ section.settings.h_bigword_color }}; white-space: nowrap; pointer-events: none;
+    transform: translate({{ section.settings.h_bigword_x | default: 0 }}vw, {{ section.settings.h_bigword_y | default: 0 }}vw);
   }
+  /* Recorte alineado: misma foto que el fondo, solo la persona, encima de la palabra gigante */
+  #wh-{{ section.id }} .wh-cutfull { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+  #wh-{{ section.id }} .wh-cutfull img { width: 100%; height: 100%; object-fit: cover; object-position: {{ section.settings.h_bg_position }}; display: block;
+    {% if section.settings.h_grayscale %}filter: grayscale(1) contrast(1.05);{% endif %} }
+  #wh-{{ section.id }} .wh-cutshade { position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 60% 45%, rgba(0,0,0,0) 0%, rgba(0,0,0,{{ section.settings.h_overlay | divided_by: 200.0 }}) 60%, rgba(0,0,0,{{ section.settings.h_overlay | divided_by: 100.0 }}) 100%),
+      linear-gradient(90deg, rgba(0,0,0,{{ section.settings.h_overlay | divided_by: 120.0 }}) 0%, rgba(0,0,0,0) 60%);
+    -webkit-mask: var(--wh-cutmask) {{ section.settings.h_bg_position }} / cover no-repeat; mask: var(--wh-cutmask) {{ section.settings.h_bg_position }} / cover no-repeat; }
   #wh-{{ section.id }} .wh-cutout { position: absolute; z-index: 2; left: {{ section.settings.h_cutout_x }}%; bottom: 0; height: {{ section.settings.h_cutout_h }}%; transform: translateX(-50%); pointer-events: none; }
   #wh-{{ section.id }} .wh-cutout img { height: 100%; width: auto; display: block; {% if section.settings.h_grayscale %}filter: grayscale(1) contrast(1.05);{% endif %} }
 
@@ -101,7 +110,8 @@
     #wh-{{ section.id }} .wh-content { padding: 48px 20px 36px; }
     #wh-{{ section.id }} .wh-l1, #wh-{{ section.id }} .wh-l2, #wh-{{ section.id }} .wh-l2wrap { font-size: 15.5vw; white-space: normal; }
     #wh-{{ section.id }} .wh-l2wrap .wh-l2 { font-size: 1em; }
-    #wh-{{ section.id }} .wh-bigword { left: auto; right: auto; top: auto; position: relative; display: block; font-size: 2.5em; margin-top: .06em; }
+    #wh-{{ section.id }} .wh-bigword { left: auto; right: auto; top: auto; position: relative; display: block; font-size: 1.75em; margin-top: .08em; transform: none; }
+    #wh-{{ section.id }} .wh-cutfull { display: none; }
     #wh-{{ section.id }} .wh-l2wrap { display: block; }
     #wh-{{ section.id }} .wh-sub { max-width: 22em; }
     #wh-{{ section.id }} .wh-cutout { left: 72%; height: 58%; }
@@ -119,7 +129,13 @@
     {%- endif -%}
 
 
-    {%- if section.settings.h_cutout_image != blank -%}
+    {%- if section.settings.h_cutout_image != blank and section.settings.h_cutout_aligned -%}
+      {%- assign cut_src = section.settings.h_cutout_image | image_url: width: 2400 -%}
+      <div class="wh-cutfull" aria-hidden="true" style="--wh-cutmask:url('{{ cut_src }}')">
+        {{ section.settings.h_cutout_image | image_url: width: 2400 | image_tag: loading: 'eager', widths: '750, 1100, 1600, 2400', sizes: '100vw', alt: '' }}
+        <div class="wh-cutshade"></div>
+      </div>
+    {%- elsif section.settings.h_cutout_image != blank -%}
       <div class="wh-cutout" aria-hidden="true">
         {{ section.settings.h_cutout_image | image_url: width: 1400 | image_tag: loading: 'eager', alt: '' }}
       </div>
@@ -474,6 +490,13 @@
       "info": "PNG sin fondo (persona o producto). Se coloca delante de la palabra gigante, como en la competencia."
     },
     {
+      "type": "checkbox",
+      "id": "h_cutout_aligned",
+      "label": "El recorte es la misma foto del fondo (se alinea sola)",
+      "default": true,
+      "info": "Actívalo si el recorte tiene el mismo tamaño que la foto de fondo (solo la persona, sin fondo). Así queda justo encima, delante de la palabra gigante."
+    },
+    {
       "type": "range",
       "id": "h_cutout_x",
       "label": "Posición horizontal del recorte",
@@ -577,7 +600,7 @@
       "max": 320,
       "step": 5,
       "unit": "%",
-      "default": 238
+      "default": 210
     },
     {
       "type": "range",
@@ -588,6 +611,26 @@
       "step": 1,
       "unit": "%",
       "default": 88
+    },
+    {
+      "type": "range",
+      "id": "h_bigword_x",
+      "label": "Mover palabra gigante (horizontal)",
+      "min": -10,
+      "max": 30,
+      "step": 1,
+      "unit": "vw",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "h_bigword_y",
+      "label": "Mover palabra gigante (vertical)",
+      "min": -10,
+      "max": 30,
+      "step": 1,
+      "unit": "vw",
+      "default": -2
     },
     {
       "type": "text",
