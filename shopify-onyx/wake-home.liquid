@@ -57,15 +57,19 @@
   #wh-{{ section.id }} .wh-l2wrap { position: relative; display: inline-block; font-size: clamp(56px, 7.4vw, 142px); }
   #wh-{{ section.id }} .wh-l2wrap .wh-l2 { font-size: 1em; }
   #wh-{{ section.id }} .wh-title { position: static; }
-  #wh-{{ section.id }} .wh-title .wh-l1, #wh-{{ section.id }} .wh-title .wh-l2 { position: relative; z-index: 3; }
+  #wh-{{ section.id }} .wh-title .wh-l1, #wh-{{ section.id }} .wh-title .wh-l2 { position: relative; z-index: 4; }
   #wh-{{ section.id }} .wh-hl { background-image: var(--wh-sun); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
   #wh-{{ section.id }} .wh-bigword {
     position: absolute; z-index: 1; left: calc(100% + .12em); top: .02em;
-    font-family: var(--wh-display); font-weight: var(--wh-weight); font-stretch: {% if section.settings.h_title_style == 'wide' %}{{ section.settings.h_bigword_width }}%{% else %}var(--wh-stretch){% endif %}; letter-spacing: -.02em; font-size: {{ section.settings.h_bigword_size | divided_by: 100.0 }}em; line-height: .78; text-transform: uppercase;
+    font-family: var(--wh-display); font-weight: var(--wh-weight); font-stretch: {% if section.settings.h_title_style == 'wide' %}{{ section.settings.h_word_width }}%{% else %}var(--wh-stretch){% endif %}; letter-spacing: -.02em; font-size: {{ section.settings.h_word_size | divided_by: 100.0 }}em; line-height: .78; text-transform: uppercase;
     color: {{ section.settings.h_bigword_color }}; white-space: nowrap; pointer-events: none;
-    transform: translate({{ section.settings.h_bigword_x | default: 0 }}vw, {{ section.settings.h_bigword_y | default: 0 }}vw);
+    transform: translate({{ section.settings.h_word_x | default: 0 }}vw, {{ section.settings.h_word_y | default: 0 }}vw);
   }
+  /* Copia de la palabra por delante de la persona: la letra nunca desaparece */
+  #wh-{{ section.id }} .wh-bigword.wh-bigfront { z-index: 3;
+    {%- if section.settings.h_word_front == 'outline' %} color: transparent; -webkit-text-stroke: max(2px, .012em) {{ section.settings.h_bigword_color }}; opacity: {{ section.settings.h_word_front_opacity | divided_by: 100.0 }};
+    {%- else %} opacity: {{ section.settings.h_word_front_opacity | divided_by: 100.0 }};{%- endif %} }
   /* Recorte alineado: misma foto que el fondo, solo la persona, encima de la palabra gigante */
   #wh-{{ section.id }} .wh-cutfull { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
   #wh-{{ section.id }} .wh-cutfull img { width: 100%; height: 100%; object-fit: cover; object-position: {{ section.settings.h_bg_position }}; display: block;
@@ -111,7 +115,7 @@
     #wh-{{ section.id }} .wh-l1, #wh-{{ section.id }} .wh-l2, #wh-{{ section.id }} .wh-l2wrap { font-size: 15.5vw; white-space: normal; }
     #wh-{{ section.id }} .wh-l2wrap .wh-l2 { font-size: 1em; }
     #wh-{{ section.id }} .wh-bigword { left: auto; right: auto; top: auto; position: relative; display: block; font-size: 1.75em; margin-top: .08em; transform: none; }
-    #wh-{{ section.id }} .wh-cutfull { display: none; }
+    #wh-{{ section.id }} .wh-cutfull, #wh-{{ section.id }} .wh-bigword.wh-bigfront { display: none; }
     #wh-{{ section.id }} .wh-l2wrap { display: block; }
     #wh-{{ section.id }} .wh-sub { max-width: 22em; }
     #wh-{{ section.id }} .wh-cutout { left: 72%; height: 58%; }
@@ -146,7 +150,7 @@
         {%- if section.settings.h_title_1 != blank -%}<span class="wh-l1">{{ section.settings.h_title_1 }}</span>{%- endif -%}
         <span class="wh-l2wrap">
           {%- if section.settings.h_title_2 != blank -%}<span class="wh-l2{% if section.settings.h_title_2_gradient %} wh-hl{% endif %}">{{ section.settings.h_title_2 }}</span>{%- endif -%}
-          {%- if section.settings.h_big_word != blank -%}<span class="wh-bigword" aria-hidden="true">{{ section.settings.h_big_word }}</span>{%- endif -%}
+          {%- if section.settings.h_big_word != blank -%}<span class="wh-bigword" aria-hidden="true">{{ section.settings.h_big_word }}</span>{%- if section.settings.h_word_front != 'none' and section.settings.h_cutout_image != blank -%}<span class="wh-bigword wh-bigfront" aria-hidden="true">{{ section.settings.h_big_word }}</span>{%- endif -%}{%- endif -%}
         </span>
       </h1>
 
@@ -487,7 +491,7 @@
       "type": "image_picker",
       "id": "h_cutout_image",
       "label": "Recorte delante de la palabra gigante (opcional)",
-      "info": "PNG sin fondo (persona o producto). Se coloca delante de la palabra gigante, como en la competencia."
+      "info": "Sube la MISMA foto del fondo pasada por remove.bg (PNG sin fondo, mismo tamaño). La persona queda delante de la palabra y detrás del título."
     },
     {
       "type": "checkbox",
@@ -594,43 +598,74 @@
     },
     {
       "type": "range",
-      "id": "h_bigword_size",
+      "id": "h_word_size",
       "label": "Tamaño de la palabra gigante",
       "min": 150,
       "max": 320,
       "step": 5,
       "unit": "%",
-      "default": 210
+      "default": 245
     },
     {
       "type": "range",
-      "id": "h_bigword_width",
+      "id": "h_word_width",
       "label": "Anchura de la palabra gigante",
       "min": 62,
       "max": 125,
       "step": 1,
       "unit": "%",
-      "default": 88
+      "default": 100
     },
     {
       "type": "range",
-      "id": "h_bigword_x",
-      "label": "Mover palabra gigante (horizontal)",
-      "min": -10,
-      "max": 30,
+      "id": "h_word_x",
+      "min": -40,
+      "max": 40,
       "step": 1,
       "unit": "vw",
-      "default": 16
+      "label": "Palabra gigante: mover izquierda / derecha",
+      "default": 0
     },
     {
       "type": "range",
-      "id": "h_bigword_y",
-      "label": "Mover palabra gigante (vertical)",
-      "min": -10,
+      "id": "h_word_y",
+      "min": -30,
       "max": 30,
       "step": 1,
       "unit": "vw",
-      "default": -2
+      "label": "Palabra gigante: mover arriba / abajo",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "h_word_front",
+      "label": "Palabra encima de la persona",
+      "options": [
+        {
+          "value": "ghost",
+          "label": "Transparente (como la competencia)"
+        },
+        {
+          "value": "outline",
+          "label": "Solo contorno"
+        },
+        {
+          "value": "none",
+          "label": "No (la persona tapa la letra)"
+        }
+      ],
+      "default": "ghost",
+      "info": "Hace que la letra se siga viendo aunque la persona pase por delante"
+    },
+    {
+      "type": "range",
+      "id": "h_word_front_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Intensidad de la letra encima de la persona",
+      "default": 70
     },
     {
       "type": "text",
