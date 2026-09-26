@@ -99,6 +99,7 @@
 .onyx .main-media .glow{pointer-events:none;position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--sunrise-2) 35%,transparent),transparent 45%);}
 .onyx .main-media img{position:absolute;inset:0;}
 .onyx .main-media img:not(.is-active){display:none;}
+.onyx .thumb.is-off{display:none;}
 .onyx .thumbs{margin-top:calc(1*var(--r,16px));display:flex;gap:calc(.75*var(--r,16px));overflow-x:auto;}
 .onyx .thumb{flex-shrink:0;width:calc(4*var(--r,16px));height:calc(4*var(--r,16px));border-radius:calc(.75*var(--r,16px));overflow:hidden;opacity:.6;transition:opacity .2s;border:2px solid transparent;}
 .onyx .thumb:hover{opacity:1;}
@@ -490,6 +491,7 @@
   data-variant-compare="{{ current_variant.compare_at_price }}"
   data-variant-available="{{ current_variant.available }}"
   data-ignore-stock="{{ section.settings.ignore_stock }}"
+  data-media-by-color="{{ section.settings.media_by_color }}"
   data-each-always="{{ section.settings.each_always }}"
   data-pct-suffix="{{ section.settings.pct_suffix | escape }}"
   data-sticky-offset="{{ section.settings.sticky_offset }}"
@@ -554,13 +556,31 @@
             endif
           endfor
         endif
+        # Fotos por color: el texto alternativo de la foto = nombre del color
+        assign by_color = section.settings.media_by_color
+        assign cur_keys = ','
+        if by_color and current_variant
+          for o in current_variant.options
+            assign cur_keys = cur_keys | append: o | append: ','
+          endfor
+          assign cur_keys = cur_keys | downcase
+        endif
         assign gallery_count = 0
+        assign gallery_total = 0
         assign first_gallery_media = nil
         if p != blank
           for media in p.media
             assign mid = ',' | append: media.id | append: ','
             if media.preview_image
               unless variant_media_ids contains mid
+                assign gallery_total = gallery_total | plus: 1
+                assign mcol = media.alt | downcase | strip
+                assign mkey = ',' | append: mcol | append: ','
+                if by_color and mcol != blank
+                  unless cur_keys contains mkey
+                    continue
+                  endunless
+                endif
                 if gallery_count == 0
                   assign first_gallery_media = media
                 endif
@@ -571,13 +591,15 @@
         endif
       -%}
       <div class="main-media placeholder-img" data-main-media>
-        {%- if p != blank and gallery_count > 0 -%}
+        {%- if p != blank and gallery_total > 0 -%}
           {%- assign gi = 0 -%}
           {%- for media in p.media -%}
             {%- assign mid = ',' | append: media.id | append: ',' -%}
             {%- if media.preview_image -%}
               {%- unless variant_media_ids contains mid -%}
                 {%- assign media_alt = media.alt | default: p.title | escape -%}
+                {%- assign mcol = '' -%}
+                {%- if by_color -%}{%- assign mcol = media.alt | downcase | strip | escape -%}{%- endif -%}
                 {{
                   media.preview_image
                   | image_url: width: 1400
@@ -588,7 +610,8 @@
                     widths: '400, 700, 1000, 1400',
                     alt: media_alt,
                     data-media-index: gi,
-                    data-media-id: media.id
+                    data-media-id: media.id,
+                    data-color: mcol
                 }}
                 {%- assign gi = gi | plus: 1 -%}
               {%- endunless -%}
@@ -599,14 +622,27 @@
         {%- endif -%}
       </div>
 
-      {%- if gallery_count > 1 -%}
+      {%- if gallery_total > 1 -%}
         <div class="thumbs no-scrollbar">
           {%- assign gi = 0 -%}
           {%- for media in p.media -%}
             {%- assign mid = ',' | append: media.id | append: ',' -%}
             {%- if media.preview_image -%}
               {%- unless variant_media_ids contains mid -%}
-                <button type="button" class="thumb placeholder-img{% if gi == 0 %} is-active{% endif %}" data-thumb="{{ gi }}" aria-label="Imagen {{ gi | plus: 1 }}">
+                {%- liquid
+                  assign mcol = ''
+                  assign thide = false
+                  if by_color
+                    assign mcol = media.alt | downcase | strip
+                    assign mkey = ',' | append: mcol | append: ','
+                    if mcol != blank
+                      unless cur_keys contains mkey
+                        assign thide = true
+                      endunless
+                    endif
+                  endif
+                -%}
+                <button type="button" class="thumb placeholder-img{% if gi == 0 %} is-active{% endif %}{% if thide %} is-off{% endif %}" data-thumb="{{ gi }}" data-color="{{ mcol | escape }}" aria-label="Imagen {{ gi | plus: 1 }}">
                   {{ media.preview_image | image_url: width: 200 | image_tag: class: 'media-cover', loading: 'lazy', alt: '' }}
                 </button>
                 {%- assign gi = gi | plus: 1 -%}
@@ -1204,6 +1240,7 @@
       var v = this.product.variants.find(function (x) { return x.id === id; });
       if (!v) return;
       this.variant = v;
+      if (this.root.dataset.mediaByColor === 'true') { this.filterMedia(v); return; }
       if (showImage && v.featured_media) {
         var img = this.root.querySelector('[data-media-id="' + v.featured_media.id + '"]');
         if (img) this.showMedia(+img.dataset.mediaIndex);
@@ -1238,13 +1275,14 @@
       root.querySelectorAll('[data-thumb]').forEach(function (t) {
         t.addEventListener('click', function () { self.showMedia(+t.dataset.thumb); });
       });
-      this.showMedia(0);
+      if (root.dataset.mediaByColor === 'true' && this.variant) this.filterMedia(this.variant); else this.showMedia(0);
 
       // Variantes
       var sel = this.$('[data-variant-select]');
       if (sel) sel.addEventListener('change', function () {
         self.variant = self.product.variants.find(function (v) { return v.id === +sel.value; });
-        if (self.variant && self.variant.featured_media) {
+        if (self.variant && root.dataset.mediaByColor === 'true') self.filterMedia(self.variant);
+        else if (self.variant && self.variant.featured_media) {
           var img = root.querySelector('[data-media-id="' + self.variant.featured_media.id + '"]');
           if (img) self.showMedia(+img.dataset.mediaIndex);
         }
@@ -1301,11 +1339,33 @@
       }
     };
 
+    // Solo las fotos cuyo texto alternativo coincide con el color elegido (las que no tienen texto salen siempre)
+    OnyxProduct.prototype.filterMedia = function (v) {
+      var keys = (v.options || [v.title]).map(function (o) { return String(o).trim().toLowerCase(); });
+      function ok(el) { var c = (el.dataset.color || '').trim(); return !c || keys.indexOf(c) > -1; }
+      var first = null;
+      this.root.querySelectorAll('[data-thumb]').forEach(function (t) {
+        var show = ok(t); t.classList.toggle('is-off', !show);
+        if (show && first === null) first = +t.dataset.thumb;
+      });
+      this.root.querySelectorAll('[data-main-media] img').forEach(function (img) {
+        img.classList.toggle('is-off', !ok(img));
+        if (first === null && ok(img)) first = +img.dataset.mediaIndex;
+      });
+      var thumbs = this.root.querySelector('.thumbs');
+      if (thumbs) thumbs.hidden = this.root.querySelectorAll('[data-thumb]:not(.is-off)').length < 2;
+      this.showMedia(first === null ? 0 : first);
+    };
+
     OnyxProduct.prototype.showMedia = function (index) {
-      var imgs = this.root.querySelectorAll('[data-main-media] img');
+      var imgs = this.root.querySelectorAll('[data-main-media] img:not(.is-off)');
+      if (!imgs.length) imgs = this.root.querySelectorAll('[data-main-media] img');
       if (!imgs.length) return;
-      imgs.forEach(function (img) { img.classList.toggle('is-active', +img.dataset.mediaIndex === index); });
-      if (!this.root.querySelector('[data-main-media] img.is-active')) imgs[0].classList.add('is-active');
+      this.root.querySelectorAll('[data-main-media] img').forEach(function (img) { img.classList.toggle('is-active', +img.dataset.mediaIndex === index); });
+      if (!this.root.querySelector('[data-main-media] img.is-active:not(.is-off)')) {
+        this.root.querySelectorAll('[data-main-media] img.is-active').forEach(function (img) { img.classList.remove('is-active'); });
+        imgs[0].classList.add('is-active'); index = +imgs[0].dataset.mediaIndex;
+      }
       this.root.querySelectorAll('[data-thumb]').forEach(function (t) { t.classList.toggle('is-active', +t.dataset.thumb === index); });
     };
 
@@ -1481,6 +1541,13 @@
       "label": "No mostrar en la galería las fotos de las variantes",
       "default": true,
       "info": "Las fotos asignadas a cada color solo salen en los cuadraditos de color, nunca en la galería principal. Sube las fotos de la galería al producto sin asignarlas a ninguna variante."
+    },
+    {
+      "type": "checkbox",
+      "id": "media_by_color",
+      "label": "Mostrar solo las fotos del color elegido",
+      "default": false,
+      "info": "En el producto, pon como texto alternativo de cada foto el nombre exacto de su color (ej: Black, Pink). Las fotos sin texto salen en todos los colores."
     },
     {
       "type": "paragraph",
