@@ -100,6 +100,8 @@
 .onyx .main-media img{position:absolute;inset:0;}
 .onyx .main-media img:not(.is-active){display:none;}
 .onyx .thumb.is-off{display:none;}
+.onyx .main-media img.is-off:not(.is-vshow){display:none;}
+.onyx .main-media img.is-vshow{display:block;}
 .onyx .thumbs{margin-top:calc(1*var(--r,16px));display:flex;gap:calc(.75*var(--r,16px));overflow-x:auto;}
 .onyx .thumb{flex-shrink:0;width:calc(4*var(--r,16px));height:calc(4*var(--r,16px));border-radius:calc(.75*var(--r,16px));overflow:hidden;opacity:.6;transition:opacity .2s;border:2px solid transparent;}
 .onyx .thumb:hover{opacity:1;}
@@ -603,6 +605,13 @@
               {%- endunless -%}
             {%- endif -%}
           {%- endfor -%}
+          {%- if by_color -%}
+            {%- for v in p.variants -%}
+              {%- if v.featured_media -%}
+                {{ v.featured_media.preview_image | image_url: width: 1400 | image_tag: class: 'media-cover is-off', loading: 'lazy', sizes: '(min-width: 1024px) 45vw, 100vw', widths: '400, 700, 1000, 1400', alt: v.title, data-media-index: -1, data-vimg: v.id }}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
         {%- else -%}
           <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="color:var(--sunrise-2)" stroke-width="1.2" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M12 9v3l2 1"/><path d="M5 3l2 2M19 3l-2 2"/></svg>
         {%- endif -%}
@@ -1322,31 +1331,37 @@
       ((this.product && this.product.variants) || [v]).forEach(function (x) {
         (x.options || [x.title]).forEach(function (o) { var n = norm(o); if (n.trim() && all.indexOf(n) < 0) all.push(n); });
       });
-      // Una foto es de un color si su texto alternativo contiene ese nombre (ej: "Pink", "pink 2", "Vyra pink front").
-      // Si no nombra ningún color del producto, sale siempre.
+      // Solo salen las fotos cuyo texto alternativo nombra el color elegido (ej: "Black", "black 2", "Vyra black front")
       function ok(el) {
         var c = norm(el.dataset.color);
-        var hits = all.filter(function (o) { return c.indexOf(o) > -1; });
-        if (!hits.length) return true;
-        return hits.some(function (o) { return cur.indexOf(o) > -1; });
+        return cur.some(function (o) { return o.trim() && c.indexOf(o) > -1; });
       }
       var first = null;
       this.root.querySelectorAll('[data-thumb]').forEach(function (t) {
         var show = ok(t); t.classList.toggle('is-off', !show);
         if (show && first === null) first = +t.dataset.thumb;
       });
-      this.root.querySelectorAll('[data-main-media] img').forEach(function (img) {
+      this.root.querySelectorAll('[data-main-media] img:not([data-vimg])').forEach(function (img) {
         img.classList.toggle('is-off', !ok(img));
         if (first === null && ok(img)) first = +img.dataset.mediaIndex;
       });
       var thumbs = this.root.querySelector('.thumbs');
       if (thumbs) thumbs.hidden = this.root.querySelectorAll('[data-thumb]:not(.is-off)').length < 2;
-      this.showMedia(first === null ? 0 : first);
+      // Color sin fotos propias: se enseña la foto de su cuadradito de color
+      this.root.querySelectorAll('[data-main-media] img').forEach(function (img) { img.classList.remove('is-vshow'); });
+      if (first === null) {
+        this.root.querySelectorAll('[data-main-media] img.is-active').forEach(function (img) { img.classList.remove('is-active'); });
+        var vi = this.root.querySelector('[data-main-media] img[data-vimg="' + v.id + '"]');
+        if (vi) vi.classList.add('is-vshow');
+        return;
+      }
+      this.showMedia(first);
     };
 
     OnyxProduct.prototype.showMedia = function (index) {
+      this.root.querySelectorAll('[data-main-media] img.is-vshow').forEach(function (img) { img.classList.remove('is-vshow'); });
       var imgs = this.root.querySelectorAll('[data-main-media] img:not(.is-off)');
-      if (!imgs.length) imgs = this.root.querySelectorAll('[data-main-media] img');
+      if (!imgs.length) imgs = this.root.querySelectorAll('[data-main-media] img:not([data-vimg])');
       if (!imgs.length) return;
       this.root.querySelectorAll('[data-main-media] img').forEach(function (img) { img.classList.toggle('is-active', +img.dataset.mediaIndex === index); });
       if (!this.root.querySelector('[data-main-media] img.is-active:not(.is-off)')) {
@@ -1534,7 +1549,7 @@
       "id": "media_by_color",
       "label": "Mostrar solo las fotos del color elegido",
       "default": false,
-      "info": "En el producto, pon en el texto alternativo de cada foto el nombre de su color tal como se llama la variante (ej: Black, Pink). Las fotos que no nombran ningún color salen siempre."
+      "info": "En el producto, pon en el texto alternativo de cada foto el nombre de su color tal como se llama la variante (ej: Black, Rose Red). Al elegir un color salen SOLO sus fotos."
     },
     {
       "type": "paragraph",
