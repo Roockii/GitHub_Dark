@@ -556,15 +556,8 @@
             endif
           endfor
         endif
-        # Fotos por color: el texto alternativo de la foto = nombre del color
+        # Fotos por color: el texto alternativo de la foto lleva el nombre del color (se filtra en el navegador)
         assign by_color = section.settings.media_by_color
-        assign cur_keys = ','
-        if by_color and current_variant
-          for o in current_variant.options
-            assign cur_keys = cur_keys | append: o | append: ','
-          endfor
-          assign cur_keys = cur_keys | downcase
-        endif
         assign gallery_count = 0
         assign gallery_total = 0
         assign first_gallery_media = nil
@@ -574,13 +567,6 @@
             if media.preview_image
               unless variant_media_ids contains mid
                 assign gallery_total = gallery_total | plus: 1
-                assign mcol = media.alt | downcase | strip
-                assign mkey = ',' | append: mcol | append: ','
-                if by_color and mcol != blank
-                  unless cur_keys contains mkey
-                    continue
-                  endunless
-                endif
                 if gallery_count == 0
                   assign first_gallery_media = media
                 endif
@@ -599,7 +585,7 @@
               {%- unless variant_media_ids contains mid -%}
                 {%- assign media_alt = media.alt | default: p.title | escape -%}
                 {%- assign mcol = '' -%}
-                {%- if by_color -%}{%- assign mcol = media.alt | downcase | strip | escape -%}{%- endif -%}
+                {%- if by_color -%}{%- assign mcol = media.alt | escape -%}{%- endif -%}
                 {{
                   media.preview_image
                   | image_url: width: 1400
@@ -629,20 +615,9 @@
             {%- assign mid = ',' | append: media.id | append: ',' -%}
             {%- if media.preview_image -%}
               {%- unless variant_media_ids contains mid -%}
-                {%- liquid
-                  assign mcol = ''
-                  assign thide = false
-                  if by_color
-                    assign mcol = media.alt | downcase | strip
-                    assign mkey = ',' | append: mcol | append: ','
-                    if mcol != blank
-                      unless cur_keys contains mkey
-                        assign thide = true
-                      endunless
-                    endif
-                  endif
-                -%}
-                <button type="button" class="thumb placeholder-img{% if gi == 0 %} is-active{% endif %}{% if thide %} is-off{% endif %}" data-thumb="{{ gi }}" data-color="{{ mcol | escape }}" aria-label="Imagen {{ gi | plus: 1 }}">
+                {%- assign mcol = '' -%}
+                {%- if by_color -%}{%- assign mcol = media.alt -%}{%- endif -%}
+                <button type="button" class="thumb placeholder-img{% if gi == 0 %} is-active{% endif %}" data-thumb="{{ gi }}" data-color="{{ mcol | escape }}" aria-label="Imagen {{ gi | plus: 1 }}">
                   {{ media.preview_image | image_url: width: 200 | image_tag: class: 'media-cover', loading: 'lazy', alt: '' }}
                 </button>
                 {%- assign gi = gi | plus: 1 -%}
@@ -1341,8 +1316,20 @@
 
     // Solo las fotos cuyo texto alternativo coincide con el color elegido (las que no tienen texto salen siempre)
     OnyxProduct.prototype.filterMedia = function (v) {
-      var keys = (v.options || [v.title]).map(function (o) { return String(o).trim().toLowerCase(); });
-      function ok(el) { var c = (el.dataset.color || '').trim(); return !c || keys.indexOf(c) > -1; }
+      function norm(t) { return ' ' + String(t || '').toLowerCase().replace(/[^0-9a-z\u00c0-\u024f]+/g, ' ').trim() + ' '; }
+      var cur = (v.options || [v.title]).map(norm);
+      var all = [];
+      ((this.product && this.product.variants) || [v]).forEach(function (x) {
+        (x.options || [x.title]).forEach(function (o) { var n = norm(o); if (n.trim() && all.indexOf(n) < 0) all.push(n); });
+      });
+      // Una foto es de un color si su texto alternativo contiene ese nombre (ej: "Pink", "pink 2", "Vyra pink front").
+      // Si no nombra ningún color del producto, sale siempre.
+      function ok(el) {
+        var c = norm(el.dataset.color);
+        var hits = all.filter(function (o) { return c.indexOf(o) > -1; });
+        if (!hits.length) return true;
+        return hits.some(function (o) { return cur.indexOf(o) > -1; });
+      }
       var first = null;
       this.root.querySelectorAll('[data-thumb]').forEach(function (t) {
         var show = ok(t); t.classList.toggle('is-off', !show);
@@ -1547,7 +1534,7 @@
       "id": "media_by_color",
       "label": "Mostrar solo las fotos del color elegido",
       "default": false,
-      "info": "En el producto, pon como texto alternativo de cada foto el nombre exacto de su color (ej: Black, Pink). Las fotos sin texto salen en todos los colores."
+      "info": "En el producto, pon en el texto alternativo de cada foto el nombre de su color tal como se llama la variante (ej: Black, Pink). Las fotos que no nombran ningún color salen siempre."
     },
     {
       "type": "paragraph",
