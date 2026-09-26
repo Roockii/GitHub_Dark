@@ -510,7 +510,6 @@
   data-variant-compare="{{ current_variant.compare_at_price }}"
   data-variant-available="{{ current_variant.available }}"
   data-ignore-stock="{{ section.settings.ignore_stock }}"
-  data-media-by-color="{{ section.settings.media_by_color }}"
   data-each-always="{{ section.settings.each_always }}"
   data-pct-suffix="{{ section.settings.pct_suffix | escape }}"
   data-sticky-offset="{{ section.settings.sticky_offset }}"
@@ -575,8 +574,7 @@
             endif
           endfor
         endif
-        # Fotos por color: el texto alternativo de la foto lleva el nombre del color (se filtra en el navegador)
-        assign by_color = section.settings.media_by_color
+        assign by_color = false
         assign gallery_count = 0
         assign gallery_total = 0
         assign first_gallery_media = nil
@@ -1617,13 +1615,6 @@
       "label": "No mostrar en la galería las fotos de las variantes",
       "default": true,
       "info": "Las fotos asignadas a cada color solo salen en los cuadraditos de color, nunca en la galería principal. Sube las fotos de la galería al producto sin asignarlas a ninguna variante."
-    },
-    {
-      "type": "checkbox",
-      "id": "media_by_color",
-      "label": "Mostrar solo las fotos del color elegido",
-      "default": false,
-      "info": "En el producto, pon en el texto alternativo de cada foto el nombre de su color tal como se llama la variante (ej: Black, Rose Red). Al elegir un color salen SOLO sus fotos."
     },
     {
       "type": "paragraph",
