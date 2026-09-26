@@ -337,7 +337,8 @@
    RESEÑAS
    ========================================================= */
 .onyx .rev-top{display:grid;gap:calc(2.5*var(--r,16px));align-items:center;padding-bottom:calc(3*var(--r,16px));border-bottom:1px solid #e5e7eb;}
-@media(min-width:768px){.onyx .rev-top{grid-template-columns:1fr 1fr;}}
+@media(min-width:768px){.onyx .rev-top{grid-template-columns:1fr 1fr;}.onyx .rev-top.rev-top--solo{grid-template-columns:1fr;}}
+.onyx .rev-top--solo{text-align:center;justify-items:center;}
 .onyx .rev-summary{margin-top:calc(1.5*var(--r,16px));font-weight:600;}
 .onyx .bars>*+*{margin-top:calc(.5*var(--r,16px));}
 .onyx .bar{display:flex;align-items:center;gap:calc(.75*var(--r,16px));font-size:calc(.875*var(--r,16px));}
@@ -1007,7 +1008,7 @@
       endif
     -%}
     <section id="reviews" class="onyx-wrap py-xl" style="scroll-margin-top:calc(2*var(--r,16px))">
-      <div class="fade-in rev-top">
+      <div class="fade-in rev-top{% if total_reviews <= 0 %} rev-top--solo{% endif %}">
         <div>
           <h2 class="h2-xl">{{ section.settings.reviews_heading }} {% if section.settings.reviews_highlight != blank %}<span class="text-sunrise">{{ section.settings.reviews_highlight }}</span>{% endif %}</h2>
           {%- if section.settings.loox_on -%}<p class="rev-summary">★★★★★ {{ loox_avg }} · {{ loox_num }} {{ section.settings.loox_word }}</p>{%- elsif section.settings.reviews_summary != blank -%}<p class="rev-summary">{{ section.settings.reviews_summary }}</p>{%- endif -%}
