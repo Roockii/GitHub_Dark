@@ -326,6 +326,10 @@
 .onyx .exp-grid{display:grid;gap:calc(1*var(--r,16px));}
 @media(min-width:768px){.onyx .exp-grid{grid-template-columns:repeat(3,1fr);}}
 .onyx .exp-card{height:100%;background:#fff;border-radius:calc(1*var(--r,16px));padding:calc(1.75*var(--r,16px));display:flex;flex-direction:column;gap:calc(1*var(--r,16px));transition:box-shadow .5s;}
+.onyx .exp-card.has-cover{padding:calc(.625*var(--r,16px)) calc(.625*var(--r,16px)) calc(1.5*var(--r,16px));}
+.onyx .exp-card.has-cover>*:not(.cover){margin-left:calc(1.125*var(--r,16px));margin-right:calc(1.125*var(--r,16px));}
+.onyx .exp-card .cover{aspect-ratio:1/1;border-radius:calc(.75*var(--r,16px));overflow:hidden;background:#e5e7eb;}
+.onyx .exp-card .cover img{width:100%;height:100%;object-fit:cover;display:block;}
 .onyx .exp-card .t{font-size:calc(1.25*var(--r,16px));font-weight:700;}
 .onyx .exp-card .x{color:#374151;flex:1;}
 .onyx .exp-card .who{padding-top:calc(1*var(--r,16px));border-top:1px solid #e5e7eb;display:flex;align-items:center;gap:calc(.75*var(--r,16px));}
@@ -977,7 +981,10 @@
       </div>
       <div class="exp-grid">
         {%- for block in expert_blocks -%}
-          <div class="fade-in exp-card hover-glow" {{ block.shopify_attributes }}>
+          <div class="fade-in exp-card hover-glow{% if block.settings.cover != blank %} has-cover{% endif %}" {{ block.shopify_attributes }}>
+            {%- if block.settings.cover != blank -%}
+              <div class="cover">{{ block.settings.cover | image_url: width: 900 | image_tag: loading: 'lazy', widths: '400, 600, 900', sizes: '(min-width: 768px) 33vw, 100vw', alt: block.settings.name }}</div>
+            {%- endif -%}
             <span class="stars" aria-label="{{ block.settings.stars }} de 5">{%- for i in (1..block.settings.stars) -%}★{%- endfor -%}</span>
             <p class="t">{{ block.settings.title }}</p>
             <div class="x">{{ block.settings.text }}</div>
@@ -994,7 +1001,13 @@
   {%- endif -%}
 
   {%- comment -%} ================= 7. RESEÑAS ================= {%- endcomment -%}
-  {%- if section.settings.show_reviews -%}
+  {%- liquid
+    assign show_rev = section.settings.show_reviews
+    if section.settings.loox_on and section.settings.reviews_head == false and section.settings.loox_widget == false
+      assign show_rev = false
+    endif
+  -%}
+  {%- if show_rev -%}
     {%- liquid
       assign initial = section.settings.reviews_initial
       assign bars = '5,4,3,2,1' | split: ','
@@ -1008,6 +1021,7 @@
       endif
     -%}
     <section id="reviews" class="onyx-wrap py-xl" style="scroll-margin-top:calc(2*var(--r,16px))">
+      {%- if section.settings.reviews_head -%}
       <div class="fade-in rev-top{% if total_reviews <= 0 %} rev-top--solo{% endif %}">
         <div>
           <h2 class="h2-xl">{{ section.settings.reviews_heading }} {% if section.settings.reviews_highlight != blank %}<span class="text-sunrise">{{ section.settings.reviews_highlight }}</span>{% endif %}</h2>
@@ -1030,6 +1044,7 @@
           </div>
         {%- endif -%}
       </div>
+      {%- endif -%}
 
       {%- if section.settings.loox_on -%}
         {%- if section.settings.loox_widget -%}
@@ -2068,6 +2083,12 @@
     },
     {
       "type": "checkbox",
+      "id": "reviews_head",
+      "label": "Mostrar título y nota ('Escéptico al principio…')",
+      "default": true
+    },
+    {
+      "type": "checkbox",
       "id": "loox_on",
       "label": "Usar reseñas de Loox",
       "info": "Nota y número salen de Loox y se ocultan tus tarjetas y barras. Desactívalo para volver a tu diseño.",
@@ -2363,6 +2384,11 @@
       "type": "expert",
       "name": "6 · Testimonio experto",
       "settings": [
+        {
+          "type": "image_picker",
+          "id": "cover",
+          "label": "Foto grande (arriba de la tarjeta)"
+        },
         {
           "type": "range",
           "id": "stars",
