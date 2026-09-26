@@ -109,6 +109,8 @@
 .onyx .info>*+*{margin-top:calc(1.5*var(--r,16px));}
 .onyx .rating-link{display:flex;align-items:center;gap:calc(.5*var(--r,16px));font-size:calc(.875*var(--r,16px));width:fit-content;}
 .onyx .rating-link:hover{opacity:.7;}
+.onyx .lx-rating .exp-stars svg{width:calc(1.05*var(--r,16px));height:calc(1.05*var(--r,16px));}
+.onyx .lx-avg{font-weight:600;font-size:calc(.95*var(--r,16px));}
 .onyx .star-boxes{display:flex;gap:2px;}
 .onyx .star-box{border-radius:3px;padding:2px;display:inline-flex;background-image:var(--sunrise);}
 .onyx .star-box svg{width:calc(.75*var(--r,16px));height:calc(.75*var(--r,16px));fill:#fff;}
@@ -615,8 +617,18 @@
 
     <div class="info">
       {%- if section.settings.loox_stars -%}
-        <a href="#looxReviews" class="rating-link" style="display:inline-block">
-          <div class="loox-rating" data-id="{{ p.id }}" data-rating="{{ p.metafields.loox.avg_rating }}" data-raters="{{ p.metafields.loox.num_reviews }}"></div>
+        {%- liquid
+          assign lx_avg = p.metafields.loox.avg_rating | default: 0 | times: 1.0
+          assign lx_full = lx_avg | round
+          assign lx_txt = lx_avg | times: 10 | round | divided_by: 10.0
+        -%}
+        <a href="#looxReviews" class="rating-link lx-rating">
+          <span class="exp-stars" aria-hidden="true">
+            {%- for i in (1..5) -%}
+              <svg viewBox="0 0 24 24" class="{% if i > lx_full %}is-empty{% endif %}"><path d="M12 2.8l2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 16.83l-5.5 2.89 1.05-6.12L3.1 9.27l6.15-.9z"/></svg>
+            {%- endfor -%}
+          </span>
+          <span class="lx-avg">{{ lx_txt }}</span>
         </a>
       {%- elsif section.settings.rating_text != blank -%}
         <a href="#looxReviews" class="rating-link">
