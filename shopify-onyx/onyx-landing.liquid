@@ -340,32 +340,6 @@
 /* =========================================================
    RESEÑAS
    ========================================================= */
-.onyx .rev-top{display:grid;gap:calc(2.5*var(--r,16px));align-items:center;padding-bottom:calc(3*var(--r,16px));border-bottom:1px solid #e5e7eb;}
-@media(min-width:768px){.onyx .rev-top{grid-template-columns:1fr 1fr;}.onyx .rev-top.rev-top--solo{grid-template-columns:1fr;}}
-.onyx .rev-top--solo{text-align:center;justify-items:center;}
-.onyx .rev-summary{margin-top:calc(1.5*var(--r,16px));font-weight:600;}
-.onyx .bars>*+*{margin-top:calc(.5*var(--r,16px));}
-.onyx .bar{display:flex;align-items:center;gap:calc(.75*var(--r,16px));font-size:calc(.875*var(--r,16px));}
-.onyx .bar .s{width:calc(5*var(--r,16px));white-space:nowrap;}
-.onyx .bar .track{flex:1;height:calc(.5*var(--r,16px));border-radius:999px;overflow:hidden;}
-.onyx .bar .fill{height:100%;background-image:var(--sunrise);}
-.onyx .bar .c{width:calc(5.5*var(--r,16px));text-align:right;color:#6b7280;}
-.onyx .rev-grid{columns:1;column-gap:calc(1*var(--r,16px));margin-top:calc(3*var(--r,16px));}
-@media(min-width:768px){.onyx .rev-grid{columns:2;}}
-@media(min-width:1024px){.onyx .rev-grid{columns:3;}}
-.onyx .rev-card{break-inside:avoid;margin-bottom:calc(1*var(--r,16px));border-radius:calc(1*var(--r,16px));border:1px solid #e5e7eb;padding:calc(1.5*var(--r,16px));}
-.onyx .rev-card.is-hidden{display:none;}
-.onyx .loox-wrap{margin-top:calc(3*var(--r,16px));}
-.onyx .loox-rating-link{display:inline-block;}
-.onyx .rev-author{display:flex;align-items:center;gap:calc(.75*var(--r,16px));margin-bottom:calc(.75*var(--r,16px));}
-.onyx .avatar{width:calc(2.5*var(--r,16px));height:calc(2.5*var(--r,16px));border-radius:999px;color:#fff;font-weight:600;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
-.onyx .avatar img{width:100%;height:100%;object-fit:cover;}
-.onyx .rev-author .n{font-weight:600;font-size:calc(.875*var(--r,16px));}
-.onyx .rev-author .st{font-size:calc(.75*var(--r,16px));}
-.onyx .rev-card .t{font-weight:600;}
-.onyx .rev-card .x{color:#374151;margin-top:calc(.25*var(--r,16px));}
-.onyx .rev-card .ph{margin-top:calc(.75*var(--r,16px));border-radius:calc(.75*var(--r,16px));overflow:hidden;}
-.onyx .more-wrap{text-align:center;margin-top:calc(2*var(--r,16px));}
 .onyx .btn-outline{display:inline-block;padding:calc(.75*var(--r,16px)) calc(2*var(--r,16px));border-radius:999px;font-weight:600;transition:box-shadow .3s;}
 
 
@@ -433,7 +407,6 @@
   assign feature_blocks = section.blocks | where: 'type', 'feature'
   assign compare_blocks = section.blocks | where: 'type', 'compare_row'
   assign expert_blocks = section.blocks | where: 'type', 'expert'
-  assign review_blocks = section.blocks | where: 'type', 'review'
 
   assign first_qty_block = quantity_blocks | first
   assign start_qty = 1
@@ -540,6 +513,16 @@
       {{ pf | font_face: font_display: 'swap' }}
       {{ sid }} .cmp-section .cmp-head h2{font-family:{{ pf.family }},{{ pf.fallback_families }};font-weight:{{ pf.weight }};font-style:{{ pf.style }};}
     {%- endunless -%}
+    {%- assign pf = section.settings.experts_font -%}
+    {%- unless pf.family == 'Helvetica' and pf.weight == 700 and pf.style == 'normal' -%}
+      {{ pf | font_face: font_display: 'swap' }}
+      {{ sid }} .exp-head h2{font-family:{{ pf.family }},{{ pf.fallback_families }};font-weight:{{ pf.weight }};font-style:{{ pf.style }};}
+    {%- endunless -%}
+    {%- assign pf = section.settings.experts_hl_font -%}
+    {%- unless pf.family == 'Helvetica' and pf.weight == 700 and pf.style == 'normal' -%}
+      {{ pf | font_face: font_display: 'swap' }}
+      {{ sid }} .exp-head h2 .text-sunrise{font-family:{{ pf.family }},{{ pf.fallback_families }};font-weight:{{ pf.weight }};font-style:{{ pf.style }};}
+    {%- endunless -%}
     {%- assign pf = section.settings.features_font -%}
     {%- unless pf.family == 'Helvetica' and pf.weight == 700 and pf.style == 'normal' -%}
       {{ pf | font_face: font_display: 'swap' }}
@@ -628,12 +611,12 @@
     </div>
 
     <div class="info">
-      {%- if section.settings.loox_on and section.settings.loox_stars -%}
-        <a href="#reviews" class="rating-link loox-rating-link">
+      {%- if section.settings.loox_stars -%}
+        <a href="#looxReviews" class="rating-link" style="display:inline-block">
           <div class="loox-rating" data-id="{{ p.id }}" data-rating="{{ p.metafields.loox.avg_rating }}" data-raters="{{ p.metafields.loox.num_reviews }}"></div>
         </a>
       {%- elsif section.settings.rating_text != blank -%}
-        <a href="#reviews" class="rating-link">
+        <a href="#looxReviews" class="rating-link">
           <span class="star-boxes" aria-hidden="true">
             {%- for i in (1..5) -%}
               <span class="star-box"><svg viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/></svg></span>
@@ -997,93 +980,6 @@
           </div>
         {%- endfor -%}
       </div>
-    </section>
-  {%- endif -%}
-
-  {%- comment -%} ================= 7. RESEÑAS ================= {%- endcomment -%}
-  {%- liquid
-    assign show_rev = section.settings.show_reviews
-    if section.settings.loox_on and section.settings.reviews_head == false and section.settings.loox_widget == false
-      assign show_rev = false
-    endif
-  -%}
-  {%- if show_rev -%}
-    {%- liquid
-      assign initial = section.settings.reviews_initial
-      assign bars = '5,4,3,2,1' | split: ','
-      assign total_reviews = section.settings.total_reviews | default: 0
-      if section.settings.loox_on
-        unless section.settings.loox_bars
-          assign total_reviews = 0
-        endunless
-        assign loox_avg = p.metafields.loox.avg_rating | default: 0 | times: 1.0 | round: 2 | append: '' | replace: '.', ','
-        assign loox_num = p.metafields.loox.num_reviews | default: 0
-      endif
-    -%}
-    <section id="reviews" class="onyx-wrap py-xl" style="scroll-margin-top:calc(2*var(--r,16px))">
-      {%- if section.settings.reviews_head -%}
-      <div class="fade-in rev-top{% if total_reviews <= 0 %} rev-top--solo{% endif %}">
-        <div>
-          <h2 class="h2-xl">{{ section.settings.reviews_heading }} {% if section.settings.reviews_highlight != blank %}<span class="text-sunrise">{{ section.settings.reviews_highlight }}</span>{% endif %}</h2>
-          {%- if section.settings.loox_on -%}<p class="rev-summary">★★★★★ {{ loox_avg }} · {{ loox_num }} {{ section.settings.loox_word }}</p>{%- elsif section.settings.reviews_summary != blank -%}<p class="rev-summary">{{ section.settings.reviews_summary }}</p>{%- endif -%}
-        </div>
-        {%- if total_reviews > 0 -%}
-          <div class="bars">
-            {%- for s in bars -%}
-              {%- liquid
-                assign count_key = 'count_' | append: s
-                assign count = section.settings[count_key] | default: 0
-                assign pct = count | times: 100.0 | divided_by: total_reviews | round
-              -%}
-              <div class="bar">
-                <span class="s">{{ s }} {{ section.settings.stars_word }}</span>
-                <div class="track bg-secondary"><div class="fill" style="width:{{ pct }}%"></div></div>
-                <span class="c">{{ count }} ({{ pct }}%)</span>
-              </div>
-            {%- endfor -%}
-          </div>
-        {%- endif -%}
-      </div>
-      {%- endif -%}
-
-      {%- if section.settings.loox_on -%}
-        {%- if section.settings.loox_widget -%}
-          <div class="loox-wrap">
-            <div id="looxReviews" data-product-id="{{ p.id }}" class="loox-reviews-default">{{ p.metafields.loox.reviews }}</div>
-          </div>
-        {%- endif -%}
-      {%- else -%}
-      <div class="rev-grid">
-        {%- for block in review_blocks -%}
-          <div class="rev-card{% if forloop.index > initial %} is-hidden{% endif %}" {{ block.shopify_attributes }}>
-            <div class="rev-author">
-              <span class="avatar bg-sunrise">
-                {%- if block.settings.avatar != blank -%}
-                  {{ block.settings.avatar | image_url: width: 100 | image_tag: loading: 'lazy', alt: block.settings.name }}
-                {%- else -%}
-                  {{ block.settings.name | slice: 0 }}
-                {%- endif -%}
-              </span>
-              <div>
-                <p class="n">{{ block.settings.name }}</p>
-                <span class="st stars" aria-label="{{ block.settings.stars }} de 5">{%- for i in (1..block.settings.stars) -%}★{%- endfor -%}</span>
-              </div>
-            </div>
-            <p class="t">{{ block.settings.title }}</p>
-            <div class="x">{{ block.settings.text }}</div>
-            {%- if block.settings.photo != blank -%}
-              <div class="ph">{{ block.settings.photo | image_url: width: 600 | image_tag: loading: 'lazy', class: 'media-cover', alt: block.settings.title }}</div>
-            {%- endif -%}
-          </div>
-        {%- endfor -%}
-      </div>
-
-      {%- if review_blocks.size > initial -%}
-        <div class="more-wrap">
-          <button type="button" class="btn-outline border-sunrise hover-glow" data-more-reviews>{{ section.settings.reviews_more }}</button>
-        </div>
-      {%- endif -%}
-      {%- endif -%}
     </section>
   {%- endif -%}
 
@@ -1467,25 +1363,6 @@
     document.addEventListener('shopify:section:load', OnyxProduct.initAll);
   })();
 
-/* ONYX — botón "Ver más reseñas" */
-(function () {
-  function init() {
-    document.querySelectorAll('.onyx [data-more-reviews]').forEach(function (btn) {
-      if (btn.__bound) return;
-      btn.__bound = true;
-      btn.addEventListener('click', function () {
-        var root = btn.closest('section');
-        root.querySelectorAll('.rev-card.is-hidden').forEach(function (c) { c.classList.remove('is-hidden'); });
-        btn.parentNode.style.display = 'none';
-      });
-    });
-  }
-  init();
-  document.addEventListener('shopify:section:load', init);
-  document.addEventListener('shopify:block:select', function (e) {
-    if (e.target.classList && e.target.classList.contains('rev-card')) e.target.classList.remove('is-hidden');
-  });
-})();
 </script>
 
 {% schema %}
@@ -1606,6 +1483,12 @@
       "id": "rating_text",
       "label": "Texto de reseñas junto a las estrellas",
       "default": "3.622 reseñas"
+    },
+    {
+      "type": "checkbox",
+      "id": "loox_stars",
+      "label": "Usar las estrellas de Loox (en vez de este texto)",
+      "default": false
     },
     {
       "type": "text",
@@ -2066,6 +1949,13 @@
       "default": "Avalada por expertos y elegida por"
     },
     {
+      "type": "font_picker",
+      "id": "experts_font",
+      "label": "Tipografía del título",
+      "default": "helvetica_n7",
+      "info": "Déjala en Helvetica para mantener la fuente original del diseño."
+    },
+    {
       "type": "text",
       "id": "experts_highlight",
       "label": "Título: parte en degradado",
@@ -2073,134 +1963,17 @@
       "default": "atletas y parejas"
     },
     {
+      "type": "font_picker",
+      "id": "experts_hl_font",
+      "label": "Tipografía de la parte en degradado",
+      "default": "helvetica_n7",
+      "info": "Déjala en Helvetica para usar la misma que el título."
+    },
+    {
       "type": "richtext",
       "id": "experts_text",
       "label": "Texto",
       "default": "<p>Alarma vibratoria clínicamente estudiada. Resultados reales. Esto es lo que dicen algunas parejas que han probado ONYX:</p>"
-    },
-    {
-      "type": "header",
-      "content": "7 · Reseñas"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_reviews",
-      "label": "Mostrar",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "reviews_head",
-      "label": "Mostrar título y nota ('Escéptico al principio…')",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "loox_on",
-      "label": "Usar reseñas de Loox",
-      "info": "Nota y número salen de Loox y se ocultan tus tarjetas y barras. Desactívalo para volver a tu diseño.",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "loox_widget",
-      "label": "Loox: mostrar el widget aquí",
-      "info": "Desactívalo si ya tienes la sección 'Reviews Widget' de Loox debajo.",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "loox_bars",
-      "label": "Loox: mostrar barras de estrellas",
-      "info": "Loox no pasa el reparto por estrellas: pon los números de tu panel de Loox en los campos de abajo.",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "loox_stars",
-      "label": "Loox: estrellas junto al título",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "loox_word",
-      "label": "Loox: palabra 'reseñas'",
-      "default": "reviews"
-    },
-    {
-      "type": "text",
-      "id": "reviews_heading",
-      "label": "Título",
-      "default": "Escéptico al principio."
-    },
-    {
-      "type": "text",
-      "id": "reviews_highlight",
-      "label": "Título: parte destacada",
-      "default": "Ahora me despierto SIEMPRE."
-    },
-    {
-      "type": "text",
-      "id": "reviews_summary",
-      "label": "Resumen",
-      "default": "★★★★★ 4,98 · 3.622 reseñas"
-    },
-    {
-      "type": "text",
-      "id": "stars_word",
-      "label": "Palabra 'estrellas'",
-      "default": "estrellas"
-    },
-    {
-      "type": "number",
-      "id": "total_reviews",
-      "label": "Total de reseñas (0 = ocultar barras)",
-      "default": 3622
-    },
-    {
-      "type": "number",
-      "id": "count_5",
-      "label": "Reseñas de 5 estrellas",
-      "default": 3537
-    },
-    {
-      "type": "number",
-      "id": "count_4",
-      "label": "Reseñas de 4 estrellas",
-      "default": 85
-    },
-    {
-      "type": "number",
-      "id": "count_3",
-      "label": "Reseñas de 3 estrellas",
-      "default": 0
-    },
-    {
-      "type": "number",
-      "id": "count_2",
-      "label": "Reseñas de 2 estrellas",
-      "default": 0
-    },
-    {
-      "type": "number",
-      "id": "count_1",
-      "label": "Reseñas de 1 estrella",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "reviews_initial",
-      "label": "Reseñas visibles al inicio",
-      "min": 1,
-      "max": 30,
-      "step": 1,
-      "default": 6
-    },
-    {
-      "type": "text",
-      "id": "reviews_more",
-      "label": "Texto del botón 'ver más'",
-      "default": "Ver más reseñas"
     }
   ],
   "blocks": [
@@ -2433,49 +2206,6 @@
           "id": "role",
           "label": "Cargo",
           "default": "Cliente"
-        }
-      ]
-    },
-    {
-      "type": "review",
-      "name": "7 · Reseña",
-      "settings": [
-        {
-          "type": "text",
-          "id": "name",
-          "label": "Nombre",
-          "default": "Nombre"
-        },
-        {
-          "type": "image_picker",
-          "id": "avatar",
-          "label": "Avatar (opcional)"
-        },
-        {
-          "type": "range",
-          "id": "stars",
-          "label": "Estrellas",
-          "min": 1,
-          "max": 5,
-          "step": 1,
-          "default": 5
-        },
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Título",
-          "default": "Título de la reseña"
-        },
-        {
-          "type": "richtext",
-          "id": "text",
-          "label": "Texto",
-          "default": "<p>Escribe aquí la reseña.</p>"
-        },
-        {
-          "type": "image_picker",
-          "id": "photo",
-          "label": "Foto del cliente (opcional)"
         }
       ]
     },
@@ -2717,102 +2447,6 @@
             "text": "<p>Mi mujer y yo somos deportistas profesionales y hemos notado una gran diferencia en energía y recuperación para empezar el día.</p>",
             "name": "Carlo E.",
             "role": "Deportista profesional"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "name": "Jessica S.",
-            "title": "Nunca he sido persona de mañanas",
-            "text": "<p>He probado muchísimas alarmas y esta es la única que me ha funcionado. Sin posponer, y no me siento agotada al despertar. ¡Un antes y un después!</p>"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "name": "Antonis R.",
-            "title": "Cumple su función",
-            "text": "<p>Alarma vibratoria silenciosa y reloj sencillo. Cliente satisfecho.</p>"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "name": "Bronagh B.",
-            "title": "No puedo recomendarla más",
-            "text": "<p>Me despierta suavemente y empiezo el día de buen humor. Además, me encanta que no emita EMF, así que puedo llevarla día y noche ✨</p>"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "name": "Andrea M.F.",
-            "title": "Ideal con TDAH",
-            "text": "<p>Tengo TDAH y es un alivio despertarme descansada y no abrumada por el sonido de la alarma del móvil.</p>"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "name": "Philip B.",
-            "title": "Correa transpirable",
-            "text": "<p>Correa muy transpirable y me despierta bastante bien. Satisfecho.</p>"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "name": "Luka K.",
-            "title": "Impresionado",
-            "text": "<p>Me despierta, puedo ducharme con ella, la batería dura MUCHO y no despierto a mi mujer.</p>"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "name": "Chantelle D.",
-            "title": "Me despierto con calma",
-            "text": "<p>Lo único que me ha ayudado a despertar mejor cada día. Las alarmas del móvil solo me generaban ansiedad.</p>"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "name": "Christian K.",
-            "title": "Menos estrés",
-            "text": "<p>La uso todos los días y me despierto mucho menos estresado.</p>"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "name": "Mrs R.A.",
-            "title": "Merece cada euro",
-            "text": "<p>Tengo problemas de salud crónicos y me cuesta despertar. Es elegante, sencilla y la he cargado una sola vez en semanas.</p>"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "name": "Noe R.",
-            "title": "10/10",
-            "text": "<p>Me despierta a la primera vibración y me despierto de verdad, no el típico 'ya estoy…' y vuelta a dormir.</p>"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "name": "Diego P.",
-            "title": "Me siento mejor",
-            "text": "<p>Desde que tengo la Onyx me siento mejor cada mañana y menos cansado durante el día.</p>"
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "name": "Milan W.",
-            "title": "Muy útil",
-            "text": "<p>Me ha ayudado mucho por las mañanas. Muy recomendable si te cuesta salir de la cama.</p>"
           }
         }
       ]
