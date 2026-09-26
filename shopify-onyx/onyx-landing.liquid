@@ -350,6 +350,8 @@
 @media(min-width:1024px){.onyx .rev-grid{columns:3;}}
 .onyx .rev-card{break-inside:avoid;margin-bottom:calc(1*var(--r,16px));border-radius:calc(1*var(--r,16px));border:1px solid #e5e7eb;padding:calc(1.5*var(--r,16px));}
 .onyx .rev-card.is-hidden{display:none;}
+.onyx .loox-wrap{margin-top:calc(3*var(--r,16px));}
+.onyx .loox-rating-link{display:inline-block;}
 .onyx .rev-author{display:flex;align-items:center;gap:calc(.75*var(--r,16px));margin-bottom:calc(.75*var(--r,16px));}
 .onyx .avatar{width:calc(2.5*var(--r,16px));height:calc(2.5*var(--r,16px));border-radius:999px;color:#fff;font-weight:600;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
 .onyx .avatar img{width:100%;height:100%;object-fit:cover;}
@@ -621,7 +623,11 @@
     </div>
 
     <div class="info">
-      {%- if section.settings.rating_text != blank -%}
+      {%- if section.settings.loox_on and section.settings.loox_stars -%}
+        <a href="#reviews" class="rating-link loox-rating-link">
+          <div class="loox-rating" data-id="{{ p.id }}" data-rating="{{ p.metafields.loox.avg_rating }}" data-raters="{{ p.metafields.loox.num_reviews }}"></div>
+        </a>
+      {%- elsif section.settings.rating_text != blank -%}
         <a href="#reviews" class="rating-link">
           <span class="star-boxes" aria-hidden="true">
             {%- for i in (1..5) -%}
@@ -992,12 +998,17 @@
       assign initial = section.settings.reviews_initial
       assign bars = '5,4,3,2,1' | split: ','
       assign total_reviews = section.settings.total_reviews | default: 0
+      if section.settings.loox_on
+        assign total_reviews = 0
+        assign loox_avg = p.metafields.loox.avg_rating | default: 0 | times: 1.0 | round: 2 | append: '' | replace: '.', ','
+        assign loox_num = p.metafields.loox.num_reviews | default: 0
+      endif
     -%}
     <section id="reviews" class="onyx-wrap py-xl" style="scroll-margin-top:calc(2*var(--r,16px))">
       <div class="fade-in rev-top">
         <div>
           <h2 class="h2-xl">{{ section.settings.reviews_heading }} {% if section.settings.reviews_highlight != blank %}<span class="text-sunrise">{{ section.settings.reviews_highlight }}</span>{% endif %}</h2>
-          {%- if section.settings.reviews_summary != blank -%}<p class="rev-summary">{{ section.settings.reviews_summary }}</p>{%- endif -%}
+          {%- if section.settings.loox_on -%}<p class="rev-summary">★★★★★ {{ loox_avg }} · {{ loox_num }} {{ section.settings.loox_word }}</p>{%- elsif section.settings.reviews_summary != blank -%}<p class="rev-summary">{{ section.settings.reviews_summary }}</p>{%- endif -%}
         </div>
         {%- if total_reviews > 0 -%}
           <div class="bars">
@@ -1017,6 +1028,13 @@
         {%- endif -%}
       </div>
 
+      {%- if section.settings.loox_on -%}
+        {%- if section.settings.loox_widget -%}
+          <div class="loox-wrap">
+            <div id="looxReviews" data-product-id="{{ p.id }}" class="loox-reviews-default">{{ p.metafields.loox.reviews }}</div>
+          </div>
+        {%- endif -%}
+      {%- else -%}
       <div class="rev-grid">
         {%- for block in review_blocks -%}
           <div class="rev-card{% if forloop.index > initial %} is-hidden{% endif %}" {{ block.shopify_attributes }}>
@@ -1046,6 +1064,7 @@
         <div class="more-wrap">
           <button type="button" class="btn-outline border-sunrise hover-glow" data-more-reviews>{{ section.settings.reviews_more }}</button>
         </div>
+      {%- endif -%}
       {%- endif -%}
     </section>
   {%- endif -%}
@@ -2043,6 +2062,32 @@
       "id": "show_reviews",
       "label": "Mostrar",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "loox_on",
+      "label": "Usar reseñas de Loox",
+      "info": "Nota y número salen de Loox y se ocultan tus tarjetas y barras. Desactívalo para volver a tu diseño.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "loox_widget",
+      "label": "Loox: mostrar el widget aquí",
+      "info": "Desactívalo si ya tienes la sección 'Reviews Widget' de Loox debajo.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "loox_stars",
+      "label": "Loox: estrellas junto al título",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "loox_word",
+      "label": "Loox: palabra 'reseñas'",
+      "default": "reviews"
     },
     {
       "type": "text",
