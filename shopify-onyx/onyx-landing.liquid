@@ -102,6 +102,20 @@
 .onyx .thumb.is-off{display:none;}
 .onyx .main-media img.is-off:not(.is-vshow){display:none;}
 .onyx .main-media img.is-vshow{display:block;}
+.mm-btn{position:absolute;z-index:2;display:flex;align-items:center;justify-content:center;border-radius:999px;background:#fff;color:#0A0A0C;border:1.5px solid transparent;box-shadow:0 2px 10px rgba(0,0,0,.08);cursor:pointer;transition:transform .2s,border-color .2s;padding:0;}
+.mm-btn:hover{border-color:var(--sunrise-2,#FF9F1C);}
+.mm-btn svg{width:48%;height:48%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.mm-zoom{top:calc(1*var(--r,16px));right:calc(1*var(--r,16px));width:calc(2.5*var(--r,16px));height:calc(2.5*var(--r,16px));}
+.mm-nav{bottom:calc(1*var(--r,16px));width:calc(2.25*var(--r,16px));height:calc(2.25*var(--r,16px));}
+.mm-prev{left:calc(1*var(--r,16px));}
+.mm-next{right:calc(1*var(--r,16px));}
+.mm-nav[hidden]{display:none;}
+.mm-lightbox{position:fixed;inset:0;z-index:2147483000;background:rgba(10,10,12,.92);display:flex;align-items:center;justify-content:center;padding:calc(3*var(--r,16px)) calc(1*var(--r,16px));}
+.mm-lightbox[hidden]{display:none;}
+.mm-lightbox img{max-width:min(94vw,1400px);max-height:88vh;width:auto;height:auto;object-fit:contain;border-radius:calc(1*var(--r,16px));cursor:zoom-in;transition:transform .25s;}
+.mm-lightbox img.is-zoomed{transform:scale(1.8);cursor:zoom-out;}
+.mm-lightbox .mm-close{top:calc(1*var(--r,16px));right:calc(1*var(--r,16px));width:calc(2.75*var(--r,16px));height:calc(2.75*var(--r,16px));}
+.mm-lightbox .mm-nav{bottom:auto;top:50%;transform:translateY(-50%);width:calc(2.75*var(--r,16px));height:calc(2.75*var(--r,16px));}
 .onyx .thumbs{margin-top:calc(1*var(--r,16px));display:flex;gap:calc(.75*var(--r,16px));overflow-x:auto;}
 .onyx .thumb{flex-shrink:0;width:calc(4*var(--r,16px));height:calc(4*var(--r,16px));border-radius:calc(.75*var(--r,16px));overflow:hidden;opacity:.6;transition:opacity .2s;border:2px solid transparent;}
 .onyx .thumb:hover{opacity:1;}
@@ -578,7 +592,7 @@
           endfor
         endif
       -%}
-      <div class="main-media placeholder-img" data-main-media>
+      <div class="main-media{% unless p != blank and gallery_total > 0 %} placeholder-img{% endunless %}" data-main-media>
         {%- if p != blank and gallery_total > 0 -%}
           {%- assign gi = 0 -%}
           {%- for media in p.media -%}
@@ -588,6 +602,7 @@
                 {%- assign media_alt = media.alt | default: p.title | escape -%}
                 {%- assign mcol = '' -%}
                 {%- if by_color -%}{%- assign mcol = media.alt | escape -%}{%- endif -%}
+                {%- assign full_src = media.preview_image | image_url: width: 2400 -%}
                 {{
                   media.preview_image
                   | image_url: width: 1400
@@ -599,7 +614,8 @@
                     alt: media_alt,
                     data-media-index: gi,
                     data-media-id: media.id,
-                    data-color: mcol
+                    data-color: mcol,
+                    data-full: full_src
                 }}
                 {%- assign gi = gi | plus: 1 -%}
               {%- endunless -%}
@@ -608,14 +624,31 @@
           {%- if by_color -%}
             {%- for v in p.variants -%}
               {%- if v.featured_media -%}
-                {{ v.featured_media.preview_image | image_url: width: 1400 | image_tag: class: 'media-cover is-off', loading: 'lazy', sizes: '(min-width: 1024px) 45vw, 100vw', widths: '400, 700, 1000, 1400', alt: v.title, data-media-index: -1, data-vimg: v.id }}
+                {%- assign full_src = v.featured_media.preview_image | image_url: width: 2400 -%}
+                {{ v.featured_media.preview_image | image_url: width: 1400 | image_tag: data-full: full_src, class: 'media-cover is-off', loading: 'lazy', sizes: '(min-width: 1024px) 45vw, 100vw', widths: '400, 700, 1000, 1400', alt: v.title, data-media-index: -1, data-vimg: v.id }}
               {%- endif -%}
             {%- endfor -%}
+          {%- endif -%}
+          <button type="button" class="mm-btn mm-zoom" data-zoom aria-label="Ampliar imagen"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20M10.5 8v5M8 10.5h5"/></svg></button>
+          {%- if gallery_total > 1 -%}
+            <button type="button" class="mm-btn mm-nav mm-prev" data-nav="-1" aria-label="Imagen anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6"/></svg></button>
+            <button type="button" class="mm-btn mm-nav mm-next" data-nav="1" aria-label="Imagen siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></button>
           {%- endif -%}
         {%- else -%}
           <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="color:var(--sunrise-2)" stroke-width="1.2" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M12 9v3l2 1"/><path d="M5 3l2 2M19 3l-2 2"/></svg>
         {%- endif -%}
       </div>
+
+      {%- if gallery_total > 0 -%}
+        <div class="mm-lightbox" data-lightbox hidden role="dialog" aria-modal="true" aria-label="Imagen ampliada">
+          <img alt="" width="1400" height="1400" data-lightbox-img>
+          <button type="button" class="mm-btn mm-close" data-lightbox-close aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+          {%- if gallery_total > 1 -%}
+            <button type="button" class="mm-btn mm-nav mm-prev" data-lb-nav="-1" aria-label="Imagen anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6"/></svg></button>
+            <button type="button" class="mm-btn mm-nav mm-next" data-lb-nav="1" aria-label="Imagen siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></button>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
 
       {%- if gallery_total > 1 -%}
         <div class="thumbs no-scrollbar">
@@ -626,7 +659,7 @@
               {%- unless variant_media_ids contains mid -%}
                 {%- assign mcol = '' -%}
                 {%- if by_color -%}{%- assign mcol = media.alt -%}{%- endif -%}
-                <button type="button" class="thumb placeholder-img{% if gi == 0 %} is-active{% endif %}" data-thumb="{{ gi }}" data-color="{{ mcol | escape }}" aria-label="Imagen {{ gi | plus: 1 }}">
+                <button type="button" class="thumb{% if gi == 0 %} is-active{% endif %}" data-thumb="{{ gi }}" data-color="{{ mcol | escape }}" aria-label="Imagen {{ gi | plus: 1 }}">
                   {{ media.preview_image | image_url: width: 200 | image_tag: class: 'media-cover', loading: 'lazy', alt: '' }}
                 </button>
                 {%- assign gi = gi | plus: 1 -%}
@@ -1259,6 +1292,40 @@
       root.querySelectorAll('[data-thumb]').forEach(function (t) {
         t.addEventListener('click', function () { self.showMedia(+t.dataset.thumb); });
       });
+      function visibleImgs() {
+        var list = [].slice.call(root.querySelectorAll('[data-main-media] img:not(.is-off)')).filter(function (i) { return !i.hasAttribute('data-vimg'); });
+        var v = root.querySelector('[data-main-media] img.is-vshow');
+        return list.length ? list : (v ? [v] : []);
+      }
+      function activeImg() { return root.querySelector('[data-main-media] img.is-active:not(.is-off)') || root.querySelector('[data-main-media] img.is-vshow') || visibleImgs()[0]; }
+      function step(dir) {
+        var list = visibleImgs(); if (list.length < 2) return;
+        var i = list.indexOf(activeImg()); i = (i + dir + list.length) % list.length;
+        self.showMedia(+list[i].dataset.mediaIndex);
+        var th = root.querySelector('[data-thumb="' + list[i].dataset.mediaIndex + '"]');
+        if (th && th.parentNode) th.parentNode.scrollTo({ left: th.offsetLeft - th.parentNode.clientWidth / 2 + th.clientWidth / 2, behavior: 'smooth' });
+      }
+      self.galleryStep = step;
+      root.querySelectorAll('[data-nav]').forEach(function (b) { b.addEventListener('click', function (e) { e.preventDefault(); step(+b.dataset.nav); }); });
+      var lb = root.querySelector('[data-lightbox]'), lbImg = root.querySelector('[data-lightbox-img]');
+      // El visor va directo al <body> para quedar por encima de todo
+      if (lb) { var oldLb = document.getElementById('mm-lb-' + root.id); if (oldLb && oldLb !== lb) oldLb.remove(); lb.id = 'mm-lb-' + root.id; document.body.appendChild(lb); }
+      function lbShow() { var a = activeImg(); if (!a || !lbImg) return; lbImg.src = a.dataset.full || a.currentSrc || a.src; lbImg.alt = a.alt || ''; lbImg.classList.remove('is-zoomed'); }
+      function lbOpen() { if (!lb) return; lbShow(); lb.hidden = false; document.documentElement.style.overflow = 'hidden'; }
+      function lbClose() { if (!lb) return; lb.hidden = true; document.documentElement.style.overflow = ''; }
+      var zb = root.querySelector('[data-zoom]'); if (zb) zb.addEventListener('click', function (e) { e.preventDefault(); lbOpen(); });
+      if (lb) {
+        lb.addEventListener('click', function (e) { if (e.target === lb) lbClose(); });
+        lb.querySelector('[data-lightbox-close]').addEventListener('click', lbClose);
+        lb.querySelectorAll('[data-lb-nav]').forEach(function (b) { b.addEventListener('click', function () { step(+b.dataset.lbNav); lbShow(); }); });
+        lbImg.addEventListener('click', function () { lbImg.classList.toggle('is-zoomed'); });
+        document.addEventListener('keydown', function (e) {
+          if (lb.hidden) return;
+          if (e.key === 'Escape') lbClose();
+          else if (e.key === 'ArrowRight') { step(1); lbShow(); }
+          else if (e.key === 'ArrowLeft') { step(-1); lbShow(); }
+        });
+      }
       if (root.dataset.mediaByColor === 'true' && this.variant) this.filterMedia(this.variant); else this.showMedia(0);
 
       // Variantes
@@ -1346,7 +1413,11 @@
         if (first === null && ok(img)) first = +img.dataset.mediaIndex;
       });
       var thumbs = this.root.querySelector('.thumbs');
-      if (thumbs) thumbs.hidden = this.root.querySelectorAll('[data-thumb]:not(.is-off)').length < 2;
+      var fewer = this.root.querySelectorAll('[data-thumb]:not(.is-off)').length < 2;
+      if (thumbs) thumbs.hidden = fewer;
+      this.root.querySelectorAll('[data-nav]').forEach(function (b) { b.hidden = fewer; });
+      var lbx = document.getElementById('mm-lb-' + this.root.id);
+      if (lbx) lbx.querySelectorAll('[data-lb-nav]').forEach(function (b) { b.hidden = fewer; });
       // Color sin fotos propias: se enseña la foto de su cuadradito de color
       this.root.querySelectorAll('[data-main-media] img').forEach(function (img) { img.classList.remove('is-vshow'); });
       if (first === null) {
