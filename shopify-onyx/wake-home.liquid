@@ -78,6 +78,7 @@
     background: radial-gradient(ellipse at 60% 45%, rgba(0,0,0,0) 0%, rgba(0,0,0,{{ section.settings.h_overlay | divided_by: 200.0 }}) 60%, rgba(0,0,0,{{ section.settings.h_overlay | divided_by: 100.0 }}) 100%),
       linear-gradient(90deg, rgba(0,0,0,{{ section.settings.h_overlay | divided_by: 120.0 }}) 0%, rgba(0,0,0,0) 60%);
     -webkit-mask: var(--wh-cutmask) {{ section.settings.h_bg_position }} / cover no-repeat; mask: var(--wh-cutmask) {{ section.settings.h_bg_position }} / cover no-repeat; }
+  #wh-{{ section.id }} .wh-warn { position: absolute; z-index: 9; left: 16px; right: 16px; bottom: 16px; background: #fff3cd; color: #5c4400; border-radius: 10px; padding: 10px 14px; font-size: 14px; line-height: 1.4; }
   #wh-{{ section.id }} .wh-cutout { position: absolute; z-index: 2; left: {{ section.settings.h_cutout_x }}%; bottom: 0; height: {{ section.settings.h_cutout_h }}%; transform: translateX(-50%); pointer-events: none; }
   #wh-{{ section.id }} .wh-cutout img { height: 100%; width: auto; display: block; {% if section.settings.h_grayscale %}filter: grayscale(1) contrast(1.05);{% endif %} }
 
@@ -133,7 +134,23 @@
     {%- endif -%}
 
 
-    {%- if section.settings.h_cutout_image != blank and section.settings.h_cutout_aligned -%}
+    {%- liquid
+      # El recorte se alinea solo cuando tiene la misma forma que la foto de fondo (misma foto sin fondo)
+      assign cut_aligned = false
+      assign cut_mismatch = false
+      if section.settings.h_cutout_image != blank and section.settings.h_bg_image != blank
+        assign ar_diff = section.settings.h_bg_image.aspect_ratio | minus: section.settings.h_cutout_image.aspect_ratio | abs
+        if ar_diff < 0.03
+          assign cut_aligned = true
+        else
+          assign cut_mismatch = true
+        endif
+      endif
+    -%}
+    {%- if cut_mismatch and request.design_mode -%}
+      <div class="wh-warn">⚠️ El recorte no mide lo mismo que la foto de fondo ({{ section.settings.h_bg_image.width }}×{{ section.settings.h_bg_image.height }} vs {{ section.settings.h_cutout_image.width }}×{{ section.settings.h_cutout_image.height }}). Si la persona también está en el fondo, saldrá dos veces: sube la misma foto sin fondo y sin recortarla. (Este aviso solo lo ves tú en el editor.)</div>
+    {%- endif -%}
+    {%- if cut_aligned -%}
       {%- assign cut_src = section.settings.h_cutout_image | image_url: width: 2400 -%}
       <div class="wh-cutfull" aria-hidden="true" style="--wh-cutmask:url('{{ cut_src }}')">
         {{ section.settings.h_cutout_image | image_url: width: 2400 | image_tag: loading: 'eager', widths: '750, 1100, 1600, 2400', sizes: '100vw', alt: '' }}
@@ -491,14 +508,7 @@
       "type": "image_picker",
       "id": "h_cutout_image",
       "label": "Recorte delante de la palabra gigante (opcional)",
-      "info": "Sube la MISMA foto del fondo pasada por remove.bg (PNG sin fondo, mismo tamaño). La persona queda delante de la palabra y detrás del título."
-    },
-    {
-      "type": "checkbox",
-      "id": "h_cutout_aligned",
-      "label": "El recorte es la misma foto del fondo (se alinea sola)",
-      "default": true,
-      "info": "Actívalo si el recorte tiene el mismo tamaño que la foto de fondo (solo la persona, sin fondo). Así queda justo encima, delante de la palabra gigante."
+      "info": "La MISMA foto del fondo sin fondo (Adobe Express o Photopea), sin recortar ni cambiar el tamaño. Se coloca sola encima de la persona."
     },
     {
       "type": "range",
@@ -509,7 +519,7 @@
       "step": 1,
       "unit": "%",
       "default": 58,
-      "info": "Colócalo sobre una letra del centro de la palabra gigante (como la O de la competencia)."
+      "info": "Solo se usa si el fondo no lleva a la persona (recorte suelto, de otro tamaño)."
     },
     {
       "type": "range",
@@ -519,7 +529,8 @@
       "max": 110,
       "step": 2,
       "unit": "%",
-      "default": 96
+      "default": 96,
+      "info": "Solo se usa si el fondo no lleva a la persona (recorte suelto, de otro tamaño)."
     },
     {
       "type": "checkbox",
