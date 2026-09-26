@@ -110,6 +110,7 @@
 .mm-prev{left:calc(1.25*var(--r,16px));}
 .mm-next{right:calc(1.25*var(--r,16px));}
 .mm-nav[hidden]{display:none;}
+@media(hover:none),(max-width:767px){.onyx .main-media .mm-nav{display:none !important;}}
 @media(hover:hover){.onyx .main-media .mm-nav{opacity:0;pointer-events:none;transition:opacity .25s,border-color .2s;}.onyx .main-media:hover .mm-nav,.onyx .main-media .mm-nav:focus-visible{opacity:1;pointer-events:auto;}}
 .mm-lightbox{position:fixed;inset:0;z-index:2147483000;background:rgba(10,10,12,.92);display:flex;align-items:center;justify-content:center;padding:calc(3*var(--r,16px)) calc(1*var(--r,16px));}
 .mm-lightbox[hidden]{display:none;}
