@@ -976,7 +976,7 @@
   {%- if section.settings.show_experts and expert_blocks.size > 0 -%}
     <section class="exp-section onyx-wrap py-xl bg-secondary">
       <div class="fade-in exp-head">
-        <h2 class="h2-xl">{{ section.settings.experts_heading }}</h2>
+        <h2 class="h2-xl">{{ section.settings.experts_heading }}{% if section.settings.experts_highlight != blank %} <span class="text-sunrise">{{ section.settings.experts_highlight }}</span>{% endif %}</h2>
         {%- if section.settings.experts_text != blank -%}<div>{{ section.settings.experts_text }}</div>{%- endif -%}
       </div>
       <div class="exp-grid">
@@ -2063,7 +2063,14 @@
       "type": "text",
       "id": "experts_heading",
       "label": "Título",
-      "default": "Avalada por expertos y elegida por atletas y parejas"
+      "default": "Avalada por expertos y elegida por"
+    },
+    {
+      "type": "text",
+      "id": "experts_highlight",
+      "label": "Título: parte en degradado",
+      "info": "Va justo detrás del título, con tu degradado.",
+      "default": "atletas y parejas"
     },
     {
       "type": "richtext",
