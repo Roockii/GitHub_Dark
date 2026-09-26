@@ -180,6 +180,8 @@
 .onyx .checks .ck{flex-shrink:0;width:calc(1.35*var(--r,16px));height:calc(1.35*var(--r,16px));border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background-image:var(--sunrise);box-shadow:0 3px 10px -3px color-mix(in srgb,var(--sunrise-2) 70%,transparent);margin-top:calc(-.05*var(--r,16px));}
 .onyx .checks .ck svg{width:calc(.8*var(--r,16px));height:calc(.8*var(--r,16px));}
 .onyx .trust{display:flex;flex-direction:column;align-items:center;gap:calc(.5*var(--r,16px));font-size:calc(.75*var(--r,16px));text-transform:uppercase;letter-spacing:.025em;color:#6b7280;text-align:center;}
+.onyx .trust-line{display:inline-flex;align-items:center;gap:calc(.6*var(--r,16px));}
+.onyx .trust-line svg{width:calc(1.35*var(--r,16px));height:calc(1.35*var(--r,16px));flex:none;color:var(--ink);}
 
 .onyx .accordion{border-radius:calc(1*var(--r,16px));padding:calc(.5*var(--r,16px));}
 .onyx .accordion>*+*{margin-top:calc(.5*var(--r,16px));}
@@ -769,7 +771,33 @@
       <div class="trust">
         {%- for line in trust_lines -%}
           {%- assign line = line | strip -%}
-          {%- if line != blank -%}<span>{{ line }}</span>{%- endif -%}
+          {%- if line != blank -%}
+            {%- liquid
+              assign ic = ''
+              if line contains '🛡'
+                assign ic = 'shield'
+              elsif line contains '🧪'
+                assign ic = 'lab'
+              elsif line contains '🚚'
+                assign ic = 'truck'
+              elsif line contains '🔒'
+                assign ic = 'lock'
+              elsif line contains '💬'
+                assign ic = 'chat'
+              endif
+              assign txt = line | remove: '🛡️' | remove: '🛡' | remove: '🧪' | remove: '🚚' | remove: '🔒' | remove: '💬' | strip
+            -%}
+            <span class="trust-line">
+              {%- case ic -%}
+                {%- when 'shield' -%}<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 4 5v6c0 5.2 3.4 9.9 8 11 4.6-1.1 8-5.8 8-11V5l-8-3z"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {%- when 'lab' -%}<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.5L4.6 18.2A1.8 1.8 0 0 0 6.2 21h11.6a1.8 1.8 0 0 0 1.6-2.8L14 9.5V3"/><path d="M7.5 15h9"/></svg>
+                {%- when 'truck' -%}<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h11v10H2zM13 9h4.5l3.5 3.5V16h-8"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+                {%- when 'lock' -%}<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+                {%- when 'chat' -%}<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>
+              {%- endcase -%}
+              <span>{{ txt }}</span>
+            </span>
+          {%- endif -%}
         {%- endfor -%}
       </div>
 
@@ -1682,6 +1710,7 @@
       "type": "textarea",
       "id": "trust_lines",
       "label": "Garantías bajo la caja (una por línea)",
+      "info": "Empieza la línea con 🛡 (escudo), 🧪 (laboratorio), 🚚 (envío), 🔒 (pago seguro) o 💬 (soporte) y sale su icono.",
       "default": "🛡 100 días de garantía de devolución sin riesgo\n🧪 Testado por laboratorios externos"
     },
     {
