@@ -999,7 +999,9 @@
       assign bars = '5,4,3,2,1' | split: ','
       assign total_reviews = section.settings.total_reviews | default: 0
       if section.settings.loox_on
-        assign total_reviews = 0
+        unless section.settings.loox_bars
+          assign total_reviews = 0
+        endunless
         assign loox_avg = p.metafields.loox.avg_rating | default: 0 | times: 1.0 | round: 2 | append: '' | replace: '.', ','
         assign loox_num = p.metafields.loox.num_reviews | default: 0
       endif
@@ -2075,6 +2077,13 @@
       "id": "loox_widget",
       "label": "Loox: mostrar el widget aquí",
       "info": "Desactívalo si ya tienes la sección 'Reviews Widget' de Loox debajo.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "loox_bars",
+      "label": "Loox: mostrar barras de estrellas",
+      "info": "Loox no pasa el reparto por estrellas: pon los números de tu panel de Loox en los campos de abajo.",
       "default": true
     },
     {
