@@ -1,0 +1,4099 @@
+{%- comment -%}
+  DRYNIVA — LANDING DE PRODUCTO (todo en un archivo)
+  Añádela a la plantilla "Producto predeterminado" desde Personalizar.
+  No incluye header ni footer: esos van en sus propias secciones del tema.
+  Usa el producto de la página, así que funciona para todos los productos.
+{%- endcomment -%}
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* =========================================================
+   BASE — todo va dentro de .dry para no interferir con el tema
+   ========================================================= */
+.dry{
+  --dk:#13494b;--sage:#5c735e;--lt:#f1f7f2;--gray:#f5f5f5;--hero:#f9fcf9;
+  --btn1:#02b432;--btn2:#13db3f;--red:#d21113;--ink:#000;--star:#00b67a;
+  font-family:'Inter',ui-sans-serif,system-ui,sans-serif;font-weight:400;color:var(--ink);background:#fff;
+  text-align:center;font-size:16px;line-height:1.4;-webkit-font-smoothing:antialiased;overflow-x:clip;
+}
+.dry *,.dry *::before,.dry *::after{box-sizing:border-box;}
+.dry div,.dry ul,.dry h1,.dry h2,.dry h3,.dry h4,.dry li,.dry p,.dry img,.dry form{margin:0;padding:0;}
+.dry h1,.dry h2,.dry h3,.dry h4{font-family:inherit;letter-spacing:normal;text-transform:none;}
+.dry li{list-style:none;}
+.dry a{color:inherit;text-decoration:none;outline:none;}
+.dry img{border:none;height:auto;max-width:100%;}
+.dry button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;}
+.dry .container{width:1170px;max-width:100%;margin:0 auto;padding:0;position:relative;}
+.dry .showMob,.dry .showTab{display:none;}
+.dry .dry-ph{display:block;width:100%;height:auto;background:#e8eee9;fill:#b9c7bb;border-radius:10px;}
+.dry .dry-sec{width:100%;}
+
+/* ---------- títulos comunes ---------- */
+.dry .common_preHeading{font-size:20px;line-height:20px;color:var(--sage);font-weight:700;margin-bottom:8px;}
+.dry .common_heading{font-size:40px;line-height:46px;font-weight:700;color:var(--dk);}
+.dry .common_parahraph{font-size:17px;line-height:25px;color:#000;margin-top:20px;}
+.dry .common_parahraph p+p{margin-top:12px;}
+.dry .color_heading_green1{color:#14331f;}
+.dry .color_red{color:#f70000;}
+.dry .color_black{color:#000;}
+
+/* ---------- caja del botón (se repite en cada sección) ---------- */
+.dry .common_button_box{display:inline-block;vertical-align:middle;width:100%;max-width:415px;margin-top:35px;text-align:center;}
+.dry .button_shipp{display:flex;align-items:center;justify-content:center;width:100%;margin-bottom:10px;}
+.dry .button_shipp li{display:flex;align-items:center;font-size:14px;line-height:14px;color:#000;font-weight:500;padding:0 10px;column-gap:6px;}
+.dry .button_shipp li.green_dot{border-right:1px solid #000;padding-left:0;}
+.dry .button_shipp li.stock_level{padding-right:0;}
+.dry .sale_fire{font-size:13px;line-height:1;}
+.dry .low_stock{display:flex;justify-content:space-between;width:68px;margin:0 3px;}
+.dry .low_stock span{width:16.38%;height:11px;background:#fff;border:1px solid #000;}
+.dry .low_stock span.active{background:red;}
+.dry .low_stock span.fade{animation:dry-fade 1.2s ease-in-out infinite;background:red;}
+@keyframes dry-fade{0%{opacity:1}50%{opacity:.1}to{opacity:1}}
+.dry .red-text{color:red;text-transform:uppercase;font-weight:700;}
+.dry .common_button{width:100%;height:62px;background:var(--btn1);background:linear-gradient(90deg,var(--btn1),var(--btn2));display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 4px 8px 2px color-mix(in srgb,var(--btn1) 30%,transparent);overflow:hidden;font-size:22px;font-weight:700;color:#fff;border-radius:50px;column-gap:15px;cursor:pointer;transition:filter .2s,transform .2s;padding:0 22px;line-height:1.15;text-align:center;}
+.dry .common_button:hover{filter:brightness(1.06);transform:translateY(-1px);}
+.dry .common_button p{margin-top:-2px;}
+.dry .common_button svg{width:19px;height:19px;flex-shrink:0;}
+.dry .button_mbk_text{display:flex;align-items:center;justify-content:center;margin:12px auto 0;font-size:13px;line-height:13px;color:#000;font-weight:500;column-gap:5px;}
+.dry .button_mbk_text svg{width:14px;height:14px;flex-shrink:0;color:var(--sage);}
+
+/* =========================================================
+   1. BANNER (hero)
+   ========================================================= */
+.dry .banner{width:100%;padding:45px 0 55px;background-color:var(--hero);background-repeat:no-repeat;background-position:center top;background-size:cover;overflow:hidden;}
+.dry .banner_row{display:flex;flex-wrap:wrap;justify-content:flex-start;width:100%;}
+.dry .banner_content{width:55%;text-align:left;}
+.dry .bnr_trusted_text{font-size:15px;line-height:21px;color:#000;font-weight:500;display:flex;align-items:center;justify-content:flex-start;column-gap:7px;margin-bottom:5px;flex-wrap:wrap;}
+.dry .bnr_trusted_text .stars-row{display:inline-flex;gap:2px;}
+.dry .bnr_trusted_text .stars-row svg{width:18px;height:18px;}
+.dry .trust_people{width:102px;flex-shrink:0;}
+.dry .banner_heading{font-size:50px;line-height:60px;font-weight:800;color:var(--dk);}
+.dry .banner_strip{display:inline-block;vertical-align:middle;width:85%;margin-top:20px;background:linear-gradient(90deg,#e7e7e7 0% 57%,rgba(231,231,231,0));padding:1px 0;}
+.dry ul.banner_strip_list{display:flex;align-items:center;justify-content:flex-start;width:100%;background:var(--hero);padding:10px 0;column-gap:20px;}
+.dry ul.banner_strip_list li{display:flex;align-items:center;gap:5px;font-size:18px;line-height:26px;color:#000;font-weight:600;text-align:left;}
+.dry ul.banner_strip_list li svg{width:15px;height:15px;flex-shrink:0;color:var(--btn1);}
+.dry .banner_text{font-size:16px;line-height:23px;color:#0e213a;margin-top:25px;padding-right:20px;}
+.dry ul.banner_point{display:inline-block;width:100%;margin-top:20px;}
+.dry ul.banner_point li{display:flex;align-items:flex-start;gap:11px;width:100%;margin-top:10px;text-align:left;font-size:18px;line-height:26px;color:#000;font-weight:600;}
+.dry ul.banner_point li svg{width:17px;height:17px;flex-shrink:0;margin-top:4px;}
+.dry .banner_right{width:38%;}
+.dry .banner_prod_box{display:flex;align-items:center;justify-content:center;width:100%;margin:0 auto;position:relative;}
+.dry .banner_bfr_aftr{width:236px;flex-shrink:0;margin:60px -70px 0 0;position:relative;z-index:1;}
+.dry .banner_bfr_aftr img{border-radius:10px;}
+.dry .banner_prod{width:307px;flex-shrink:0;}
+.dry .banner-prod-seal{position:absolute;right:-30px;top:-10px;width:120px;z-index:2;}
+.dry .banner_right_workBox{display:inline-table;vertical-align:middle;width:90%;margin-top:20px;}
+.dry .bnr_work_heading{display:flex;align-items:center;justify-content:center;font-size:16px;line-height:22px;color:#000;font-weight:700;width:85%;column-gap:15px;margin:0 auto;}
+.dry .bnr_work_heading:before,.dry .bnr_work_heading:after{content:"";height:1px;width:100%;background:color-mix(in srgb,var(--sage) 20%,transparent);}
+.dry .bnr_work_heading span{flex-shrink:0;}
+.dry ul.bnr_work_list{display:flex;align-items:flex-start;justify-content:space-between;width:100%;margin:15px auto 0;}
+.dry ul.bnr_work_list li{text-align:center;flex:1;}
+.dry ul.bnr_work_list li .ic{width:45px;height:45px;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;}
+.dry ul.bnr_work_list li p{font-size:12px;line-height:16px;color:#000;font-weight:700;}
+
+/* iconos por defecto (cuando no subes imagen) */
+.dry .def-ic{width:100%;height:100%;border-radius:50%;background:#e9faeb;color:var(--sage);display:flex;align-items:center;justify-content:center;}
+.dry .def-ic svg{width:55%;height:55%;}
+.dry .ic img{width:100%;height:100%;object-fit:contain;}
+
+/* =========================================================
+   2. CINTA EN MOVIMIENTO
+   ========================================================= */
+.dry .scroll_strip{position:relative;width:100%;overflow:hidden;background:var(--dk);padding:17px 0;}
+.dry .scroll_slider{width:100%;display:flex;flex-wrap:nowrap;}
+.dry .slider_track{display:flex;flex-wrap:nowrap;align-items:center;justify-content:center;flex-shrink:0;animation:dry-marquee var(--marquee-speed,30s) linear infinite;}
+@keyframes dry-marquee{0%{transform:translate(0)}to{transform:translate(-100%)}}
+.dry .slider_track li{font-size:15px;line-height:17px;color:#fff;font-weight:700;position:relative;padding:0 30px;letter-spacing:.5px;white-space:nowrap;}
+.dry .slider_track li:after{content:"";position:absolute;top:6px;right:-2px;background:#d3e7e8;width:6px;height:6px;border-radius:50%;}
+
+/* =========================================================
+   3. RESULTADOS (slider antes/después)
+   ========================================================= */
+.dry .section_1{padding:65px 0 70px;}
+.dry .section_1 .common_parahraph{margin-top:10px;}
+.dry .section1_result_block{display:flex;flex-direction:column;justify-content:center;margin:40px auto 0;width:100%;row-gap:20px;}
+.dry .nav_row{display:flex;justify-content:center;max-width:645px;width:100%;margin:0 auto;gap:8px;}
+.dry .res-tab{cursor:pointer;border-radius:4px;border:1px solid var(--sage);background:#fff;padding:7px 12px 9px;flex:1;transition:background .2s,color .2s;}
+.dry .res-tab p{font-size:15px;line-height:20px;color:#000;font-weight:600;}
+.dry .res-tab.is-active{background:var(--sage);border-radius:5px;}
+.dry .res-tab.is-active p{color:#fff;}
+.dry .result_inner_swipe{position:relative;width:100%;padding:0 50px;}
+.dry .res-track{display:flex;gap:21px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:13px 0;scroll-behavior:smooth;}
+.dry .res-track::-webkit-scrollbar{display:none;}
+.dry .res-track.no-smooth{scroll-behavior:auto;}
+.dry .women_result_slider__box{flex:0 0 calc((100% - 42px)/3);scroll-snap-align:center;position:relative;text-align:center;background:#fff;border-radius:12px;border:1px solid #d7d7d7;padding:10px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;box-shadow:0 0 7px 3px rgba(0,0,0,.1);transition:border-color .3s;}
+.dry .women_result_slider__box.is-active{border-color:var(--sage);}
+.dry .women_result_slider_image_box{display:flex;justify-content:space-between;width:100%;position:relative;}
+.dry .women_res_bef_img_box,.dry .women_res_aft_img_box{width:49.4%;position:relative;aspect-ratio:1/1.15;overflow:hidden;}
+.dry .women_res_bef_img_box img,.dry .women_res_aft_img_box img,.dry .women_res_bef_img_box .dry-ph,.dry .women_res_aft_img_box .dry-ph{width:100%;height:100%;object-fit:cover;display:block;}
+.dry .women_res_bef_img_box img,.dry .women_res_bef_img_box .dry-ph{border-radius:10px 0 0 0;}
+.dry .women_res_aft_img_box img,.dry .women_res_aft_img_box .dry-ph{border-radius:0 10px 0 0;}
+.dry .women_res_bef_img_box p,.dry .women_res_aft_img_box p{position:absolute;font-size:11px;line-height:12px;font-weight:700;color:#000;background:#fff;border-radius:4px;padding:4px 5px;left:10px;top:10px;text-transform:uppercase;min-width:65px;text-align:center;}
+.dry .women_res_aft_img_box p{background:#000;color:#fff;}
+.dry .women_prob_text_name{font-size:11px;line-height:14px;color:var(--sage);font-weight:700;background:#fff;border-radius:50px;position:absolute;bottom:-11px;left:50%;transform:translate(-50%);min-width:110px;z-index:1;text-transform:uppercase;padding:6px 12px 5px;white-space:nowrap;}
+.dry .women_result_slider_content{display:flex;justify-content:space-between;flex-direction:column;flex:1;width:100%;text-align:center;padding:25px 9px 14px;}
+.dry .women_result_contet_inner{width:100%;padding-bottom:25px;}
+.dry .women_result_head{font-size:17px;line-height:25px;color:#000;font-weight:700;}
+.dry .tp-stars{display:inline-flex;gap:2px;margin:10px auto 0;}
+.dry .tp-stars span{width:16px;height:16px;background:var(--star);display:inline-flex;align-items:center;justify-content:center;}
+.dry .tp-stars svg{width:12px;height:12px;fill:#fff;}
+.dry .women_result_text{font-size:16px;line-height:24px;color:#000;margin-top:15px;}
+.dry .women_name{font-size:15px;line-height:20px;color:#000;}
+.dry .women_name span{font-weight:700;}
+.dry .res-arrow{position:absolute;top:50%;margin-top:-20px;width:40px;height:40px;border:1px solid var(--sage);border-radius:50%;background:#fff;color:var(--sage);display:flex;align-items:center;justify-content:center;z-index:2;}
+.dry .res-arrow svg{width:18px;height:18px;}
+.dry .res-prev{left:0;}.dry .res-next{right:0;}
+.dry .res-dots{display:none;justify-content:center;gap:6px;margin-top:8px;}
+.dry .res-dots button{width:8px;height:8px;border-radius:50%;background:#c7d1c8;}
+.dry .res-dots button.is-active{background:var(--sage);}
+.dry .sec1_trust_box{display:flex;justify-content:center;align-items:center;width:100%;margin:30px auto 0;max-width:570px;border-radius:10px;overflow:hidden;box-shadow:0 0 0 1px #819182;}
+.dry .sec1_trust_box img{display:block;width:100%;}
+
+/* =========================================================
+   4. EL PROBLEMA
+   ========================================================= */
+.dry .section_2{padding:65px 0 0;background:var(--gray);overflow:hidden;}
+.dry .section2_row{display:flex;flex-wrap:wrap;justify-content:space-between;margin:50px auto 0;width:100%;max-width:970px;}
+.dry .sec2_row_image_box{width:46.09%;}
+.dry .sec2_row_image_box img{display:block;margin:0 auto;border-radius:10px;}
+.dry .sec2_row_content{width:50%;text-align:left;}
+.dry .sec2_row_cont_inr{display:flex;flex-direction:column;width:100%;row-gap:15px;}
+.dry .sec2_row_cont_box{display:flex;justify-content:space-between;align-items:center;width:100%;border:1px solid var(--red);position:relative;padding:10px 17px;margin-top:5px;}
+.dry .s2_row_pretile{font-size:12px;line-height:16px;color:var(--red);font-weight:600;position:absolute;padding:0 8px;background:var(--gray);left:15px;top:-8px;text-transform:uppercase;}
+.dry .sec2_row_cont_box_left{text-align:left;padding-right:5px;}
+.dry .sec2_row_heading{font-size:20px;line-height:24px;color:#000;font-weight:600;}
+.dry .sec2_row_text{font-size:17px;line-height:22px;color:#000;margin-top:5px;}
+.dry .sec2_row_cont_box_right{flex-shrink:0;width:66px;height:66px;}
+.dry .sec2_row_cont_box_right img{width:100%;height:100%;object-fit:contain;}
+.dry .sec2_row_cont_box_right .def-ic{background:#fdecec;color:var(--red);}
+.dry .section2_doct_row{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;margin:30px auto 0;width:100%;max-width:970px;}
+.dry .sec2_doct_rowLeft{width:57%;text-align:left;padding-top:40px;}
+.dry .sec2_doct_lefttop{width:100%;position:relative;padding-bottom:35px;border-bottom:1px solid #c9cfc9;}
+.dry .sec2_doct_text{font-size:20px;line-height:28px;color:#000;font-weight:500;}
+.dry .sec2_doct_text p+p{margin-top:30px;}
+.dry .sec2_doct_text strong{color:var(--dk);font-weight:500;}
+.dry .quote_icon{width:34px;height:34px;position:absolute;right:0;bottom:-17px;background:var(--gray);color:var(--sage);padding:2px;}
+.dry .sec2_doct_leftbtm{width:100%;margin-top:30px;}
+.dry .doct_sign{display:block;width:228px;}
+.dry .doct_name_text{font-size:16px;line-height:22px;color:#000;margin-top:10px;}
+.dry .doct_name_text .doctnme_green{font-size:20px;line-height:24px;color:var(--sage);font-weight:700;padding-right:10px;}
+.dry .doct_name_text .sep{padding-right:10px;}
+.dry .sec2_doct_imag_box{width:43%;}
+.dry .sec2_doct_imag_box img{display:block;margin:0 auto -35px;width:460px;}
+
+/* =========================================================
+   5. LA SOLUCIÓN
+   ========================================================= */
+.dry .section_3{padding:65px 0 70px;background:var(--lt);}
+.dry .section3_row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;margin:50px auto 10px;width:100%;max-width:950px;}
+.dry .section3_left{width:45%;position:relative;padding-top:20px;}
+.dry .section3_left .s3-bg{position:absolute;left:0;top:-80px;width:543px;max-width:none;pointer-events:none;}
+.dry .section3_left_iner{display:flex;justify-content:flex-end;width:100%;align-items:center;position:relative;}
+.dry .section3_prod{width:400px;flex-shrink:0;}
+.dry .s3-usa-seal{position:absolute;left:-20px;top:10px;width:120px;}
+.dry .s3-moneyback-seal{position:absolute;left:-20px;top:140px;width:120px;}
+.dry ul.sec3_list{width:100%;display:flex;justify-content:space-between;row-gap:25px;}
+.dry ul.sec3_list li{width:100%;}
+.dry ul.sec3_list li .ic{width:60px;height:60px;margin:0 auto 3px;background:#fff;border-radius:50%;}
+.dry ul.sec3_list li p{font-size:13px;line-height:17px;color:#000;font-weight:600;}
+.dry .section3_right{width:52%;display:flex;flex-direction:column;row-gap:20px;}
+.dry .sec3_right_col{display:flex;align-items:flex-start;justify-content:flex-start;padding-bottom:20px;border-bottom:1px solid #d2dad3;}
+.dry .sec3_right_col:last-child{padding-bottom:0;border-bottom:none;}
+.dry .sec3_right_col_iconBx{width:39px;height:39px;flex-shrink:0;}
+.dry .sec3_right_col_content{text-align:left;padding-left:20px;}
+.dry .sec3_right_col_content h3{font-size:20px;line-height:26px;color:#000;font-weight:600;}
+.dry .sec3_right_col_content p{font-size:17px;line-height:25px;color:#000;margin-top:5px;}
+
+/* =========================================================
+   6. CÓMO FUNCIONA (3 etapas)
+   ========================================================= */
+.dry .section_4{padding:65px 0 70px;background:#fff;}
+.dry .section4_box{display:flex;flex-direction:column;align-items:flex-start;margin:0 auto;width:100%;max-width:1030px;row-gap:40px;}
+.dry .section4_header_box{width:100%;position:relative;text-align:left;}
+.dry .section4_header_box .common_heading{max-width:560px;}
+.dry .sec4_text{font-size:20px;line-height:26px;color:#000;font-weight:600;margin-top:15px;}
+.dry .sec4_hand_prod{position:absolute;right:40px;width:345px;top:-125px;}
+.dry .sec4_work_stepBox{display:flex;flex-wrap:wrap;justify-content:space-between;width:100%;background:#f4fcf5;border-radius:10px;box-shadow:0 0 7px 3px rgba(0,0,0,.2);padding:30px;position:relative;}
+.dry .sec4_work_step_col{width:30.5%;display:flex;flex-direction:column;justify-content:space-between;text-align:center;position:relative;}
+.dry .sec4_work_step_col:after{position:absolute;left:0;right:-42px;top:27px;content:"";height:1px;background:var(--sage);}
+.dry .sec4_work_step_col:first-child:after{left:50%;}
+.dry .sec4_work_step_col:last-child:after{right:50%;}
+.dry .sec4work_step_iner{display:flex;flex-direction:column;justify-content:space-between;flex:1;width:100%;}
+.dry .sec4_step_col_top{width:100%;text-align:center;padding:0 5px 25px;}
+.dry .sec4_step_number{display:flex;justify-content:center;align-items:center;margin:0 auto 10px;font-size:19px;line-height:18px;color:#000;background:#d5e5d6;width:55px;height:55px;border:10px solid #f4fcf5;border-radius:50%;position:relative;z-index:1;flex-shrink:0;}
+.dry .sec4_step_time_text{display:inline-block;font-size:14px;line-height:20px;color:#000;font-weight:600;text-transform:uppercase;background:#cdf9d1;border-radius:5px;padding:4px 10px 3px;}
+.dry .sec4_step_heading{font-size:22px;line-height:28px;color:#000;font-weight:700;margin-top:8px;text-transform:uppercase;}
+.dry .sec4_step_text{font-size:17px;line-height:25px;color:#000;margin-top:5px;}
+.dry .sec4_step_img_box img{display:block;margin:0 auto;border-radius:10px;}
+.dry .section4_protext_box{width:100%;}
+.dry .sec4_protect_text{font-size:20px;line-height:20px;color:#000;font-weight:700;display:flex;justify-content:center;align-items:center;}
+.dry .sec4_protect_text span{padding:0 15px;background:#fff;}
+.dry .sec4_protect_text:before,.dry .sec4_protect_text:after{content:"";height:1px;background:var(--sage);width:70px;}
+.dry ul.sec4_protect_list,.dry ul.sec6_benefits_list{display:flex;flex-wrap:wrap;justify-content:center;width:100%;margin:35px auto 10px;}
+.dry ul.sec4_protect_list li,.dry ul.sec6_benefits_list li{text-align:center;padding:0 40px;position:relative;}
+.dry ul.sec4_protect_list li:after,.dry ul.sec6_benefits_list li:after{position:absolute;content:"";right:0;top:0;bottom:0;border-right:1px solid #d0ded2;}
+.dry ul.sec4_protect_list li:first-child,.dry ul.sec6_benefits_list li:first-child{padding-left:0;}
+.dry ul.sec4_protect_list li:last-child,.dry ul.sec6_benefits_list li:last-child{padding-right:0;}
+.dry ul.sec4_protect_list li:last-child:after,.dry ul.sec6_benefits_list li:last-child:after{display:none;}
+.dry ul.sec4_protect_list li .ic{width:35px;height:35px;margin:0 auto 5px;}
+.dry ul.sec4_protect_list li p{font-size:16px;line-height:20px;color:#000;font-weight:500;}
+
+/* =========================================================
+   7. ZONAS DE APLICACIÓN
+   ========================================================= */
+.dry .section_5{padding:65px 0 70px;background:var(--lt);}
+.dry .section5_row{display:flex;flex-wrap:wrap;justify-content:space-between;margin:30px auto 10px;width:100%;max-width:1050px;row-gap:15px;}
+.dry .section5_col{width:32.4%;background:#fff;border:1px solid #bbc5d1;padding:18px;border-radius:6px;display:flex;flex-direction:column;justify-content:space-between;}
+.dry .sec5_col_content{width:100%;text-align:left;padding-bottom:30px;}
+.dry .sec5_col_haeding{font-size:20px;line-height:25px;color:#000;font-weight:700;}
+.dry .sec5_col_text{font-size:17px;line-height:23px;color:#000;margin-top:8px;}
+.dry .sec5_col_image_row{display:flex;justify-content:space-between;width:100%;}
+.dry .sec5_col_befr_image_Box,.dry .sec5_col_aftr_image_Box{width:49.4%;background:#ccc;position:relative;aspect-ratio:1/1;overflow:hidden;}
+.dry .sec5_col_befr_image_Box img,.dry .sec5_col_aftr_image_Box img,.dry .sec5_col_image_row .dry-ph{display:block;width:100%;height:100%;object-fit:cover;border-radius:0;}
+.dry .sec5_col_befr_image_Box p,.dry .sec5_col_aftr_image_Box p{position:absolute;font-size:12px;line-height:12px;font-weight:700;color:#fff;background:#000;border-radius:5px;padding:4px 8px;left:10px;bottom:10px;text-transform:uppercase;min-width:70px;text-align:center;}
+
+/* =========================================================
+   8. INGREDIENTES
+   ========================================================= */
+.dry .section_6{padding:65px 0 70px;background:#fff;}
+.dry .section6_row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;margin:50px auto 10px;width:100%;row-gap:15px;}
+.dry .section6_col{width:35%;display:flex;flex-direction:column;row-gap:40px;}
+.dry .sec6_col_inner{width:100%;display:flex;justify-content:flex-start;align-items:flex-start;padding-bottom:40px;border-bottom:1px solid #dfe4df;}
+.dry .sec6_col_inner:last-child{border-bottom:none;padding-bottom:0;}
+.dry .sec6_col_icon_box{width:103px;height:103px;flex-shrink:0;}
+.dry .sec6_col_icon_box .def-ic{width:84%;height:84%;margin:8%;}
+.dry .sec6_col_content{text-align:left;padding-left:5px;}
+.dry .sec6_col_heading{font-size:18px;line-height:24px;color:#000;font-weight:700;}
+.dry .sec6_col_strip{font-size:15px;line-height:15px;color:var(--sage);padding:4px 12px;border-radius:50px;background:#e9faeb;margin-top:5px;display:inline-block;}
+.dry .sec6_col_text{font-size:17px;line-height:25px;color:#000;margin-top:5px;letter-spacing:-.2px;}
+.dry .sec6-prod-box{position:relative;}
+.dry .sec6-prod-box.showDesk .sec6_product{flex-shrink:0;width:350px;max-width:none;margin:0 -65px;}
+.dry .s6-made-usa-seal{position:absolute;right:-40px;top:-35px;width:120px;}
+.dry ul.sec6_benefits_list{margin:45px auto 10px;max-width:1030px;}
+.dry ul.sec6_benefits_list li .ic{width:54px;height:54px;margin:0 auto 5px;}
+.dry ul.sec6_benefits_list li p{font-size:17px;line-height:20px;color:var(--dk);font-weight:600;}
+
+/* =========================================================
+   9. CÓMO SE USA
+   ========================================================= */
+.dry .howuse-section{background:var(--lt);padding:60px 0 65px;}
+.dry .step-row{width:100%;max-width:1030px;margin:25px auto 20px;display:flex;flex-wrap:wrap;justify-content:space-between;}
+.dry .step-col{width:29.5%;position:relative;text-align:center;}
+.dry .step-col:before{position:absolute;content:"";left:0;right:-60px;top:22px;background:var(--sage);height:1px;}
+.dry .step-col:first-child:before{left:50%;}
+.dry .step-col:last-child:before{right:50%;}
+.dry .step-col-no-text{display:flex;align-items:center;justify-content:center;font-size:17px;line-height:21px;color:#fff;font-weight:700;width:45px;height:45px;background:var(--sage);border:5px solid var(--lt);border-radius:50%;margin:0 auto 20px;position:relative;}
+.dry .step-col-top img{display:block;margin:0 auto;width:100%;border-radius:15px;}
+.dry .step-col-btm{width:100%;padding:20px 5px 0;}
+.dry .step-col-text1{font-size:20px;line-height:26px;color:#000;font-weight:700;}
+.dry .step-col-text2{font-size:17px;line-height:24px;color:#000;margin-top:10px;}
+
+/* =========================================================
+   10. LÍNEA DE TIEMPO
+   ========================================================= */
+.dry .timeline-section{background:#fff;padding:65px 0 75px;overflow:hidden;}
+.dry .timeline-inner-box{display:inline-block;vertical-align:top;width:100%;max-width:850px;}
+.dry .timeline__mid{margin:10px auto 0;width:100%;display:flex;flex-direction:column;position:relative;}
+.dry .timeline__mid_row{width:100%;position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;padding:45px 0;}
+.dry .timeline__mid_row.reverse{flex-direction:row-reverse;}
+.dry .timeline__mid_row.timeline__entry_point:before{position:absolute;top:60px;content:"";border-right:3px solid var(--dk);left:50%;margin-left:-1px;height:var(--timeline-height-dynamic,0px);z-index:1;transition:height .3s ease-out;}
+.dry .timeline__mid_row.timeline__entry_point:after{position:absolute;top:60px;content:"";border-right:3px solid #d9eedb;left:50%;margin-left:-1px;height:var(--timeline-height,0px);z-index:0;}
+.dry .timeline__row_center_step{position:absolute;left:50%;margin-left:-18px;width:36px;height:36px;border-radius:50%;z-index:2;background:#fff;border:7px solid #d9eedb;transform:scale(.95);transition:all .3s ease-out;}
+.dry .timeline__row_center_step.viewing{background:var(--dk);transform:scale(1);}
+.dry .timeline_mid_week_box{width:39%;text-align:left;margin-top:5px;}
+.dry .week_heading{font-size:20px;line-height:26px;color:#14331f;font-weight:700;display:flex;align-items:center;gap:15px;}
+.dry .week_heading svg{width:40px;height:40px;flex-shrink:0;color:var(--dk);}
+.dry .timeline__row_content_box{width:41%;border-radius:15px;position:relative;background:#fff;border:2px solid #346f71;padding:15px 20px;text-align:left;opacity:0;transition:opacity .5s ease-out,transform .5s ease-out;transform:translate(50px);}
+.dry .timeline__mid_row.reverse .timeline__row_content_box{transform:translate(-50px);}
+.dry .timeline__row_content_box.viewing,.dry .timeline__mid_row.reverse .timeline__row_content_box.viewing{opacity:1;transform:translate(0);}
+.dry .timeline__row_content_box:after{position:absolute;content:"";left:-12px;top:10px;border-top:11px solid transparent;border-bottom:11px solid transparent;border-right:11px solid #346f71;}
+.dry .timeline__mid_row.reverse .timeline__row_content_box:after{border-right:none;border-left:11px solid #346f71;left:auto;right:-12px;}
+.dry .timeline_row_text1{font-size:17px;line-height:24px;color:#000;}
+.shopify-design-mode .dry .timeline__row_content_box{opacity:1;transform:none;}
+
+/* =========================================================
+   11. LA CIENCIA (barras de resultados + cita)
+   ========================================================= */
+.dry .science-top-sec{width:100%;background:var(--lt);padding:50px 0 0;position:relative;}
+.dry .science-content-box{width:47%;text-align:left;padding-bottom:260px;}
+.dry .science-doctor-img{position:absolute;right:65px;bottom:0;width:466px;}
+.dry .science-bottom-sec{width:100%;background:#fff;padding:35px 0;}
+.dry .science-bottom-box{display:flex;justify-content:space-between;flex-wrap:wrap;width:100%;margin:0 auto 10px;}
+.dry .science-btm-left{width:49%;z-index:2;position:relative;margin-top:-270px;}
+.dry .result_box{width:100%;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.1);border-radius:12px;overflow:hidden;}
+.dry .result_box-heading{font-size:24px;line-height:30px;font-weight:700;color:#fff;background:var(--sage);padding:12px 30px;}
+.dry .result_box-mdl{width:100%;display:flex;flex-direction:column;row-gap:40px;padding:30px 30px 30px 25px;}
+.dry .result_box-row{width:100%;display:flex;justify-content:flex-start;align-items:center;column-gap:18px;}
+.dry .result_per{font-size:32px;line-height:38px;letter-spacing:-.5px;color:#000;font-weight:500;width:65px;flex-shrink:0;}
+.dry .result_col{text-align:left;width:100%;}
+.dry .result_col h3{font-size:20px;line-height:26px;color:#000;font-weight:400;}
+.dry .result_bar{display:flex;width:100%;height:7px;background:var(--lt);border-radius:20px;overflow:hidden;margin-top:10px;}
+.dry .result_bar_inr{background:var(--sage);border-radius:20px;transition:width 1.5s ease;height:100%;width:0;}
+.dry .science-btm-right{width:46%;position:relative;z-index:2;text-align:left;}
+.dry .science-doctor-text{font-size:18px;line-height:25px;color:#141414;font-style:italic;}
+.dry .science-doctor-text strong{color:var(--dk);}
+.dry .science-doctor-name{font-size:19px;line-height:24px;color:var(--dk);font-weight:700;margin-top:22px;}
+.dry .science-doctor-about{font-size:12px;line-height:18px;color:#434444;margin-top:5px;}
+
+/* =========================================================
+   12. COMPARATIVA
+   ========================================================= */
+.dry .comparison-section{background:#fff;padding:65px 0 100px;}
+.dry .compare-Box{display:flex;width:100%;max-width:770px;margin:60px auto 15px;}
+.dry .compare-col1{width:30%;}
+.dry .compare-col2{width:21%;background:var(--sage);padding-bottom:10px;border-radius:0 0 12px 12px;}
+.dry .compare-space-col{width:3%;}
+.dry .compare-col3{width:15.33%;}
+.dry .compare-top{width:100%;height:155px;background:#fff;padding:0 0 10px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}
+.dry .compare-top p{font-size:16px;line-height:20px;color:#000;}
+.dry .compare-logo{display:block;margin:0 auto;width:90px;}
+.dry .compare-logo-txt{font-size:20px;font-weight:800;color:var(--dk);letter-spacing:.02em;}
+.dry .compare-prod-img{display:block;margin:15px auto 0;width:111px;}
+.dry .compare-brand-img{display:block;margin:15px auto 0;width:43px;}
+.dry .compare-list{width:100%;}
+.dry .compare-list li{width:100%;height:80px;font-size:18px;line-height:22px;color:#000;font-weight:500;display:flex;align-items:center;justify-content:center;border-bottom:1px solid #d0d0d0;}
+.dry .compare-list li:last-child{border-bottom:none;}
+.dry .compare-col1 .compare-list li{justify-content:flex-start;padding:0 5px 0 3px;text-align:left;}
+.dry .compare-col2 .compare-list li{border-color:#4e5f50;}
+.dry .cmp-ic{display:block;margin:0 auto;}
+.dry .cmp-ic.yes{width:30px;height:30px;}
+.dry .cmp-ic.no{width:21px;height:21px;}
+.dry .cmp-ic.warn{width:26px;height:26px;}
+
+/* =========================================================
+   13. GARANTÍA
+   ========================================================= */
+.dry .guarantee-section{background:var(--lt);padding:60px 0 65px;position:relative;overflow-x:clip;}
+.dry .guarantee-sec-inner{width:100%;display:flex;flex-wrap:wrap;justify-content:space-between;position:relative;z-index:1;}
+.dry .guarantee-box{width:49.5%;background:#fff;border:1px solid #dee4d4;border-radius:15px;padding:30px 27px 40px;text-align:center;position:relative;z-index:1;}
+.dry .guarantee-risk-free{display:inline-block;background:var(--lt);border-radius:50px;font-size:20px;line-height:26px;color:#000;font-weight:700;text-transform:uppercase;padding:3px 15px;}
+.dry .guarantee-seal{display:block;margin:15px auto 0;width:152px;}
+.dry .guarantee-seal-def{width:152px;height:152px;margin:15px auto 0;color:var(--dk);}
+.dry .guarantee-heading{font-size:32px;line-height:38px;letter-spacing:-1.5px;color:var(--dk);font-weight:700;margin-top:15px;}
+.dry .guarantee-text{font-size:17px;line-height:25px;letter-spacing:.1px;color:#000;margin-top:15px;}
+.dry .guarantee-text.fw-600{font-weight:600;}
+.dry .guarantee-right{width:30%;}
+.dry .guarantee-benefit-box{float:right;width:120px;display:flex;flex-direction:column;row-gap:25px;margin:35px -20px 0 0;}
+.dry .guarantee-benefit-col img{display:block;margin:0 auto;width:118px;}
+.dry .guarantee-girl{position:absolute;right:0;bottom:-65px;width:647px;max-width:none;}
+
+/* =========================================================
+   14. TESTIMONIOS (vídeos + reseñas)
+   ========================================================= */
+.dry .testimonial-section{background:#fff;padding:60px 0 65px;position:relative;}
+.dry .testimonial-trustpilot{width:100%;display:flex;justify-content:center;align-items:center;column-gap:12px;margin:25px auto 0;flex-wrap:wrap;}
+.dry .testimonial-trustpilot p{font-size:25px;line-height:31px;color:#000;font-weight:700;}
+.dry .testimonial-trustpilot .tp-stars{margin:0;}
+.dry .testimonial-trustpilot .tp-stars span{width:28px;height:28px;}
+.dry .testimonial-trustpilot .tp-stars svg{width:20px;height:20px;}
+.dry .trustpilot-logo{width:130px;}
+.dry .video_slide_row{width:100%;position:relative;margin:50px auto 0;padding-bottom:80px;}
+.dry .vid-track{display:flex;gap:25px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;scroll-behavior:smooth;}
+.dry .vid-track::-webkit-scrollbar{display:none;}
+.dry .video_slide_col{flex:0 0 calc((100% - 75px)/4);scroll-snap-align:start;overflow:hidden;position:relative;background:#000;cursor:pointer;border-radius:15px;aspect-ratio:9/16;}
+.dry .video_slide_col img,.dry .video_slide_col video,.dry .video_slide_col .dry-ph{display:block;width:100%;height:100%;object-fit:cover;transition:opacity .5s;border-radius:0;}
+.dry .video_slide_col:hover img,.dry .video_slide_col:hover video{opacity:.4;}
+.dry .ugc-play{position:absolute;width:56px;height:56px;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;pointer-events:none;}
+.dry .vid-btn{width:38px;height:38px;border:1px solid var(--sage);border-radius:50%;bottom:0;background:#fff;position:absolute;z-index:10;display:flex;align-items:center;justify-content:center;color:var(--sage);}
+.dry .vid-btn svg{width:16px;height:16px;}
+.dry .vid-next{right:calc(50% - 125px);}
+.dry .vid-prev{left:calc(50% - 125px);}
+.dry .vid-dots{position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:6px;}
+.dry .vid-dots button{width:8px;height:8px;border-radius:50%;background:#c7d1c8;}
+.dry .vid-dots button.is-active{background:var(--sage);}
+.dry .testimonial-box{width:100%;max-width:760px;margin:40px auto 10px;display:flex;flex-wrap:wrap;}
+.dry .testimonial-col{width:100%;background:var(--lt);padding:25px;border-radius:10px;display:flex;flex-direction:column;justify-content:space-between;margin-top:20px;text-align:left;}
+.dry .testimonial-col .tp-stars{margin:0;}
+.dry .testimonial-about{font-size:17px;line-height:24px;color:#000;margin-top:20px;}
+.dry .testi-verify-row{width:100%;display:flex;justify-content:flex-start;align-items:center;margin-top:25px;column-gap:15px;}
+.dry .testi-profile-pic{width:50px;height:50px;flex-shrink:0;border-radius:50%;overflow:hidden;background:#dfe9e0;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--sage);}
+.dry .testi-profile-pic img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.dry .testi-verify-name{font-size:16px;line-height:22px;letter-spacing:.2px;font-weight:700;color:#220f46;}
+.dry .testi-verify-text{font-size:13px;line-height:18px;color:#000;font-weight:400;display:inline-flex;align-items:center;gap:4px;margin-left:5px;}
+.dry .testi-verify-text svg{width:13px;height:13px;color:var(--btn1);}
+.dry .testi-verify-text2{display:inline-block;background:#fff;padding:2px 10px;font-size:11px;line-height:15px;letter-spacing:.2px;color:#000;font-weight:500;border-radius:50px;margin-top:5px;}
+.dry .more-review-link{width:100%;display:flex;justify-content:center;margin:35px auto 0;}
+.dry .more-review{font-weight:700;font-size:16px;line-height:24px;color:var(--dk);text-decoration:underline;}
+.dry .testimonial-hide{display:none;width:100%;}
+.dry .testimonial-hide.is-open{display:block;animation:dry-fadein .5s;}
+@keyframes dry-fadein{from{opacity:0}to{opacity:1}}
+.dry-ugc-modal{position:fixed;inset:0;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);cursor:pointer;background-color:rgba(255,255,255,.42);justify-content:center;align-items:center;display:flex;opacity:0;z-index:-9;pointer-events:none;transition:opacity .2s;}
+.dry-ugc-modal.active{opacity:1;z-index:2147483000;pointer-events:auto;}
+.dry-ugc-modal .video-container{aspect-ratio:9/14;width:360px;position:relative;border-radius:10px;overflow:hidden;min-height:610px;background:#000;}
+.dry-ugc-modal video{width:100%;height:100%;object-fit:contain;display:block;}
+.dry-ugc-modal .ugc-close{position:absolute;right:15px;top:15px;width:45px;height:45px;background:#fff;border-radius:50%;padding:12px;z-index:1;display:flex;align-items:center;justify-content:center;color:#000;border:0;cursor:pointer;}
+.dry-ugc-modal .ugc-close svg{width:100%;height:100%;}
+
+/* =========================================================
+   15. OFERTA + PACKS
+   ========================================================= */
+.dry .discount-offer-section{background:var(--dk);padding:0 0 32px;scroll-margin-top:20px;}
+.dry .discount-offer-icn{width:46px;height:46px;background:#fff;display:flex;justify-content:center;align-items:center;border-radius:50%;margin:-23px auto 22px;position:relative;top:-0px;color:var(--dk);}
+.dry .discount-offer-icn svg{width:30px;height:30px;}
+.dry .discount-offer-heading{font-size:40px;line-height:46px;color:#fff;font-weight:700;padding-top:1px;}
+.dry .discount-offer-timer{width:100%;background:var(--sage);padding:6px 0;}
+.dry .discount-offer-timer p{font-size:16px;line-height:22px;letter-spacing:.2px;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;}
+.dry .discount-offer-timer p svg{width:16px;height:16px;}
+.dry .package_section{background:var(--lt);padding:60px 0 70px;}
+.dry .package_section-row{width:100%;margin:15px auto 0;display:flex;flex-wrap:wrap;justify-content:space-between;row-gap:35px;}
+.dry .package{width:32%;background:#fff;padding:40px 15px 20px;border:2px solid #1c404c;border-radius:12px;position:relative;}
+.dry .package.is-featured{box-shadow:0 10px 30px -12px rgba(19,73,75,.45);}
+.dry .most-popular{position:absolute;width:150px;left:50%;transform:translate(-50%);top:-17px;background:#32c0b8;border-radius:45px;padding:6px 5px;font-size:17px;line-height:17px;color:#fff;font-weight:600;}
+.dry .pkage_heading{font-size:30px;line-height:30px;font-weight:800;color:#000;text-transform:uppercase;}
+.dry .areas_text{font-size:22px;line-height:30px;color:#000;font-weight:600;margin-top:10px;}
+.dry .pkage_prod_box{width:100%;max-width:355px;margin:25px auto 0;position:relative;}
+.dry .pkage_prod_box img{display:block;margin:0 auto;width:265px;}
+.dry .pkage_price-row{width:100%;display:flex;justify-content:center;align-items:center;flex-direction:column;margin:20px auto 0;}
+.dry .pkage_retail-price{font-size:17px;line-height:26px;color:#666;}
+.dry .pkage_retail-price span{display:inline-block;position:relative;}
+.dry .pkage_retail-price span:after{content:"";position:absolute;left:-2px;right:-2px;top:48%;border-top:2px solid #f00;transform:rotate(-10deg);}
+.dry .pkage_offer-price{font-size:37px;line-height:37px;color:#222;font-weight:700;margin-top:10px;}
+.dry .pkage_per-unit{font-size:15px;line-height:17px;color:#454545;text-transform:uppercase;margin-top:8px;}
+.dry .btn_box{width:100%;margin-top:25px;}
+.dry .btn-text1{font-size:14px;line-height:18px;color:#222;font-weight:500;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.dry .btn-text1 svg{width:23px;height:23px;color:var(--dk);}
+.dry .btn-text2{font-size:12px;line-height:15px;font-weight:500;color:#000;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px;}
+.dry .btn-text2 svg{width:13px;height:13px;color:var(--sage);}
+.dry .package_btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;height:57px;color:#fff;font-size:20px;line-height:20px;font-weight:700;border-radius:50px;position:relative;overflow:hidden;text-align:center;background:var(--btn1);background:linear-gradient(90deg,var(--btn1),var(--btn2));transition:filter .2s,opacity .2s;}
+.dry .package_btn:hover{filter:brightness(1.06);}
+.dry .package_btn svg{width:18px;height:18px;}
+.dry .package_btn[disabled]{opacity:.55;cursor:not-allowed;}
+.dry .package_btn.is-loading{opacity:.7;pointer-events:none;}
+.dry .pkg-error{color:#d21113;font-size:13px;margin-top:8px;}
+.dry .pkage-card-img{display:block;margin:18px auto 0;max-width:194px;}
+.dry .shipping-calculate-date{display:flex;justify-content:center;padding:12px 3px 3px;align-items:center;font-size:14px;color:#000;margin-top:15px;border-top:1px solid var(--sage);}
+.dry .shipping__message--tomorrow{display:none;}
+.dry .remain-time,.dry .within-time{color:red;}
+.dry .shipping__message-highlight{background-color:#ffd500;padding:0 7px 2px;color:#000;}
+
+/* =========================================================
+   16. PREGUNTAS FRECUENTES
+   ========================================================= */
+.dry .faq-section{background:#fff;padding:60px 0 65px;}
+.dry .faq-container{display:flex;flex-direction:column;margin:30px auto 10px;max-width:800px;width:100%;}
+.dry .faq-row{position:relative;width:100%;background:#fff;border-radius:0 12px 12px;border:1px solid #e0e6d7;margin-top:12px;}
+.dry .acdn-heading{width:100%;display:flex;justify-content:flex-start;align-items:center;column-gap:20px;padding:17px 45px 17px 25px;cursor:pointer;position:relative;text-align:left;}
+.dry .acdn-heading .acdn-ic{position:absolute;right:25px;top:50%;width:18px;height:18px;margin-top:-9px;color:#000;}
+.dry .acdn-heading .acdn-ic .v{transition:transform .3s;transform-origin:center;}
+.dry .acdn-heading.accordion-open .acdn-ic .v{transform:scaleY(0);}
+.dry .faq-header-img{width:50px;height:50px;flex-shrink:0;border-radius:50%;overflow:hidden;background:#dfe9e0;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--sage);}
+.dry .faq-header-img img{width:100%;height:100%;object-fit:cover;}
+.dry .faq-header{text-align:left;}
+.dry .faq-subheading{font-size:15px;line-height:22px;color:var(--sage);}
+.dry .faq-heading{font-size:20px;line-height:24px;color:#000;font-weight:600;letter-spacing:-.3px;}
+.dry .acdn-content{text-align:left;padding:0 70px 0 95px;overflow:hidden;max-height:0;transition:max-height .5s ease;}
+.dry .acdn-content-inner{padding-bottom:10px;}
+.dry .acdn-para,.dry .acdn-para p{color:#000;font-size:17px;line-height:25px;letter-spacing:-.3px;}
+.dry .acdn-para p{margin-bottom:20px;}
+
+/* =========================================================
+   BOTÓN FIJO EN MÓVIL + AVISO
+   ========================================================= */
+.dry .call-btn{display:none;}
+.dry-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:2147483001;background:#13494b;color:#fff;padding:12px 24px;border-radius:999px;box-shadow:0 10px 15px -3px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .3s;font-family:'Inter',sans-serif;font-size:15px;max-width:calc(100vw - 32px);text-align:center;}
+.dry-toast.is-visible{opacity:1;}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media only screen and (max-width:1200px){
+  .dry .container{width:1004px;}
+  .dry .banner_strip{width:100%;}
+  .dry .banner_heading{font-size:46px;line-height:52px;}
+  .dry .result_inner_swipe{padding:0 30px;}
+  .dry .sec6_col_text{font-size:16px;}
+  .dry .science-doctor-img{right:0;}
+  .dry .science-btm-left{width:52%;}
+  .dry .result_col h3{font-size:18px;line-height:24px;}
+  .dry .guarantee-box{width:56%;padding:30px 18px 40px;}
+  .dry .guarantee-girl{right:-20px;width:630px;}
+}
+@media only screen and (max-width:1023px){
+  .dry .container{width:750px;}
+  .dry .showDesk{display:none;}
+  .dry .showTab{display:block;}
+  .dry .banner_content{width:59%;}
+  .dry .banner_heading{font-size:39px;line-height:49px;}
+  .dry ul.banner_strip_list{column-gap:18px;}
+  .dry ul.banner_strip_list li{font-size:16px;line-height:26px;}
+  .dry .banner_text{padding:0;}
+  .dry .banner_right{width:41%;}
+  .dry .banner_bfr_aftr{width:170px;margin:0 -60px 0 0;}
+  .dry .banner_prod{width:215px;}
+  .dry .banner-prod-seal{right:-20px;top:-20px;width:90px;}
+  .dry .banner_right_workBox{width:100%;}
+  .dry ul.bnr_work_list li .ic{width:40px;height:40px;}
+  .dry .common_heading{font-size:39px;}
+  .dry .result_inner_swipe{padding:0 20px;}
+  .dry .women_result_slider__box{padding:5px;}
+  .dry .section3_left .s3-bg{left:-78px;}
+  .dry .s3-usa-seal{left:0;top:0;width:100px;}
+  .dry .s3-moneyback-seal{left:110px;top:0;width:100px;}
+  .dry .section3_right{width:55%;}
+  .dry .sec4_hand_prod{right:20px;width:265px;top:-105px;}
+  .dry .sec4_work_stepBox{padding:10px 20px 20px;}
+  .dry .sec4_work_step_col{width:32%;}
+  .dry .section5_col{padding:10px;}
+  .dry .section6_row{row-gap:20px;max-width:550px;margin:25px auto 0;}
+  .dry .section6_col{width:100%;row-gap:20px;}
+  .dry .sec6_col_inner{padding-bottom:20px;}
+  .dry .section6_col:first-child .sec6_col_inner:last-child{border-bottom:1px solid #dfe4df;padding-bottom:20px;}
+  .dry ul.sec6_benefits_list li{padding:0 19px;}
+  .dry ul.sec6_benefits_list li .ic{width:45px;height:45px;}
+  .dry ul.sec6_benefits_list li p{font-size:15px;line-height:18px;}
+  .dry .sec6-prod-box.showTab .sec6_product{display:inline-block;margin:35px auto 0;}
+  .dry .sec6-prod-box.showTab .s6-made-usa-seal{right:200px;top:15px;width:100px;}
+  .dry .step-col{width:32%;}
+  .dry .step-col-btm{padding:20px 0 0;}
+  .dry .science-section{overflow:hidden;}
+  .dry .science-content-box{width:56%;padding-bottom:230px;}
+  .dry .science-doctor-img{right:-50px;width:400px;}
+  .dry .science-btm-left{margin-top:-240px;}
+  .dry .science-doctor-text{font-size:17px;line-height:24px;}
+  .dry .guarantee-section{background:#fff;padding:0;}
+  .dry .guarantee-sec-inner{max-width:620px;margin:0 auto;background:var(--lt);border-radius:15px;}
+  .dry .guarantee-box{width:100%;background:none;border:none;}
+  .dry .guarantee-girl{width:400px;position:static;}
+  .dry .guarantee-right{width:100%;display:flex;justify-content:flex-start;align-items:center;}
+  .dry .guarantee-benefit-box{width:100px;margin:0;flex-shrink:0;float:none;}
+  .dry .guarantee-risk-free{background:#fff;}
+  .dry .discount-offer-heading{font-size:36px;line-height:42px;}
+  .dry .package_section{padding:45px 0 40px;}
+  .dry .package{width:100%;padding:25px 15px;}
+  .dry .pkage_prod_box{max-width:330px;margin:30px auto 0;}
+  .dry .pkage_prod_box img{width:260px;}
+  .dry .pkage-card-img{width:170px;}
+  .dry .areas_text{font-size:20px;line-height:20px;margin-top:5px;}
+  .dry .video_slide_col{flex-basis:calc((100% - 50px)/3);}
+}
+@media only screen and (max-width:767px){
+  .dry .container{width:100%;padding:0 15px;max-width:600px;}
+  .dry .showDesk{display:none;}
+  .dry .showMob{display:block;}
+  .dry .hideMob{display:none !important;}
+  .dry .mob_text_left{text-align:left;}
+  .dry .banner{padding:25px 0 35px;background-image:none !important;}
+  .dry .banner_content{width:100%;text-align:center;}
+  .dry .bnr_trusted_text{font-size:12px;line-height:14px;margin-bottom:3px;justify-content:center;}
+  .dry .bnr_trusted_text .stars-row svg{width:13px;height:13px;}
+  .dry .trust_people{width:80px;}
+  .dry .banner_heading{font-size:29px;line-height:36px;letter-spacing:-.7px;}
+  .dry .banner_strip{padding:0;margin:15px 0 0;background:none;}
+  .dry ul.banner_strip_list{column-gap:17px;padding:0;justify-content:center;}
+  .dry ul.banner_strip_list li{font-size:12px;line-height:17px;gap:4px;}
+  .dry ul.banner_strip_list li svg{width:12px;height:12px;}
+  .dry .banner_text{font-size:15px;line-height:22px;letter-spacing:-.5px;text-align:left;margin-top:15px;}
+  .dry ul.banner_point{margin-top:15px;}
+  .dry ul.banner_point li{font-size:16px;line-height:24px;gap:10px;margin-top:6px;letter-spacing:-.1px;}
+  .dry ul.banner_point li svg{width:15px;height:15px;margin-top:5px;}
+  .dry .banner_right{width:100%;}
+  .dry .banner_prod_box{flex-direction:row-reverse;padding-top:40px;}
+  .dry .banner_prod{margin:0 auto;width:210px;}
+  .dry .banner-prod-seal{right:auto;top:10px;width:80px;left:-10px;}
+  .dry .banner_bfr_aftr{width:200px;margin:0 0 0 -28px;}
+  .dry .banner_right_workBox{margin-top:25px;width:100%;}
+  .dry .bnr_work_heading{width:100%;}
+  .dry ul.bnr_work_list li .ic{width:42px;height:42px;margin:0 auto 4px;}
+  .dry ul.bnr_work_list li p{line-height:14px;}
+  .dry .common_button_box{margin-top:30px;}
+  .dry .button_shipp li{font-size:13px;line-height:16px;}
+  .dry .common_button{font-size:19px;line-height:20px;column-gap:12px;height:56px;}
+  .dry .common_button svg{width:17px;height:17px;}
+  .dry .button_mbk_text{font-size:12px;line-height:14px;}
+  .dry .slider_track li{padding:0 20px;font-weight:600;}
+  .dry .section_1{padding:30px 0 35px;}
+  .dry .common_preHeading{font-size:16px;line-height:18px;}
+  .dry .common_heading{font-size:28px;line-height:36px;letter-spacing:-.4px;}
+  .dry .common_parahraph{font-size:16px;line-height:22px;margin-top:15px;}
+  .dry .section1_result_block{margin:30px auto 0;row-gap:10px;}
+  .dry .nav_row{width:calc(100% + 24px);margin-left:-12px;gap:0;justify-content:center;}
+  .dry .res-tab{flex:0 0 18%;margin:0 4px;padding:4px 5px 5px;border-radius:6px;}
+  .dry .res-tab p{font-size:11px;line-height:13px;letter-spacing:-.2px;}
+  .dry .result_inner_swipe{width:calc(100% + 24px);margin-left:-12px;padding:0 0 44px;}
+  .dry .res-track{gap:15px;padding:13px 6%;scroll-padding:0 6%;}
+  .dry .women_result_slider__box{flex-basis:88%;padding:0;}
+  .dry .women_result_slider_content{padding:20px 15px;}
+  .dry .women_result_head{font-size:16px;line-height:22px;}
+  .dry .women_result_text{font-size:15px;line-height:22px;margin-top:12px;}
+  .dry .res-arrow{top:auto;margin:0;bottom:0;width:30px;height:30px;}
+  .dry .res-arrow svg{width:14px;height:14px;}
+  .dry .res-prev{left:22%;}
+  .dry .res-next{right:22%;}
+  .dry .res-dots{display:flex;position:absolute;left:0;right:0;bottom:11px;margin:0;}
+  .dry .section_2{padding:30px 0 0;}
+  .dry .section2_row{margin:30px auto 0;}
+  .dry .sec2_row_image_box_m{width:100%;margin:25px auto 5px;display:inline-block;}
+  .dry .sec2_row_image_box_m img{border-radius:10px;}
+  .dry .sec2_row_content{width:100%;}
+  .dry .sec2_row_cont_box{padding:10px 15px;}
+  .dry .sec2_row_heading{font-size:18px;line-height:24px;}
+  .dry .sec2_row_text{font-size:15px;line-height:22px;letter-spacing:-.3px;}
+  .dry .sec2_row_cont_box_right{width:60px;height:60px;}
+  .dry .section2_doct_row{margin:30px auto 0;}
+  .dry .sec2_doct_rowLeft{width:100%;text-align:center;padding:0;}
+  .dry .sec2_doct_lefttop{border-bottom:none;padding-bottom:0;}
+  .dry .sec2_doct_text{font-size:16px;line-height:24px;letter-spacing:-.3px;}
+  .dry .sec2_doct_text p+p{margin-top:15px;}
+  .dry .quote_icon,.dry .doct_sign{display:none;}
+  .dry .sec2_doct_imag_box{width:calc(100% + 30px);margin:15px 0 0 -15px;}
+  .dry .sec2_doct_imag_box img{max-width:100%;margin-bottom:0;}
+  .dry .sec2_doct_leftbtm{width:calc(100% + 30px);margin:-18px 0 0 -15px;background:var(--sage);padding:10px 15px;position:relative;}
+  .dry .doct_name_text,.dry .doct_name_text .doctnme_green{color:#fff;margin:0;}
+  .dry .section_3{padding:30px 0 55px;}
+  .dry .section3_row{margin:30px auto 7px;max-width:100%;}
+  .dry .section3_left{width:100%;padding-top:0;}
+  .dry .s3-mob{position:relative;width:calc(100% + 30px);margin-left:-15px;}
+  .dry .s3-mob .s3-mob-bg{display:block;width:100%;margin-top:-65px;}
+  .dry .s3-mob .section3_left_iner{position:absolute;top:20%;left:15px;right:15px;width:auto;justify-content:space-between;}
+  .dry .s3-mob.no-bg .section3_left_iner{position:static;padding:0 15px;}
+  .dry .s3-mob .section3_prod{width:145px;}
+  .dry ul.sec3_list{width:31%;flex-direction:column;margin:0;}
+  .dry ul.sec3_list li p{font-size:12px;line-height:16px;}
+  .dry .section3_right{width:100%;position:relative;margin-top:-20px;}
+  .dry .s3-mob.no-bg + .section3_right,.dry .section3_left.no-bg + .section3_right{margin-top:25px;}
+  .dry .sec3_right_col_content h3{font-size:18px;line-height:24px;}
+  .dry .sec3_right_col_content p{font-size:16px;line-height:22px;}
+  .dry .section_4{padding:40px 0 35px;overflow-x:clip;}
+  .dry .section4_box{row-gap:30px;}
+  .dry .section4_header_box{padding-right:110px;}
+  .dry .sec4_hand_prod{right:-95px;width:235px;top:-85px;transform:rotate(-18deg);}
+  .dry .sec4_text{font-size:17px;line-height:24px;margin-top:10px;}
+  .dry .sec4_work_stepBox{padding:25px 15px 30px;row-gap:35px;}
+  .dry .sec4_work_step_col{width:100%;flex-direction:row;align-items:flex-start;column-gap:5px;}
+  .dry .sec4_step_number{margin:-10px 0 0 -10px;}
+  .dry .sec4_step_col_top{padding:0 0 15px;text-align:left;}
+  .dry .sec4_step_time_text{font-size:11px;line-height:11px;padding:6px 10px 5px;}
+  .dry .sec4_step_heading{font-size:20px;line-height:24px;}
+  .dry .sec4_step_text{font-size:15px;line-height:22px;}
+  .dry .sec4_work_step_col:after,.dry .sec4_work_step_col:first-child:after{width:1px;height:auto;left:17px;top:0;bottom:-35px;right:auto;}
+  .dry .sec4_work_step_col:last-child:after{display:none;}
+  .dry .section4_protext_box{margin-top:10px;}
+  .dry .sec4_protect_text{font-size:18px;line-height:21px;}
+  .dry .sec4_protect_text span{padding:0 10px;flex-shrink:0;}
+  .dry ul.sec4_protect_list{margin:20px auto 0;row-gap:25px;}
+  .dry ul.sec4_protect_list li{width:33.33%;padding:0;}
+  .dry ul.sec4_protect_list li:nth-child(3n):after{display:none;}
+  .dry .section_5{padding:30px 0 35px;}
+  .dry .section5_row{padding:0 10px;margin:25px auto 0;}
+  .dry .sec5_col_content{padding-bottom:20px;}
+  .dry .section5_col{width:100%;padding:18px;}
+  .dry .sec5_col_text{font-size:15px;line-height:22px;}
+  .dry .section_6{padding:30px 0 35px;}
+  .dry .section6_row{margin:20px auto 0;}
+  .dry .sec6-prod-box.showTab .sec6_product{width:calc(100% + 30px);max-width:none;margin:25px 0 0 -15px;}
+  .dry .sec6-prod-box.showTab .s6-made-usa-seal{right:50px;top:15px;width:80px;}
+  .dry .sec6_col_icon_box{width:90px;height:90px;}
+  .dry .sec6_col_heading{font-size:17px;line-height:24px;letter-spacing:-.3px;}
+  .dry .sec6_col_strip{font-size:12px;line-height:16px;}
+  .dry .sec6_col_text{font-size:15px;line-height:20px;margin-top:8px;}
+  .dry ul.sec6_benefits_list{margin:35px auto 5px;row-gap:25px;}
+  .dry ul.sec6_benefits_list li{width:33.33%;padding:0 5px;}
+  .dry ul.sec6_benefits_list li:nth-child(3n):after{display:none;}
+  .dry ul.sec6_benefits_list li .ic{width:40px;height:40px;}
+  .dry ul.sec6_benefits_list li p{font-size:14px;line-height:18px;letter-spacing:-.3px;}
+  .dry .howuse-section{padding:30px 0 35px;}
+  .dry .step-row{margin:25px auto 0;row-gap:30px;}
+  .dry .step-col{width:100%;display:flex;justify-content:space-between;}
+  .dry .step-col-top{width:43%;max-width:160px;flex-shrink:0;position:relative;}
+  .dry .step-col-btm{padding:0 0 0 20px;text-align:left;align-content:center;}
+  .dry .step-col-no-text{font-size:14px;line-height:18px;width:26px;height:26px;border:none;margin:0;}
+  .dry .step-col-text1{font-size:19px;line-height:24px;margin-top:15px;}
+  .dry .step-col-text2{font-size:15px;line-height:21px;margin-top:10px;}
+  .dry .step-col:before{display:none;}
+  .dry .timeline-section{padding:30px 0 35px;}
+  .dry .timeline-prod-mob{display:block;margin:10px auto 0;width:250px;}
+  .dry .timeline-inner-box{max-width:400px;}
+  .dry .timeline__mid{margin-top:28px;}
+  .dry .timeline__mid_row{padding:0 0 0 50px;margin-top:40px;}
+  .dry .timeline__mid_row:first-child{margin-top:0;}
+  .dry .timeline__mid_row.reverse{flex-direction:row;}
+  .dry .timeline__mid_row.timeline__entry_point:before{top:20px;left:13px;border-width:2px;}
+  .dry .timeline__mid_row.timeline__entry_point:after{left:13px;top:25px;border-width:2px;}
+  .dry .timeline__row_center_step{left:0;margin:0;width:26px;height:26px;border-width:6px;top:0;}
+  .dry .timeline_mid_week_box{width:100%;text-align:left;margin-top:3px;}
+  .dry .timeline__row_content_box,.dry .timeline__mid_row.reverse .timeline__row_content_box{width:100%;margin-top:15px;border-width:2px;padding:15px;transform:translate(30px);}
+  .dry .timeline__row_content_box:after{display:none;}
+  .dry .week_heading{font-size:18px;line-height:22px;gap:12px;}
+  .dry .week_heading svg{width:24px;height:24px;}
+  .dry .timeline_row_text1{font-size:16px;line-height:22px;}
+  .dry .science-section{background:var(--lt);padding:30px 0 35px;}
+  .dry .science-top-sec{padding:0;}
+  .dry .science-content-box{width:100%;padding-bottom:0;text-align:center;}
+  .dry .science-bottom-sec{background:var(--lt);padding:0;}
+  .dry .science-bottom-box{background:#fff;margin:75px auto 0;flex-direction:column-reverse;row-gap:25px;border-radius:200px 200px 10px 10px;}
+  .dry .science-btm-left{width:100%;margin-top:0;}
+  .dry .result_box{box-shadow:none;border-radius:0;background:none;}
+  .dry .result_box-heading{font-size:20px;line-height:26px;padding:8px 15px;}
+  .dry .result_box-mdl{row-gap:0;padding:5px 15px 10px;}
+  .dry .result_box-row{border-bottom:1px solid #ccc;padding:15px 0;column-gap:12px;}
+  .dry .result_box-row:last-child{border-bottom:none;}
+  .dry .result_per{font-size:24px;line-height:30px;width:50px;}
+  .dry .result_col h3{font-size:14px;line-height:20px;letter-spacing:-.3px;}
+  .dry .result_bar{margin:5px 0 0;height:6px;}
+  .dry .science-btm-right{width:100%;padding:0 15px;text-align:center;}
+  .dry .science-btm-right .sci-doc-mob{width:220px;margin:-60px auto 20px;display:block;}
+  .dry .science-doctor-name{font-size:18px;line-height:24px;}
+  .dry .comparison-section{padding:30px 0 35px;}
+  .dry .compare-Box{width:calc(100% + 20px);margin:30px 0 0 -10px;}
+  .dry .compare-col1{width:27%;}
+  .dry .compare-col2{width:23%;}
+  .dry .compare-top{height:135px;}
+  .dry .compare-brand-img{margin:25px auto 0;width:35px;}
+  .dry .compare-top p{font-size:10px;line-height:13px;}
+  .dry .compare-list li{height:65px;font-size:13px;line-height:17px;}
+  .dry .compare-logo{margin:6px auto 0;width:70px;}
+  .dry .compare-logo-txt{font-size:14px;}
+  .dry .compare-prod-img{width:80px;}
+  .dry .compare-col3{width:16.33%;}
+  .dry .compare-space-col{width:1%;}
+  .dry .cmp-ic.no{width:19px;height:19px;}
+  .dry .cmp-ic.warn{width:24px;height:24px;}
+  .dry .cmp-ic.yes{width:26px;height:26px;}
+  .dry .guarantee-sec-inner{max-width:480px;overflow:hidden;}
+  .dry .guarantee-box{padding:30px 18px 0;}
+  .dry .guarantee-risk-free{font-size:14px;line-height:20px;}
+  .dry .guarantee-seal,.dry .guarantee-seal-def{width:130px;height:auto;}
+  .dry .guarantee-heading{font-size:30px;line-height:36px;letter-spacing:-.5px;}
+  .dry .guarantee-text{font-size:15px;line-height:22px;letter-spacing:.3px;}
+  .dry .guarantee-right{margin:20px auto 0;justify-content:center;}
+  .dry .guarantee-girl{width:280px;margin:0 0 0 -35px;}
+  .dry .guarantee-benefit-box{width:85px;row-gap:10px;margin:0 0 0 -10px;}
+  .dry .testimonial-section{padding:40px 0 50px;}
+  .dry .testimonial-trustpilot{column-gap:8px;margin:20px auto 0;}
+  .dry .testimonial-trustpilot p{font-size:18px;line-height:24px;}
+  .dry .testimonial-trustpilot .tp-stars span{width:18px;height:18px;}
+  .dry .testimonial-trustpilot .tp-stars svg{width:13px;height:13px;}
+  .dry .trustpilot-logo{width:90px;}
+  .dry .video_slide_row{width:calc(100% + 30px);margin:35px 0 0 -15px;padding-bottom:55px;}
+  .dry .vid-track{gap:15px;padding:0 11.5%;scroll-padding:0 11.5%;}
+  .dry .video_slide_col{flex-basis:77%;scroll-snap-align:center;}
+  .dry .ugc-play{width:48px;height:48px;}
+  .dry .vid-btn{width:28px;height:28px;}
+  .dry .vid-btn svg{width:12px;height:12px;}
+  .dry .vid-next{right:calc(50% - 110px);}
+  .dry .vid-prev{left:calc(50% - 110px);}
+  .dry .vid-dots{bottom:10px;}
+  .dry .testimonial-box{margin:20px auto 10px;}
+  .dry .testimonial-col{padding:25px 20px;}
+  .dry .testimonial-about{font-size:15px;line-height:21px;margin-top:15px;}
+  .dry .testi-profile-pic{width:45px;height:45px;}
+  .dry .testi-verify-row{margin-top:20px;column-gap:10px;}
+  .dry .testi-verify-name{font-size:13px;line-height:17px;}
+  .dry .testi-verify-text{font-size:10px;line-height:14px;}
+  .dry .testi-verify-text2{padding:2px 8px;font-size:9px;line-height:13px;}
+  .dry .more-review{font-size:14px;line-height:20px;}
+  .dry .discount-offer-section{padding:0 0 18px;}
+  .dry .discount-offer-icn{margin:-23px auto 10px;}
+  .dry .discount-offer-heading{font-size:30px;line-height:36px;}
+  .dry .faq-section{padding:25px 0 35px;}
+  .dry .faq-container{margin:10px auto 0;}
+  .dry .acdn-heading{column-gap:12px;padding:10px 30px 10px 15px;}
+  .dry .acdn-heading .acdn-ic{right:12px;width:12px;height:12px;margin-top:-6px;}
+  .dry .faq-header-img{width:40px;height:40px;}
+  .dry .faq-subheading{font-size:13px;line-height:18px;}
+  .dry .faq-heading{font-size:16px;line-height:20px;}
+  .dry .acdn-content{padding:0 15px;}
+  .dry .acdn-para,.dry .acdn-para p{font-size:15px;line-height:21px;}
+  .dry .acdn-para p{margin-bottom:15px;}
+  .dry .call-btn{display:block;padding:0 15px 10px;position:fixed;bottom:0;left:0;right:0;z-index:99;transform:translateY(130%);transition:transform .4s ease;pointer-events:none;}
+  .dry .call-btn.is-visible{transform:none;pointer-events:auto;}
+  .dry .call-btn .common_button{height:56px;}
+}
+@media only screen and (max-width:375px){
+  .dry .banner_heading{font-size:27px;line-height:34px;}
+  .dry .banner_text{font-size:14px;letter-spacing:-.3px;}
+  .dry ul.banner_point li{letter-spacing:-.4px;}
+  .dry .common_heading{font-size:27px;line-height:33px;}
+  .dry .sec2_doct_text{letter-spacing:-.5px;}
+  .dry .section5_row{padding:0 5px;}
+  .dry .section5_col{padding:16px;}
+}
+@media only screen and (max-width:480px){
+  .dry-ugc-modal .video-container{width:280px;min-height:480px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .dry .slider_track,.dry .low_stock span.fade{animation:none;}
+  .dry .res-track,.dry .vid-track{scroll-behavior:auto;}
+}
+</style>
+
+{%- liquid
+  assign s = section.settings
+  assign p = product
+  if s.product != blank
+    assign p = s.product
+  endif
+  if p != blank
+    assign current_variant = p.selected_or_first_available_variant
+  endif
+
+  assign result_blocks = section.blocks | where: 'type', 'result'
+  assign problem_blocks = section.blocks | where: 'type', 'problem'
+  assign area_blocks = section.blocks | where: 'type', 'area'
+  assign ingredient_blocks = section.blocks | where: 'type', 'ingredient'
+  assign video_blocks = section.blocks | where: 'type', 'video'
+  assign review_blocks = section.blocks | where: 'type', 'review'
+  assign package_blocks = section.blocks | where: 'type', 'package'
+  assign faq_blocks = section.blocks | where: 'type', 'faq'
+
+  assign pack_id = 'dry-pack-' | append: section.id
+-%}
+
+{%- comment -%} ---------- Iconos (SVG en línea, sin imágenes externas) ---------- {%- endcomment -%}
+{%- capture svg_arrow -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>{%- endcapture -%}
+{%- capture svg_tick -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>{%- endcapture -%}
+{%- capture svg_check_circle -%}<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#02b432"/><path d="M6.8 12.3l3.4 3.4 7-7.2" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>{%- endcapture -%}
+{%- capture svg_shield -%}<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 4 5v6c0 5.2 3.4 9.9 8 11 4.6-1.1 8-5.8 8-11V5l-8-3z"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>{%- endcapture -%}
+{%- capture svg_star_path -%}<path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/>{%- endcapture -%}
+{%- capture tp_stars -%}<span class="tp-stars" aria-label="5/5">{%- for i in (1..5) -%}<span><svg viewBox="0 0 24 24" aria-hidden="true">{{ svg_star_path }}</svg></span>{%- endfor -%}</span>{%- endcapture -%}
+{%- capture svg_quote -%}<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 6H6a3 3 0 0 0-3 3v4h4v5h3V6zm11 0h-4a3 3 0 0 0-3 3v4h4v5h3V6z"/></svg>{%- endcapture -%}
+{%- capture svg_watch -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6M12 2v3"/></svg>{%- endcapture -%}
+{%- capture svg_calendar -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8.5 15l2 2 4-4"/></svg>{%- endcapture -%}
+{%- capture svg_play -%}<svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="27" fill="rgba(255,255,255,.9)"/><path d="M23 18.5v19l15-9.5z" fill="#13494b"/></svg>{%- endcapture -%}
+{%- capture svg_truck -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6h11v10H2zM13 9h4.5l3.5 3.5V16h-8"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>{%- endcapture -%}
+{%- capture svg_verify -%}<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.3l3.2 3.2L17 8.8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>{%- endcapture -%}
+{%- capture svg_close -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>{%- endcapture -%}
+{%- capture svg_plus -%}<svg class="acdn-ic" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 9h14"/><path class="v" d="M9 2v14"/></svg>{%- endcapture -%}
+{%- capture svg_prev -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>{%- endcapture -%}
+{%- capture svg_next -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>{%- endcapture -%}
+{%- capture svg_cmp_yes -%}<svg class="cmp-ic yes" viewBox="0 0 30 30" aria-label="Sí"><circle cx="15" cy="15" r="15" fill="#02b432"/><path d="M8.5 15.5l4.2 4.2 8.8-9" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>{%- endcapture -%}
+{%- capture svg_cmp_yes_light -%}<svg class="cmp-ic yes" viewBox="0 0 30 30" aria-label="Sí"><circle cx="15" cy="15" r="15" fill="#fff"/><path d="M8.5 15.5l4.2 4.2 8.8-9" fill="none" stroke="#02b432" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>{%- endcapture -%}
+{%- capture svg_cmp_no -%}<svg class="cmp-ic no" viewBox="0 0 22 22" aria-label="No"><circle cx="11" cy="11" r="11" fill="#e53935"/><path d="M7.3 7.3l7.4 7.4M14.7 7.3l-7.4 7.4" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>{%- endcapture -%}
+{%- capture svg_cmp_warn -%}<svg class="cmp-ic warn" viewBox="0 0 26 26" aria-label="A medias"><path d="M13 2 25 23H1z" fill="#f5a623" stroke="#f5a623" stroke-width="1.5" stroke-linejoin="round"/><path d="M13 9.5v6" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="13" cy="19" r="1.4" fill="#fff"/></svg>{%- endcapture -%}
+{%- capture def_ic -%}<span class="def-ic">{{ svg_tick }}</span>{%- endcapture -%}
+
+{%- comment -%} ---------- Bloque del botón (se repite como en la competencia) ---------- {%- endcomment -%}
+{%- capture cta_inner -%}
+  {%- if s.cta_show_bar -%}
+    <ul class="button_shipp">
+      <li class="green_dot"><span class="sale_fire" aria-hidden="true">🔥</span><span><strong>{{ s.cta_sale_label }}</strong>{{ s.cta_sale_text }}</span></li>
+      <li class="stock_level">{{ s.cta_stock_label }} <span class="red-text">{{ s.cta_stock_value }}</span>
+        <div class="low_stock" aria-hidden="true"><span class="active fade"></span><span></span><span></span><span></span><span></span></div>
+      </li>
+    </ul>
+  {%- endif -%}
+  <a class="common_button" href="#{{ pack_id }}" data-dry-scroll><p>{{ s.cta_text }}</p>{{ svg_arrow }}</a>
+  {%- if s.cta_guarantee != blank -%}<p class="button_mbk_text">{{ svg_shield }}{{ s.cta_guarantee }}</p>{%- endif -%}
+{%- endcapture -%}
+{%- capture cta -%}<div class="clearall"></div><div class="common_button_box hideMob">{{ cta_inner }}</div>{%- endcapture -%}
+
+<div
+  id="dry-{{ section.id }}"
+  class="dry"
+  data-dry-root
+  data-after-add="{{ s.after_add }}"
+  data-added-msg="{{ s.added_message | escape }}"
+  data-error-msg="{{ s.error_message | escape }}"
+  data-cart-url="{{ routes.cart_url }}"
+  data-cart-add-url="{{ routes.cart_add_url }}"
+  data-timer-h="{{ s.timer_hours }}"
+  data-timer-m="{{ s.timer_minutes }}"
+  data-cutoff="{{ s.ship_cutoff }}"
+  style="--dk:{{ s.c_dark }};--sage:{{ s.c_sage }};--lt:{{ s.c_light }};--gray:{{ s.c_gray }};--hero:{{ s.c_hero }};--btn1:{{ s.c_btn1 }};--btn2:{{ s.c_btn2 }};--red:{{ s.c_red }};--star:{{ s.c_star }};--marquee-speed:{{ s.marquee_speed }}s;"
+>
+
+  {%- comment -%} ================= 1. BANNER ================= {%- endcomment -%}
+  {%- if s.show_banner -%}
+    {%- capture banner_right -%}
+      <div class="banner_prod_box">
+        {%- if s.hero_ba_image != blank -%}
+          <div class="banner_bfr_aftr">{{ s.hero_ba_image | image_url: width: 600 | image_tag: loading: 'eager', alt: s.hero_ba_image.alt, widths: '300, 450, 600' }}</div>
+        {%- endif -%}
+        <div class="banner_prod">
+          {%- if s.hero_product_image != blank -%}
+            {{ s.hero_product_image | image_url: width: 800 | image_tag: loading: 'eager', fetchpriority: 'high', alt: s.hero_product_image.alt, widths: '400, 600, 800' }}
+          {%- elsif p != blank and p.featured_image != blank -%}
+            {{ p.featured_image | image_url: width: 800 | image_tag: loading: 'eager', fetchpriority: 'high', alt: p.title, widths: '400, 600, 800' }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'dry-ph' }}
+          {%- endif -%}
+        </div>
+        {%- if s.hero_seal != blank -%}{{ s.hero_seal | image_url: width: 260 | image_tag: class: 'banner-prod-seal', loading: 'eager', alt: s.hero_seal.alt }}{%- endif -%}
+      </div>
+    {%- endcapture -%}
+    {%- capture works_box -%}
+      {%- assign works_lines = s.works_items | newline_to_br | split: '<br />' -%}
+      <div class="banner_right_workBox">
+        {%- if s.works_heading != blank -%}<p class="bnr_work_heading"><span>{{ s.works_heading }}</span></p>{%- endif -%}
+        <ul class="bnr_work_list">
+          {%- assign wi = 0 -%}
+          {%- for line in works_lines -%}
+            {%- assign line = line | strip -%}
+            {%- if line != blank -%}
+              {%- assign wi = wi | plus: 1 -%}
+              {%- assign ic_key = 'works_icon_' | append: wi -%}
+              <li>
+                <div class="ic">{%- if s[ic_key] != blank -%}{{ s[ic_key] | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}{{ def_ic }}{%- endif -%}</div>
+                <p>{{ line | replace: '|', '<br>' }}</p>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endcapture -%}
+
+    <section class="banner dry-sec"{% if s.hero_bg != blank %} style="background-image:url('{{ s.hero_bg | image_url: width: 2400 }}')"{% endif %}>
+      <div class="container">
+        <div class="banner_row">
+          <div class="banner_content">
+            <div class="bnr_trusted_text">
+              <span class="stars-row" aria-hidden="true">{%- for i in (1..5) -%}<svg viewBox="0 0 24 24" fill="{{ s.c_star }}">{{ svg_star_path }}</svg>{%- endfor -%}</span>
+              <p>{{ s.hero_trusted }}</p>
+              {%- if s.hero_people != blank -%}{{ s.hero_people | image_url: width: 220 | image_tag: class: 'trust_people', loading: 'eager', alt: '' }}{%- endif -%}
+            </div>
+            <h1 class="banner_heading">{{ s.hero_heading }}</h1>
+            {%- assign strip_lines = s.hero_strip | newline_to_br | split: '<br />' -%}
+            {%- if s.hero_strip != blank -%}
+              <div class="banner_strip">
+                <ul class="banner_strip_list">
+                  {%- for line in strip_lines -%}{%- assign line = line | strip -%}{%- if line != blank -%}<li>{{ svg_tick }}{{ line }}</li>{%- endif -%}{%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+            <div class="showMob"><div class="banner_right">{{ banner_right }}</div></div>
+            {%- if s.hero_text != blank -%}<p class="banner_text">{{ s.hero_text }}</p>{%- endif -%}
+            {%- assign point_lines = s.hero_points | newline_to_br | split: '<br />' -%}
+            <ul class="banner_point">
+              {%- for line in point_lines -%}{%- assign line = line | strip -%}{%- if line != blank -%}<li>{{ svg_check_circle }}<span>{{ line }}</span></li>{%- endif -%}{%- endfor -%}
+            </ul>
+            <div class="showMob">{{ works_box }}</div>
+            <div class="clearall"></div>
+            <div class="common_button_box" data-sticky-trigger>{{ cta_inner }}</div>
+          </div>
+          <div class="banner_right hideMob">
+            {{ banner_right }}
+            {{ works_box }}
+          </div>
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 2. CINTA EN MOVIMIENTO ================= {%- endcomment -%}
+  {%- if s.show_marquee and s.marquee_items != blank -%}
+    {%- assign mq_lines = s.marquee_items | newline_to_br | split: '<br />' -%}
+    <div class="scroll_strip dry-sec" aria-hidden="true">
+      <div class="scroll_slider">
+        {%- for k in (1..5) -%}
+          <ul class="slider_track">
+            {%- for line in mq_lines -%}{%- assign line = line | strip -%}{%- if line != blank -%}<li><p>{{ line }}</p></li>{%- endif -%}{%- endfor -%}
+          </ul>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ================= 3. RESULTADOS ================= {%- endcomment -%}
+  {%- if s.show_results and result_blocks.size > 0 -%}
+    <section class="section_1 dry-sec">
+      <div class="container">
+        <h2 class="common_heading color_heading_green1">{{ s.res_heading | newline_to_br }}</h2>
+        {%- if s.res_text != blank -%}<p class="common_parahraph">{{ s.res_text | newline_to_br }}</p>{%- endif -%}
+        <div class="section1_result_block" data-res>
+          <div class="nav_row" role="tablist">
+            {%- for block in result_blocks -%}
+              <button type="button" class="res-tab{% if forloop.first %} is-active{% endif %}" data-res-tab="{{ forloop.index0 }}" role="tab"><p>{{ block.settings.tab | replace: '|', '<br>' }}</p></button>
+            {%- endfor -%}
+          </div>
+          <div class="result_inner_swipe">
+            <div class="res-track" data-res-track>
+              {%- for block in result_blocks -%}
+                <div class="women_result_slider__box{% if forloop.first %} is-active{% endif %}" data-res-slide="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+                  <div class="women_result_slider_image_box">
+                    {%- if block.settings.area != blank -%}<p class="women_prob_text_name">{{ block.settings.area }}</p>{%- endif -%}
+                    <div class="women_res_bef_img_box">
+                      {%- if block.settings.before != blank -%}{{ block.settings.before | image_url: width: 500 | image_tag: loading: 'lazy', alt: block.settings.before.alt }}{%- else -%}{{ 'image' | placeholder_svg_tag: 'dry-ph' }}{%- endif -%}
+                      <p>{{ s.label_before }}</p>
+                    </div>
+                    <div class="women_res_aft_img_box">
+                      {%- if block.settings.after != blank -%}{{ block.settings.after | image_url: width: 500 | image_tag: loading: 'lazy', alt: block.settings.after.alt }}{%- else -%}{{ 'image' | placeholder_svg_tag: 'dry-ph' }}{%- endif -%}
+                      <p>{{ s.label_after }}</p>
+                    </div>
+                  </div>
+                  <div class="women_result_slider_content">
+                    <div class="women_result_contet_inner">
+                      <p class="women_result_head">{{ block.settings.title }}</p>
+                      {{ tp_stars }}
+                      <p class="women_result_text">{{ block.settings.text }}</p>
+                    </div>
+                    <div class="women_details_row"><p class="women_name"><span>{{ block.settings.name }}</span></p></div>
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+            {%- if result_blocks.size > 1 -%}
+              <button type="button" class="res-arrow res-prev" data-res-prev aria-label="Anterior">{{ svg_prev }}</button>
+              <button type="button" class="res-arrow res-next" data-res-next aria-label="Siguiente">{{ svg_next }}</button>
+              <div class="res-dots" data-res-dots>
+                {%- for block in result_blocks -%}<button type="button" class="{% if forloop.first %}is-active{% endif %}" data-res-dot="{{ forloop.index0 }}" aria-label="{{ forloop.index }}"></button>{%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+        {%- if s.res_trust_image != blank -%}
+          <div class="sec1_trust_box">
+            {%- if s.res_trust_image_mob != blank -%}
+              <div class="hideMob">{{ s.res_trust_image | image_url: width: 1140 | image_tag: loading: 'lazy', alt: s.res_trust_image.alt }}</div>
+              <div class="showMob">{{ s.res_trust_image_mob | image_url: width: 900 | image_tag: loading: 'lazy', alt: s.res_trust_image_mob.alt }}</div>
+            {%- else -%}
+              {{ s.res_trust_image | image_url: width: 1140 | image_tag: loading: 'lazy', alt: s.res_trust_image.alt }}
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 4. EL PROBLEMA ================= {%- endcomment -%}
+  {%- if s.show_problem -%}
+    <section class="section_2 dry-sec">
+      <div class="container">
+        {%- if s.pb_pre != blank -%}<p class="common_preHeading color_red mob_text_left">{{ s.pb_pre }}</p>{%- endif -%}
+        <h2 class="common_heading color_black mob_text_left">{{ s.pb_heading | newline_to_br }}</h2>
+        {%- if s.pb_image_mob != blank or s.pb_image != blank -%}
+          {%- assign pb_m = s.pb_image_mob | default: s.pb_image -%}
+          <div class="showMob"><div class="sec2_row_image_box_m">{{ pb_m | image_url: width: 900 | image_tag: loading: 'lazy', alt: pb_m.alt }}</div></div>
+        {%- endif -%}
+        {%- if s.pb_text != blank -%}<div class="common_parahraph mob_text_left">{{ s.pb_text }}</div>{%- endif -%}
+        {%- if problem_blocks.size > 0 -%}
+          <div class="section2_row">
+            <div class="sec2_row_image_box hideMob">
+              {%- if s.pb_image != blank -%}{{ s.pb_image | image_url: width: 900 | image_tag: loading: 'lazy', alt: s.pb_image.alt, widths: '450, 700, 900' }}{%- else -%}{{ 'lifestyle-1' | placeholder_svg_tag: 'dry-ph' }}{%- endif -%}
+            </div>
+            <div class="sec2_row_content">
+              <div class="sec2_row_cont_inr">
+                {%- for block in problem_blocks -%}
+                  <div class="sec2_row_cont_box" {{ block.shopify_attributes }}>
+                    {%- if block.settings.pretitle != blank -%}<p class="s2_row_pretile">{{ block.settings.pretitle }}</p>{%- endif -%}
+                    <div class="sec2_row_cont_box_left">
+                      <p class="sec2_row_heading">{{ block.settings.heading }}</p>
+                      <p class="sec2_row_text">{{ block.settings.text }}</p>
+                    </div>
+                    <div class="sec2_row_cont_box_right">
+                      {%- if block.settings.icon != blank -%}{{ block.settings.icon | image_url: width: 140 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}<span class="def-ic">{{ svg_close }}</span>{%- endif -%}
+                    </div>
+                  </div>
+                {%- endfor -%}
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+        {%- if s.doc_text != blank or s.doc_name != blank -%}
+          <div class="section2_doct_row">
+            <div class="sec2_doct_rowLeft">
+              <div class="sec2_doct_lefttop">
+                <div class="sec2_doct_text">{{ s.doc_text }}</div>
+                <span class="quote_icon">{{ svg_quote }}</span>
+                {%- if s.doc_image != blank -%}
+                  <div class="showMob"><div class="sec2_doct_imag_box">{{ s.doc_image | image_url: width: 900 | image_tag: loading: 'lazy', alt: s.doc_name }}</div></div>
+                {%- endif -%}
+              </div>
+              <div class="sec2_doct_leftbtm">
+                {%- if s.doc_sign != blank -%}{{ s.doc_sign | image_url: width: 460 | image_tag: class: 'doct_sign', loading: 'lazy', alt: '' }}{%- endif -%}
+                <p class="doct_name_text"><span class="doctnme_green">{{ s.doc_name }}</span>{% if s.doc_role != blank %}<span class="sep hideMob">|</span>{{ s.doc_role }}{% endif %}</p>
+              </div>
+            </div>
+            {%- if s.doc_image != blank -%}
+              <div class="sec2_doct_imag_box hideMob">{{ s.doc_image | image_url: width: 920 | image_tag: loading: 'lazy', alt: s.doc_name }}</div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 5. LA SOLUCIÓN ================= {%- endcomment -%}
+  {%- if s.show_solution -%}
+    {%- capture s3_lists -%}
+      {%- assign s3_lines = s.s3_badges | newline_to_br | split: '<br />' -%}
+      {%- assign s3_clean = '' -%}
+      {%- for line in s3_lines -%}{%- assign line = line | strip -%}{%- if line != blank -%}{%- assign s3_clean = s3_clean | append: line | append: '§' -%}{%- endif -%}{%- endfor -%}
+      {%- assign s3_items = s3_clean | split: '§' -%}
+      {%- assign s3_half = s3_items.size | plus: 1 | divided_by: 2 -%}
+      <ul class="sec3_list">
+        {%- for line in s3_items limit: s3_half -%}
+          {%- assign ic_key = 's3_badge_icon_' | append: forloop.index -%}
+          <li><div class="ic">{%- if s[ic_key] != blank -%}{{ s[ic_key] | image_url: width: 140 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}{{ def_ic }}{%- endif -%}</div><p>{{ line | replace: '|', '<br>' }}</p></li>
+        {%- endfor -%}
+      </ul>
+      {%- capture s3_prod_mob -%}
+        {%- if s.s3_mob_bg == blank -%}
+          {%- if s.s3_product != blank -%}{{ s.s3_product | image_url: width: 400 | image_tag: class: 'section3_prod', loading: 'lazy', alt: s.s3_product.alt }}{%- endif -%}
+        {%- endif -%}
+      {%- endcapture -%}
+      {{ s3_prod_mob }}
+      <ul class="sec3_list">
+        {%- for line in s3_items offset: s3_half -%}
+          {%- assign idx = forloop.index | plus: s3_half -%}
+          {%- assign ic_key = 's3_badge_icon_' | append: idx -%}
+          <li><div class="ic">{%- if s[ic_key] != blank -%}{{ s[ic_key] | image_url: width: 140 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}{{ def_ic }}{%- endif -%}</div><p>{{ line | replace: '|', '<br>' }}</p></li>
+        {%- endfor -%}
+      </ul>
+    {%- endcapture -%}
+    <section class="section_3 dry-sec">
+      <div class="container">
+        {%- if s.s3_pre != blank -%}<p class="common_preHeading">{{ s.s3_pre }}</p>{%- endif -%}
+        <h2 class="common_heading">{{ s.s3_heading | newline_to_br }}</h2>
+        {%- if s.s3_text != blank -%}<div class="common_parahraph">{{ s.s3_text }}</div>{%- endif -%}
+        <div class="section3_row">
+          <div class="section3_left{% if s.s3_mob_bg == blank %} no-bg{% endif %}">
+            <div class="hideMob">
+              {%- if s.s3_bg != blank -%}{{ s.s3_bg | image_url: width: 1100 | image_tag: class: 's3-bg', loading: 'lazy', alt: '' }}{%- endif -%}
+              <div class="section3_left_iner">
+                {%- if s.s3_product != blank -%}{{ s.s3_product | image_url: width: 800 | image_tag: class: 'section3_prod', loading: 'lazy', alt: s.s3_product.alt }}{%- elsif p != blank and p.featured_image != blank -%}{{ p.featured_image | image_url: width: 800 | image_tag: class: 'section3_prod', loading: 'lazy', alt: p.title }}{%- endif -%}
+                {%- if s.s3_seal_1 != blank -%}{{ s.s3_seal_1 | image_url: width: 260 | image_tag: class: 's3-usa-seal', loading: 'lazy', alt: '' }}{%- endif -%}
+                {%- if s.s3_seal_2 != blank -%}{{ s.s3_seal_2 | image_url: width: 260 | image_tag: class: 's3-moneyback-seal', loading: 'lazy', alt: '' }}{%- endif -%}
+              </div>
+            </div>
+            <div class="showMob">
+              <div class="s3-mob{% if s.s3_mob_bg == blank %} no-bg{% endif %}">
+                {%- if s.s3_mob_bg != blank -%}{{ s.s3_mob_bg | image_url: width: 900 | image_tag: class: 's3-mob-bg', loading: 'lazy', alt: '' }}{%- endif -%}
+                <div class="section3_left_iner">{{ s3_lists }}</div>
+              </div>
+            </div>
+          </div>
+          {%- assign s3f_lines = s.s3_features | newline_to_br | split: '<br />' -%}
+          <div class="section3_right">
+            {%- assign fi = 0 -%}
+            {%- for line in s3f_lines -%}
+              {%- assign line = line | strip -%}
+              {%- if line != blank -%}
+                {%- assign fi = fi | plus: 1 -%}
+                {%- assign parts = line | split: '|' -%}
+                {%- assign ic_key = 's3_feat_icon_' | append: fi -%}
+                <div class="sec3_right_col">
+                  <div class="sec3_right_col_iconBx ic">{%- if s[ic_key] != blank -%}{{ s[ic_key] | image_url: width: 100 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}{{ def_ic }}{%- endif -%}</div>
+                  <div class="sec3_right_col_content">
+                    <h3>{{ parts[0] | strip }}</h3>
+                    {%- if parts[1] != blank -%}<p>{{ parts[1] | strip }}</p>{%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+        {{ cta }}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 6. CÓMO FUNCIONA ================= {%- endcomment -%}
+  {%- if s.show_how -%}
+    <section class="section_4 dry-sec">
+      <div class="container">
+        <div class="section4_box">
+          <div class="section4_header_box">
+            {%- if s.s4_pre != blank -%}<p class="common_preHeading">{{ s.s4_pre }}</p>{%- endif -%}
+            <h2 class="common_heading">{{ s.s4_heading | newline_to_br }}</h2>
+            {%- if s.s4_text != blank -%}<p class="sec4_text">{{ s.s4_text | newline_to_br }}</p>{%- endif -%}
+            {%- if s.s4_image != blank -%}{{ s.s4_image | image_url: width: 700 | image_tag: class: 'sec4_hand_prod', loading: 'lazy', alt: '' }}{%- endif -%}
+          </div>
+          <div class="sec4_work_stepBox">
+            {%- for n in (1..3) -%}
+              {%- assign k_time = 's4_step' | append: n | append: '_time' -%}
+              {%- assign k_title = 's4_step' | append: n | append: '_title' -%}
+              {%- assign k_text = 's4_step' | append: n | append: '_text' -%}
+              {%- assign k_img = 's4_step' | append: n | append: '_image' -%}
+              <div class="sec4_work_step_col">
+                <div class="sec4_step_number">{{ n }}</div>
+                <div class="sec4work_step_iner">
+                  <div class="sec4_step_col_top">
+                    {%- if s[k_time] != blank -%}<p class="sec4_step_time_text">{{ s[k_time] }}</p>{%- endif -%}
+                    <p class="sec4_step_heading">{{ s[k_title] }}</p>
+                    <p class="sec4_step_text">{{ s[k_text] }}</p>
+                  </div>
+                  {%- if s[k_img] != blank -%}<div class="sec4_step_img_box">{{ s[k_img] | image_url: width: 600 | image_tag: loading: 'lazy', alt: s[k_title] }}</div>{%- endif -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+          {%- if s.s4_protect_items != blank -%}
+            {%- assign pr_lines = s.s4_protect_items | newline_to_br | split: '<br />' -%}
+            <div class="section4_protext_box">
+              {%- if s.s4_protect_title != blank -%}<p class="sec4_protect_text"><span>{{ s.s4_protect_title }}</span></p>{%- endif -%}
+              <ul class="sec4_protect_list">
+                {%- assign pi = 0 -%}
+                {%- for line in pr_lines -%}
+                  {%- assign line = line | strip -%}
+                  {%- if line != blank -%}
+                    {%- assign pi = pi | plus: 1 -%}
+                    {%- assign ic_key = 's4_protect_icon_' | append: pi -%}
+                    <li><div class="ic">{%- if s[ic_key] != blank -%}{{ s[ic_key] | image_url: width: 100 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}{{ def_ic }}{%- endif -%}</div><p>{{ line }}</p></li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        </div>
+        {{ cta }}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 7. ZONAS DE APLICACIÓN ================= {%- endcomment -%}
+  {%- if s.show_areas and area_blocks.size > 0 -%}
+    <section class="section_5 dry-sec">
+      <div class="container">
+        {%- if s.s5_pre != blank -%}<p class="common_preHeading">{{ s.s5_pre }}</p>{%- endif -%}
+        <h2 class="common_heading">{{ s.s5_heading | newline_to_br }}</h2>
+        {%- if s.s5_text != blank -%}<p class="common_parahraph">{{ s.s5_text }}</p>{%- endif -%}
+        <div class="section5_row">
+          {%- for block in area_blocks -%}
+            <div class="section5_col" {{ block.shopify_attributes }}>
+              <div class="sec5_col_content">
+                <p class="sec5_col_haeding">{{ block.settings.heading }}</p>
+                <p class="sec5_col_text">{{ block.settings.text }}</p>
+              </div>
+              <div class="sec5_col_image_row">
+                <div class="sec5_col_befr_image_Box">
+                  {%- if block.settings.before != blank -%}{{ block.settings.before | image_url: width: 400 | image_tag: loading: 'lazy', alt: block.settings.before.alt }}{%- else -%}{{ 'image' | placeholder_svg_tag: 'dry-ph' }}{%- endif -%}
+                  <p>{{ s.label_before }}</p>
+                </div>
+                <div class="sec5_col_aftr_image_Box">
+                  {%- if block.settings.after != blank -%}{{ block.settings.after | image_url: width: 400 | image_tag: loading: 'lazy', alt: block.settings.after.alt }}{%- else -%}{{ 'image' | placeholder_svg_tag: 'dry-ph' }}{%- endif -%}
+                  <p>{{ s.label_after }}</p>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+        {{ cta }}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 8. INGREDIENTES ================= {%- endcomment -%}
+  {%- if s.show_ingredients and ingredient_blocks.size > 0 -%}
+    {%- capture s6_prod -%}
+      {%- if s.s6_product != blank -%}{{ s.s6_product | image_url: width: 800 | image_tag: class: 'sec6_product', loading: 'lazy', alt: s.s6_product.alt }}{%- elsif p != blank and p.featured_image != blank -%}{{ p.featured_image | image_url: width: 800 | image_tag: class: 'sec6_product', loading: 'lazy', alt: p.title }}{%- endif -%}
+      {%- if s.s6_seal != blank -%}{{ s.s6_seal | image_url: width: 260 | image_tag: class: 's6-made-usa-seal', loading: 'lazy', alt: '' }}{%- endif -%}
+    {%- endcapture -%}
+    {%- assign ing_half = ingredient_blocks.size | plus: 1 | divided_by: 2 -%}
+    <section class="section_6 dry-sec">
+      <div class="container">
+        {%- if s.s6_pre != blank -%}<p class="common_preHeading">{{ s.s6_pre }}</p>{%- endif -%}
+        <h2 class="common_heading">{{ s.s6_heading | newline_to_br }}</h2>
+        {%- if s.s6_text != blank -%}<p class="common_parahraph">{{ s.s6_text }}</p>{%- endif -%}
+        <div class="sec6-prod-box showTab">{{ s6_prod }}</div>
+        <div class="section6_row">
+          {%- for half in (1..2) -%}
+            {%- if half == 1 -%}{%- assign ing_off = 0 -%}{%- assign ing_lim = ing_half -%}{%- else -%}{%- assign ing_off = ing_half -%}{%- assign ing_lim = 50 -%}{%- endif -%}
+            {%- if half == 2 -%}<div class="sec6-prod-box showDesk">{{ s6_prod }}</div>{%- endif -%}
+            <div class="section6_col">
+              {%- for block in ingredient_blocks offset: ing_off limit: ing_lim -%}
+                <div class="sec6_col_inner" {{ block.shopify_attributes }}>
+                  <div class="sec6_col_icon_box ic">{%- if block.settings.icon != blank -%}{{ block.settings.icon | image_url: width: 220 | image_tag: loading: 'lazy', alt: block.settings.name }}{%- else -%}{{ def_ic }}{%- endif -%}</div>
+                  <div class="sec6_col_content">
+                    <p class="sec6_col_heading">{{ block.settings.name }}</p>
+                    {%- if block.settings.strip != blank -%}<p class="sec6_col_strip">{{ block.settings.strip }}</p>{%- endif -%}
+                    <p class="sec6_col_text">{{ block.settings.text }}</p>
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endfor -%}
+        </div>
+        {%- if s.s6_benefits != blank -%}
+          {%- assign bn_lines = s.s6_benefits | newline_to_br | split: '<br />' -%}
+          <ul class="sec6_benefits_list">
+            {%- assign bi = 0 -%}
+            {%- for line in bn_lines -%}
+              {%- assign line = line | strip -%}
+              {%- if line != blank -%}
+                {%- assign bi = bi | plus: 1 -%}
+                {%- assign ic_key = 's6_benefit_icon_' | append: bi -%}
+                <li><div class="ic">{%- if s[ic_key] != blank -%}{{ s[ic_key] | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}{{ def_ic }}{%- endif -%}</div><p>{{ line }}</p></li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+        {{ cta }}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 9. CÓMO SE USA ================= {%- endcomment -%}
+  {%- if s.show_howuse -%}
+    <section class="howuse-section dry-sec">
+      <div class="container">
+        {%- if s.hu_pre != blank -%}<p class="common_preHeading">{{ s.hu_pre }}</p>{%- endif -%}
+        <h2 class="common_heading">{{ s.hu_heading | newline_to_br }}</h2>
+        {%- if s.hu_text != blank -%}<p class="common_parahraph">{{ s.hu_text }}</p>{%- endif -%}
+        <div class="step-row">
+          {%- for n in (1..3) -%}
+            {%- assign k_title = 'hu_step' | append: n | append: '_title' -%}
+            {%- assign k_text = 'hu_step' | append: n | append: '_text' -%}
+            {%- assign k_img = 'hu_step' | append: n | append: '_image' -%}
+            <div class="step-col">
+              <p class="step-col-no-text hideMob">{{ n }}</p>
+              <div class="step-col-top">
+                {%- if s[k_img] != blank -%}{{ s[k_img] | image_url: width: 600 | image_tag: loading: 'lazy', alt: s[k_title] }}{%- else -%}{{ 'image' | placeholder_svg_tag: 'dry-ph' }}{%- endif -%}
+              </div>
+              <div class="step-col-btm">
+                <div class="showMob"><p class="step-col-no-text">{{ n }}</p></div>
+                <p class="step-col-text1">{{ s[k_title] }}</p>
+                <p class="step-col-text2">{{ s[k_text] }}</p>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+        {{ cta }}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 10. LÍNEA DE TIEMPO ================= {%- endcomment -%}
+  {%- if s.show_timeline and s.tl_items != blank -%}
+    {%- assign tl_lines = s.tl_items | newline_to_br | split: '<br />' -%}
+    <section class="timeline-section dry-sec">
+      <div class="container">
+        {%- if s.tl_pre != blank -%}<p class="common_preHeading">{{ s.tl_pre }}</p>{%- endif -%}
+        <h2 class="common_heading">{{ s.tl_heading | newline_to_br }}</h2>
+        {%- if s.tl_text != blank -%}<p class="common_parahraph">{{ s.tl_text }}</p>{%- endif -%}
+        {%- if s.tl_image_mob != blank -%}<div class="showMob">{{ s.tl_image_mob | image_url: width: 600 | image_tag: class: 'timeline-prod-mob', loading: 'lazy', alt: '' }}</div>{%- endif -%}
+        <div class="timeline-inner-box">
+          <div class="timeline__mid" data-timeline>
+            {%- assign ti = 0 -%}
+            {%- for line in tl_lines -%}
+              {%- assign line = line | strip -%}
+              {%- if line != blank -%}
+                {%- assign parts = line | split: '|' -%}
+                {%- assign odd = ti | modulo: 2 -%}
+                <div class="timeline__mid_row{% if ti == 0 %} timeline__entry_point{% endif %}{% if odd == 1 %} reverse{% endif %}">
+                  <div class="timeline__row_center_step"></div>
+                  <div class="timeline_mid_week_box"><div class="week_heading">{% if ti == 0 %}{{ svg_watch }}{% else %}{{ svg_calendar }}{% endif %}<span>{{ parts[0] | strip }}</span></div></div>
+                  <div class="timeline__row_content_box"><p class="timeline_row_text1">{{ parts[1] | strip }}</p></div>
+                </div>
+                {%- assign ti = ti | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+        {{ cta }}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 11. LA CIENCIA ================= {%- endcomment -%}
+  {%- if s.show_science -%}
+    <section class="science-section dry-sec">
+      <div class="science-top-sec">
+        <div class="container">
+          <div class="science-content-box">
+            {%- if s.sc_pre != blank -%}<p class="common_preHeading">{{ s.sc_pre }}</p>{%- endif -%}
+            <h2 class="common_heading">{{ s.sc_heading | newline_to_br }}</h2>
+            {%- if s.sc_text != blank -%}<p class="common_parahraph hideMob">{{ s.sc_text }}</p>{%- endif -%}
+          </div>
+          {%- if s.sc_image != blank -%}<div class="hideMob">{{ s.sc_image | image_url: width: 940 | image_tag: class: 'science-doctor-img', loading: 'lazy', alt: s.sc_name }}</div>{%- endif -%}
+        </div>
+      </div>
+      <div class="science-bottom-sec" data-stats>
+        <div class="container">
+          <div class="science-bottom-box">
+            <div class="science-btm-left">
+              <div class="result_box">
+                {%- if s.sc_box_title != blank -%}<div class="result_box-heading">{{ s.sc_box_title }}</div>{%- endif -%}
+                <div class="result_box-mdl">
+                  {%- assign st_lines = s.sc_stats | newline_to_br | split: '<br />' -%}
+                  {%- for line in st_lines -%}
+                    {%- assign line = line | strip -%}
+                    {%- if line != blank -%}
+                      {%- assign parts = line | split: '|' -%}
+                      {%- assign pct = parts[0] | strip | remove: '%' | plus: 0 -%}
+                      <div class="result_box-row" data-pct="{{ pct }}">
+                        <div class="result_per"><span data-count>{{ pct }}</span>%</div>
+                        <div class="result_col">
+                          <h3>{{ parts[1] | strip }}</h3>
+                          <div class="result_bar"><span class="result_bar_inr"></span></div>
+                        </div>
+                      </div>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              </div>
+            </div>
+            <div class="science-btm-right">
+              {%- assign sc_mob = s.sc_image_mob | default: s.sc_image -%}
+              {%- if sc_mob != blank -%}<div class="showMob">{{ sc_mob | image_url: width: 500 | image_tag: class: 'sci-doc-mob', loading: 'lazy', alt: s.sc_name }}</div>{%- endif -%}
+              <div class="science-doctor-text">{{ s.sc_quote }}</div>
+              {%- if s.sc_name != blank -%}<p class="science-doctor-name">{{ s.sc_name }}</p>{%- endif -%}
+              {%- if s.sc_about != blank -%}<p class="science-doctor-about">{{ s.sc_about }}</p>{%- endif -%}
+            </div>
+          </div>
+          {{ cta }}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 12. COMPARATIVA ================= {%- endcomment -%}
+  {%- if s.show_compare and s.cmp_rows != blank -%}
+    {%- assign cmp_lines = s.cmp_rows | newline_to_br | split: '<br />' -%}
+    {%- assign cmp_clean = '' -%}
+    {%- for line in cmp_lines -%}{%- assign line = line | strip -%}{%- if line != blank -%}{%- assign cmp_clean = cmp_clean | append: line | append: '§' -%}{%- endif -%}{%- endfor -%}
+    {%- assign cmp_items = cmp_clean | split: '§' -%}
+    <section class="comparison-section dry-sec">
+      <div class="container">
+        {%- if s.cmp_pre != blank -%}<p class="common_preHeading">{{ s.cmp_pre }}</p>{%- endif -%}
+        <h2 class="common_heading">{{ s.cmp_heading | newline_to_br }}</h2>
+        <div class="compare-Box" role="table" aria-label="{{ s.cmp_heading | escape }}">
+          <div class="compare-col1">
+            <div class="compare-top"></div>
+            <ul class="compare-list">
+              {%- for line in cmp_items -%}{%- assign parts = line | split: '|' -%}<li role="rowheader">{{ parts[0] | strip }}</li>{%- endfor -%}
+            </ul>
+          </div>
+          <div class="compare-col2">
+            <div class="compare-top">
+              {%- if s.cmp_logo != blank -%}{{ s.cmp_logo | image_url: width: 200 | image_tag: class: 'compare-logo', loading: 'lazy', alt: s.cmp_brand }}{%- else -%}<p class="compare-logo-txt">{{ s.cmp_brand }}</p>{%- endif -%}
+              {%- if s.cmp_product != blank -%}{{ s.cmp_product | image_url: width: 240 | image_tag: class: 'compare-prod-img', loading: 'lazy', alt: s.cmp_brand }}{%- elsif p != blank and p.featured_image != blank -%}{{ p.featured_image | image_url: width: 240 | image_tag: class: 'compare-prod-img', loading: 'lazy', alt: p.title }}{%- endif -%}
+            </div>
+            <ul class="compare-list">
+              {%- for line in cmp_items -%}
+                {%- assign parts = line | split: '|' -%}
+                {%- assign v = parts[1] | strip | downcase -%}
+                <li role="cell">{%- case v -%}{%- when 'no' -%}{{ svg_cmp_no }}{%- when 'aviso', 'a medias', '!' -%}{{ svg_cmp_warn }}{%- else -%}{{ svg_cmp_yes_light }}{%- endcase -%}</li>
+              {%- endfor -%}
+            </ul>
+          </div>
+          <div class="compare-space-col"></div>
+          {%- for c in (1..3) -%}
+            {%- assign k_name = 'cmp_col' | append: c | append: '_name' -%}
+            {%- assign k_img = 'cmp_col' | append: c | append: '_image' -%}
+            {%- assign col_i = c | plus: 1 -%}
+            <div class="compare-col3">
+              <div class="compare-top">
+                <p>{{ s[k_name] | replace: '|', '<br>' }}</p>
+                {%- if s[k_img] != blank -%}{{ s[k_img] | image_url: width: 120 | image_tag: class: 'compare-brand-img', loading: 'lazy', alt: '' }}{%- endif -%}
+              </div>
+              <ul class="compare-list">
+                {%- for line in cmp_items -%}
+                  {%- assign parts = line | split: '|' -%}
+                  {%- assign v = parts[col_i] | strip | downcase -%}
+                  <li role="cell">{%- case v -%}{%- when 'si', 'sí', 'yes' -%}{{ svg_cmp_yes }}{%- when 'aviso', 'a medias', '!' -%}{{ svg_cmp_warn }}{%- else -%}{{ svg_cmp_no }}{%- endcase -%}</li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endfor -%}
+        </div>
+        {{ cta }}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 13. GARANTÍA ================= {%- endcomment -%}
+  {%- if s.show_guarantee -%}
+    <section class="guarantee-section dry-sec">
+      <div class="container">
+        <div class="guarantee-sec-inner">
+          <div class="guarantee-box">
+            {%- if s.gu_badge != blank -%}<p class="guarantee-risk-free">{{ s.gu_badge }}</p>{%- endif -%}
+            {%- if s.gu_seal != blank -%}
+              {{ s.gu_seal | image_url: width: 320 | image_tag: class: 'guarantee-seal', loading: 'lazy', alt: s.gu_heading }}
+            {%- else -%}
+              <div class="guarantee-seal-def">{{ svg_shield }}</div>
+            {%- endif -%}
+            <p class="guarantee-heading">{{ s.gu_heading }}</p>
+            {%- if s.gu_text != blank -%}<p class="guarantee-text">{{ s.gu_text }}</p>{%- endif -%}
+            {%- if s.gu_text_bold != blank -%}<p class="guarantee-text fw-600">{{ s.gu_text_bold }}</p>{%- endif -%}
+            <div class="common_button_box hideMob">{{ cta_inner }}</div>
+          </div>
+          <div class="guarantee-right">
+            {%- if s.gu_image != blank -%}{{ s.gu_image | image_url: width: 1300 | image_tag: class: 'guarantee-girl', loading: 'lazy', alt: '' }}{%- endif -%}
+            {%- if s.gu_benefit_1 != blank or s.gu_benefit_2 != blank or s.gu_benefit_3 != blank -%}
+              <div class="guarantee-benefit-box">
+                {%- for n in (1..3) -%}
+                  {%- assign k = 'gu_benefit_' | append: n -%}
+                  {%- if s[k] != blank -%}<div class="guarantee-benefit-col">{{ s[k] | image_url: width: 240 | image_tag: loading: 'lazy', alt: '' }}</div>{%- endif -%}
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 14. TESTIMONIOS ================= {%- endcomment -%}
+  {%- if s.show_reviews -%}
+    <section class="testimonial-section dry-sec">
+      <div class="container">
+        <h2 class="common_heading">{{ s.rv_heading | newline_to_br }}</h2>
+        <div class="testimonial-trustpilot">
+          {%- if s.rv_rating_text != blank -%}<p>{{ s.rv_rating_text }}</p>{%- endif -%}
+          {{ tp_stars }}
+          {%- if s.rv_logo != blank -%}{{ s.rv_logo | image_url: width: 260 | image_tag: class: 'trustpilot-logo', loading: 'lazy', alt: '' }}{%- endif -%}
+        </div>
+
+        {%- if video_blocks.size > 0 -%}
+          <div class="video_slide_row" data-vid>
+            <div class="vid-track" data-vid-track>
+              {%- for block in video_blocks -%}
+                {%- liquid
+                  assign vsrc = ''
+                  if block.settings.video != blank
+                    for src in block.settings.video.sources
+                      if src.mime_type == 'video/mp4'
+                        assign vsrc = src.url
+                        break
+                      endif
+                    endfor
+                    if vsrc == ''
+                      assign vsrc = block.settings.video.sources.first.url
+                    endif
+                  endif
+                  if vsrc == '' and block.settings.video_url != blank
+                    assign vsrc = block.settings.video_url
+                  endif
+                -%}
+                <div class="video_slide_col" data-vdo="{{ vsrc }}" role="button" tabindex="0" aria-label="Ver vídeo {{ forloop.index }}" {{ block.shopify_attributes }}>
+                  {%- if block.settings.poster != blank -%}
+                    {{ block.settings.poster | image_url: width: 600 | image_tag: loading: 'lazy', alt: '' }}
+                  {%- elsif block.settings.video != blank -%}
+                    {{ block.settings.video.preview_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: '' }}
+                  {%- else -%}
+                    {{ 'lifestyle-2' | placeholder_svg_tag: 'dry-ph' }}
+                  {%- endif -%}
+                  <span class="ugc-play">{{ svg_play }}</span>
+                </div>
+              {%- endfor -%}
+            </div>
+            <button type="button" class="vid-btn vid-prev" data-vid-prev aria-label="Anterior">{{ svg_prev }}</button>
+            <button type="button" class="vid-btn vid-next" data-vid-next aria-label="Siguiente">{{ svg_next }}</button>
+            <div class="vid-dots" data-vid-dots></div>
+          </div>
+        {%- endif -%}
+
+        {%- if review_blocks.size > 0 -%}
+          {%- assign rv_visible = s.rv_visible | default: 3 -%}
+          {%- capture review_html -%}
+            {%- for block in review_blocks -%}
+              {%- if forloop.index0 == rv_visible -%}
+                <div class="more-review-link"><button type="button" class="more-review" data-more-reviews>{{ s.rv_more }}</button></div>
+                <div class="testimonial-hide" data-hidden-reviews>
+              {%- endif -%}
+              <div class="testimonial-col" {{ block.shopify_attributes }}>
+                <div class="testimonial-col-top">
+                  {{ tp_stars }}
+                  <p class="testimonial-about">{{ block.settings.text }}</p>
+                </div>
+                <div class="testi-verify-row">
+                  <div class="testi-profile-pic">
+                    {%- if block.settings.photo != blank -%}{{ block.settings.photo | image_url: width: 120 | image_tag: loading: 'lazy', alt: block.settings.name }}{%- else -%}{{ block.settings.name | slice: 0 }}{%- endif -%}
+                  </div>
+                  <div class="testi-verify-col">
+                    <p class="testi-verify-name">{{ block.settings.name }}{% if s.rv_verified != blank %}<span class="testi-verify-text">{{ svg_verify }}{{ s.rv_verified }}</span>{% endif %}</p>
+                    {%- if block.settings.area != blank -%}<p class="testi-verify-text2">{{ block.settings.area }}</p>{%- endif -%}
+                  </div>
+                </div>
+              </div>
+              {%- if forloop.last and forloop.length > rv_visible -%}</div>{%- endif -%}
+            {%- endfor -%}
+          {%- endcapture -%}
+          <div class="testimonial-box">{{ review_html }}</div>
+        {%- endif -%}
+        {{ cta }}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 15. OFERTA + PACKS ================= {%- endcomment -%}
+  {%- if package_blocks.size > 0 -%}
+    <div class="discount-offer-section dry-sec">
+      <div class="container">
+        <div class="discount-offer-icn">{{ svg_watch }}</div>
+        <p class="discount-offer-heading">{{ s.of_heading | newline_to_br }}</p>
+      </div>
+    </div>
+    {%- if s.of_timer_text != blank -%}
+      <div class="discount-offer-timer dry-sec">
+        <div class="container">
+          <p>{{ svg_watch }}{{ s.of_timer_text }} <span data-dry-timer>{{ s.timer_hours | prepend: '0' | slice: -2, 2 }}:{{ s.timer_minutes | prepend: '0' | slice: -2, 2 }}:00</span></p>
+        </div>
+      </div>
+    {%- endif -%}
+    <section class="package_section dry-sec" id="{{ pack_id }}">
+      <div class="container">
+        <div class="package_section-row">
+          {%- for block in package_blocks -%}
+            {%- liquid
+              assign b = block.settings
+              assign pk_variant = current_variant
+              if p != blank and b.variant_index > 0 and p.variants.size >= b.variant_index
+                assign vi = b.variant_index | minus: 1
+                assign pk_variant = p.variants[vi]
+              endif
+              assign pk_qty = b.qty | default: 1
+              if pk_qty < 1
+                assign pk_qty = 1
+              endif
+              assign pk_left = 100 | minus: b.discount
+              assign pk_full = 0
+              assign pk_offer = 0
+              assign pk_compare = 0
+              if pk_variant
+                assign pk_full = pk_variant.price | times: pk_qty
+                assign pk_offer = pk_full | times: pk_left | divided_by: 100.0 | round
+                if b.compare_price != blank
+                  assign pk_compare = b.compare_price | remove: '€' | remove: '$' | strip | replace: ',', '.' | times: 100 | round
+                elsif pk_variant.compare_at_price > pk_variant.price
+                  assign pk_compare = pk_variant.compare_at_price | times: pk_qty
+                elsif b.discount > 0
+                  assign pk_compare = pk_full
+                endif
+              endif
+              assign pk_can = false
+              if pk_variant.available or s.ignore_stock
+                assign pk_can = true
+              endif
+            -%}
+            <div class="package{% if b.featured %} is-featured{% endif %}" {{ block.shopify_attributes }}>
+              {%- if b.badge != blank -%}<div class="most-popular" style="background:{{ b.badge_color }}">{{ b.badge }}</div>{%- endif -%}
+              <p class="pkage_heading">{{ b.heading }}</p>
+              {%- if b.subtitle != blank -%}<p class="areas_text">{{ b.subtitle }}</p>{%- endif -%}
+              <div class="pkage_prod_box">
+                {%- if b.image != blank -%}
+                  {{ b.image | image_url: width: 600 | image_tag: loading: 'lazy', alt: b.heading, widths: '300, 450, 600' }}
+                {%- elsif p != blank and p.featured_image != blank -%}
+                  {{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: b.heading }}
+                {%- else -%}
+                  {{ 'product-2' | placeholder_svg_tag: 'dry-ph' }}
+                {%- endif -%}
+              </div>
+              <div class="pkage_price-row">
+                {%- if pk_compare > pk_offer -%}<p class="pkage_retail-price">{{ s.pk_regular_label }} <span>{{ pk_compare | money }}</span></p>{%- endif -%}
+                <p class="pkage_offer-price">{% if b.price_text != blank %}{{ b.price_text }}{% else %}{{ pk_offer | money }}{% endif %}</p>
+                {%- if b.show_per_unit and pk_qty > 1 -%}
+                  {%- assign per_unit = pk_offer | divided_by: pk_qty -%}
+                  <p class="pkage_per-unit">{{ per_unit | money }} {{ s.pk_per_unit }}</p>
+                {%- endif -%}
+              </div>
+              <div class="btn_box">
+                {%- if b.shipping_text != blank -%}<p class="btn-text1">{{ svg_truck }}<span>{{ b.shipping_text }}</span></p>{%- endif -%}
+                <button type="button" class="package_btn" data-pkg-add data-variant-id="{{ pk_variant.id }}" data-qty="{{ pk_qty }}"{% unless pk_can %} disabled{% endunless %}>
+                  <span>{% if pk_can %}{{ s.pk_btn }}{% else %}{{ s.sold_out_text }}{% endif %}</span>{{ svg_arrow }}
+                </button>
+                <p class="pkg-error" data-pkg-error hidden></p>
+                {%- if s.cta_guarantee != blank -%}<p class="btn-text2">{{ svg_shield }}{{ s.cta_guarantee }}</p>{%- endif -%}
+              </div>
+              {%- if s.pk_card_image != blank -%}{{ s.pk_card_image | image_url: width: 400 | image_tag: class: 'pkage-card-img', loading: 'lazy', alt: '' }}{%- endif -%}
+              {%- if s.show_ship_msg -%}
+                <div class="shipping-calculate-date">
+                  <div class="shipping__message shipping__message--today"><strong class="shipping__message-highlight">{{ s.ship_today }}</strong> {{ s.ship_within }} <span class="remain-time"></span></div>
+                  <div class="shipping__message shipping__message--tomorrow"><strong class="shipping__message-highlight">{{ s.ship_tomorrow }}</strong> {{ s.ship_within }} <span class="within-time"></span></div>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= 16. PREGUNTAS FRECUENTES ================= {%- endcomment -%}
+  {%- if s.show_faq and faq_blocks.size > 0 -%}
+    <section class="faq-section dry-sec">
+      <div class="container">
+        <h2 class="common_heading">{{ s.faq_heading | newline_to_br }}</h2>
+        <div class="faq-container" data-faq>
+          {%- for block in faq_blocks -%}
+            {%- assign open = false -%}
+            {%- if forloop.first and s.faq_first_open -%}{%- assign open = true -%}{%- endif -%}
+            <div class="faq-row" {{ block.shopify_attributes }}>
+              <div class="acdn-heading{% if open %} accordion-open{% endif %}" role="button" tabindex="0" aria-expanded="{{ open }}" aria-controls="faq-{{ block.id }}">
+                <div class="faq-header-img">
+                  {%- if block.settings.photo != blank -%}{{ block.settings.photo | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}{{ block.settings.asker | slice: 0 }}{%- endif -%}
+                </div>
+                <div class="faq-header">
+                  {%- if block.settings.asker != blank -%}<p class="faq-subheading">{{ block.settings.asker }}</p>{%- endif -%}
+                  <p class="faq-heading">{{ block.settings.question }}</p>
+                </div>
+                {{ svg_plus }}
+              </div>
+              <div class="acdn-content" id="faq-{{ block.id }}"{% if open %} style="max-height:none"{% endif %}>
+                <div class="acdn-content-inner acdn-para">{{ block.settings.answer }}</div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+        {{ cta }}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ================= BOTÓN FIJO EN MÓVIL ================= {%- endcomment -%}
+  {%- if s.show_mobile_sticky and package_blocks.size > 0 -%}
+    <div class="call-btn" data-call-btn>
+      <a class="common_button" href="#{{ pack_id }}" data-dry-scroll><p>{{ s.cta_text }}</p>{{ svg_arrow }}</a>
+    </div>
+  {%- endif -%}
+
+  <div class="dry-ugc-modal" data-ugc-modal aria-hidden="true">
+    <div class="video-container">
+      <button type="button" class="ugc-close" data-ugc-close aria-label="Cerrar">{{ svg_close }}</button>
+      <video playsinline controls preload="none"></video>
+    </div>
+  </div>
+  <div class="dry-toast" data-dry-toast role="status" aria-live="polite"></div>
+</div>
+
+<script>
+(function () {
+  if (window.DrynivaLanding) { window.DrynivaLanding.initAll(); return; }
+
+  function $$(root, sel) { return [].slice.call(root.querySelectorAll(sel)); }
+  function debounce(fn, ms) { var t; return function () { clearTimeout(t); t = setTimeout(fn, ms); }; }
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function Landing(root) {
+    this.root = root;
+    var self = this;
+    ['initScroll', 'initResults', 'initVideos', 'initReviews', 'initFaq', 'initTimer',
+     'initTimeline', 'initStats', 'initShipping', 'initSticky', 'initCart'].forEach(function (fn) {
+      try { self[fn](); } catch (err) { console.error('[Dryniva] ' + fn, err); }
+    });
+  }
+
+  /* ---------- botones "Pedir ahora": bajan hasta los packs ---------- */
+  Landing.prototype.initScroll = function () {
+    this.root.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('[data-dry-scroll]');
+      if (!a) return;
+      var target = document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - 10, behavior: 'smooth' });
+    });
+  };
+
+  /* ---------- slider de resultados (infinito, con pestañas) ---------- */
+  Landing.prototype.initResults = function () {
+    var wrap = this.root.querySelector('[data-res]');
+    if (!wrap) return;
+    var track = wrap.querySelector('[data-res-track]');
+    track.style.position = 'relative';
+    var originals = $$(track, '[data-res-slide]');
+    var n = originals.length;
+    var tabs = $$(wrap, '[data-res-tab]');
+    var dots = $$(wrap, '[data-res-dot]');
+    if (n < 2) return;
+
+    function cloneAll(before) {
+      var frag = document.createDocumentFragment();
+      originals.forEach(function (el) {
+        var c = el.cloneNode(true);
+        c.removeAttribute('data-shopify-editor-block');
+        c.setAttribute('aria-hidden', 'true');
+        c.classList.remove('is-active');
+        frag.appendChild(c);
+      });
+      if (before) track.insertBefore(frag, track.firstChild); else track.appendChild(frag);
+    }
+    cloneAll(true); cloneAll(false);
+    var slides = $$(track, '[data-res-slide]');
+    var pos = n;
+
+    function leftFor(i) { var sl = slides[i]; return sl.offsetLeft + sl.offsetWidth / 2 - track.clientWidth / 2; }
+    function jump(i) {
+      track.classList.add('no-smooth');
+      track.scrollTo({ left: leftFor(i), behavior: 'instant' });
+      requestAnimationFrame(function () { track.classList.remove('no-smooth'); });
+    }
+    function mark(i) {
+      pos = i;
+      var real = ((i % n) + n) % n;
+      slides.forEach(function (sl, k) { sl.classList.toggle('is-active', k === i); });
+      tabs.forEach(function (t, k) { t.classList.toggle('is-active', k === real); });
+      dots.forEach(function (d, k) { d.classList.toggle('is-active', k === real); });
+    }
+    function go(i) { mark(i); track.scrollTo({ left: leftFor(i), behavior: 'smooth' }); }
+    function nearest() {
+      var c = track.scrollLeft + track.clientWidth / 2, best = 0, bd = Infinity;
+      slides.forEach(function (sl, k) { var d = Math.abs(sl.offsetLeft + sl.offsetWidth / 2 - c); if (d < bd) { bd = d; best = k; } });
+      return best;
+    }
+    var settle = debounce(function () {
+      var i = nearest();
+      if (i < n || i >= 2 * n) { i = n + (i % n); jump(i); }
+      mark(i);
+    }, 120);
+    track.addEventListener('scroll', function () {
+      var i = nearest();
+      if (i !== pos) mark(i);
+      settle();
+    }, { passive: true });
+
+    tabs.forEach(function (t) { t.addEventListener('click', function () { go(n + (+t.dataset.resTab)); }); });
+    dots.forEach(function (d) { d.addEventListener('click', function () { go(n + (+d.dataset.resDot)); }); });
+    var prev = wrap.querySelector('[data-res-prev]'), next = wrap.querySelector('[data-res-next]');
+    if (prev) prev.addEventListener('click', function () { go(pos - 1); });
+    if (next) next.addEventListener('click', function () { go(pos + 1); });
+    slides.forEach(function (sl, k) { sl.addEventListener('click', function () { if (k !== pos) go(k); }); });
+
+    function reset() { jump(pos); mark(pos); }
+    requestAnimationFrame(reset);
+    window.addEventListener('load', reset);
+    window.addEventListener('resize', debounce(reset, 150));
+    this.root.addEventListener('shopify:block:select', function (e) {
+      var k = originals.indexOf(e.target);
+      if (k > -1) go(n + k);
+    });
+  };
+
+  /* ---------- vídeos de clientes ---------- */
+  Landing.prototype.initVideos = function () {
+    var root = this.root;
+    var wrap = root.querySelector('[data-vid]');
+    var modal = root.querySelector('[data-ugc-modal]');
+    if (modal) {
+      // El visor va directo al <body> para quedar por encima de todo
+      var old = document.getElementById('dry-modal-' + root.id);
+      if (old && old !== modal) old.remove();
+      modal.id = 'dry-modal-' + root.id;
+      document.body.appendChild(modal);
+    }
+    if (!wrap) return;
+    var track = wrap.querySelector('[data-vid-track]');
+    var cards = $$(track, '.video_slide_col');
+    var dotsBox = wrap.querySelector('[data-vid-dots]');
+    var dots = cards.map(function (c, i) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('aria-label', String(i + 1));
+      b.addEventListener('click', function () { goTo(i); });
+      dotsBox.appendChild(b);
+      return b;
+    });
+    function step() { return cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth; }
+    function centered() { return window.matchMedia('(max-width:767px)').matches; }
+    function current() {
+      var best = 0, bd = Infinity;
+      var ref = centered() ? track.scrollLeft + track.clientWidth / 2 : track.scrollLeft;
+      cards.forEach(function (c, i) {
+        var p = centered() ? c.offsetLeft + c.offsetWidth / 2 : c.offsetLeft - cards[0].offsetLeft;
+        var d = Math.abs(p - ref); if (d < bd) { bd = d; best = i; }
+      });
+      return best;
+    }
+    function goTo(i) {
+      i = Math.max(0, Math.min(cards.length - 1, i));
+      var c = cards[i];
+      var left = centered() ? c.offsetLeft + c.offsetWidth / 2 - track.clientWidth / 2 : c.offsetLeft - cards[0].offsetLeft;
+      track.scrollTo({ left: left, behavior: 'smooth' });
+    }
+    function paint() { var i = current(); dots.forEach(function (d, k) { d.classList.toggle('is-active', k === i); }); }
+    track.style.position = 'relative';
+    track.addEventListener('scroll', debounce(paint, 60), { passive: true });
+    paint();
+    wrap.querySelector('[data-vid-prev]').addEventListener('click', function () { var i = current(); goTo(i <= 0 ? cards.length - 1 : i - 1); });
+    wrap.querySelector('[data-vid-next]').addEventListener('click', function () { var i = current(); var max = cards.length - 1; goTo(i >= max || track.scrollLeft + track.clientWidth >= track.scrollWidth - 4 ? 0 : i + 1); });
+
+    if (!modal) return;
+    var video = modal.querySelector('video');
+    function open(src) {
+      if (!src) return;
+      video.src = src; video.load();
+      modal.classList.add('active'); modal.setAttribute('aria-hidden', 'false');
+      var pr = video.play(); if (pr && pr.catch) pr.catch(function () {});
+    }
+    function close() { video.pause(); video.removeAttribute('src'); video.load(); modal.classList.remove('active'); modal.setAttribute('aria-hidden', 'true'); }
+    cards.forEach(function (c) {
+      c.addEventListener('click', function () { open(c.dataset.vdo); });
+      c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(c.dataset.vdo); } });
+    });
+    modal.addEventListener('click', function (e) { if (e.target === modal || e.target.closest('[data-ugc-close]')) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('active')) close(); });
+  };
+
+  /* ---------- "Leer más reseñas" ---------- */
+  Landing.prototype.initReviews = function () {
+    var btn = this.root.querySelector('[data-more-reviews]');
+    var box = this.root.querySelector('[data-hidden-reviews]');
+    if (!btn || !box) return;
+    btn.addEventListener('click', function () { box.classList.add('is-open'); btn.parentNode.style.display = 'none'; });
+  };
+
+  /* ---------- preguntas frecuentes (una abierta a la vez) ---------- */
+  Landing.prototype.initFaq = function () {
+    var root = this.root;
+    var heads = $$(root, '[data-faq] .acdn-heading');
+    function setOpen(h, open) {
+      var body = h.nextElementSibling;
+      h.classList.toggle('accordion-open', open);
+      h.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) {
+        body.style.maxHeight = body.scrollHeight + 'px';
+      } else {
+        if (body.style.maxHeight === 'none') { body.style.maxHeight = body.scrollHeight + 'px'; body.offsetHeight; }
+        body.style.maxHeight = '0px';
+      }
+    }
+    heads.forEach(function (h) {
+      function toggle() {
+        var open = !h.classList.contains('accordion-open');
+        heads.forEach(function (o) { if (o !== h && o.classList.contains('accordion-open')) setOpen(o, false); });
+        setOpen(h, open);
+      }
+      h.addEventListener('click', toggle);
+      h.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+    });
+  };
+
+  /* ---------- cuenta atrás del descuento ---------- */
+  Landing.prototype.initTimer = function () {
+    var el = this.root.querySelector('[data-dry-timer]');
+    if (!el) return;
+    var total = ((+this.root.dataset.timerH || 0) * 3600 + (+this.root.dataset.timerM || 0) * 60) * 1000;
+    if (!total) return;
+    var key = 'dryTimer-' + this.root.id, end = 0;
+    try { end = +sessionStorage.getItem(key) || 0; } catch (e) {}
+    if (!end || end < Date.now()) { end = Date.now() + total; try { sessionStorage.setItem(key, end); } catch (e) {} }
+    function tick() {
+      var left = end - Date.now();
+      if (left <= 0) { end = Date.now() + total; try { sessionStorage.setItem(key, end); } catch (e) {} left = total; }
+      var sec = Math.floor(left / 1000);
+      el.textContent = pad(Math.floor(sec / 3600)) + ':' + pad(Math.floor(sec % 3600 / 60)) + ':' + pad(sec % 60);
+    }
+    tick(); setInterval(tick, 1000);
+  };
+
+  /* ---------- línea de tiempo que se va rellenando al hacer scroll ---------- */
+  Landing.prototype.initTimeline = function () {
+    var box = this.root.querySelector('[data-timeline]');
+    if (!box) return;
+    var steps = $$(box, '.timeline__row_center_step');
+    var contents = $$(box, '.timeline__row_content_box');
+    var entry = box.querySelector('.timeline__mid_row');
+    if (!steps.length) return;
+    function center(el) { var r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }
+    function dist(a, b) { var p = center(a), q = center(b); return Math.sqrt(Math.pow(q.x - p.x, 2) + Math.pow(q.y - p.y, 2)); }
+    var total = 0, stepD = [], ticking = false;
+    function measure() {
+      total = dist(steps[0], steps[steps.length - 1]);
+      entry.style.setProperty('--timeline-height', total + 'px');
+      stepD = steps.map(function (s) { return dist(steps[0], s); });
+    }
+    function update() {
+      ticking = false;
+      var r = box.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > window.innerHeight) return;
+      var off = r.top - window.innerHeight * 0.85, h, force = null;
+      if (off > 0) { h = 0; force = false; }
+      else if (off <= -r.height) { h = total; force = true; }
+      else { h = Math.min(Math.abs(off) / r.height, 1) * total; }
+      entry.style.setProperty('--timeline-height-dynamic', h + 'px');
+      steps.forEach(function (s, i) {
+        var on = force !== null ? force : h >= stepD[i] - 1;
+        s.classList.toggle('viewing', on);
+        if (contents[i]) contents[i].classList.toggle('viewing', on);
+      });
+    }
+    measure(); update();
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    window.addEventListener('resize', debounce(function () { measure(); update(); }, 150));
+    window.addEventListener('load', function () { measure(); update(); });
+  };
+
+  /* ---------- barras y porcentajes animados ---------- */
+  Landing.prototype.initStats = function () {
+    var box = this.root.querySelector('[data-stats]');
+    if (!box) return;
+    var rows = $$(box, '[data-pct]');
+    var done = false;
+    function run() {
+      if (done) return; done = true;
+      rows.forEach(function (row) {
+        var end = +row.dataset.pct || 0;
+        var bar = row.querySelector('.result_bar_inr'); if (bar) bar.style.width = end + '%';
+        var num = row.querySelector('[data-count]'); if (!num || !end) return;
+        var t0 = null;
+        function frame(t) {
+          if (!t0) t0 = t;
+          var k = Math.min((t - t0) / 1500, 1);
+          num.textContent = Math.round(end * k);
+          if (k < 1) requestAnimationFrame(frame);
+        }
+        num.textContent = '0';
+        requestAnimationFrame(frame);
+      });
+    }
+    if (!('IntersectionObserver' in window) || document.documentElement.classList.contains('shopify-design-mode')) { run(); return; }
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { run(); io.disconnect(); } }); }, { threshold: 0.2 });
+    io.observe(box);
+  };
+
+  /* ---------- "Se envía hoy si lo pides en…" ---------- */
+  Landing.prototype.initShipping = function () {
+    var root = this.root;
+    var today = $$(root, '.shipping__message--today');
+    if (!today.length) return;
+    var tomorrow = $$(root, '.shipping__message--tomorrow');
+    var remain = $$(root, '.remain-time'), within = $$(root, '.within-time');
+    var cutoff = +root.dataset.cutoff; if (isNaN(cutoff)) cutoff = 14;
+    function fmt(ms) {
+      var s = Math.floor(ms / 1000);
+      return Math.floor(s / 3600) + 'h ' + Math.floor(s % 3600 / 60) + 'min ' + (s % 60) + 's';
+    }
+    function tick() {
+      var now = new Date();
+      var cut = new Date(now.getFullYear(), now.getMonth(), now.getDate(), cutoff, 0, 0);
+      var isToday = now < cut;
+      if (!isToday) cut = new Date(cut.getTime() + 86400000);
+      var txt = fmt(cut - now);
+      today.forEach(function (el) { el.style.display = isToday ? 'block' : 'none'; });
+      tomorrow.forEach(function (el) { el.style.display = isToday ? 'none' : 'block'; });
+      (isToday ? remain : within).forEach(function (el) { el.textContent = txt; });
+    }
+    tick(); setInterval(tick, 1000);
+  };
+
+  /* ---------- botón fijo en móvil ---------- */
+  Landing.prototype.initSticky = function () {
+    var root = this.root;
+    var btn = root.querySelector('[data-call-btn]');
+    if (!btn) return;
+    var trigger = root.querySelector('[data-sticky-trigger]');
+    var packs = root.querySelector('.package_section');
+    var packsVisible = false;
+    if (packs && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { es.forEach(function (e) { packsVisible = e.isIntersecting; }); update(); }).observe(packs);
+    }
+    function update() {
+      var past = trigger ? trigger.getBoundingClientRect().bottom + 100 < 0 : window.pageYOffset > 600;
+      var rr = root.getBoundingClientRect();
+      var inside = rr.bottom > window.innerHeight * 0.6;
+      btn.classList.toggle('is-visible', past && !packsVisible && inside);
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  };
+
+  /* ---------- añadir al carrito ---------- */
+  Landing.prototype.toast = function (msg) {
+    var t = this.root.querySelector('[data-dry-toast]') || document.getElementById('dry-toast-' + this.root.id);
+    if (!t || !msg) return;
+    if (t.parentNode !== document.body) { t.id = 'dry-toast-' + this.root.id; document.body.appendChild(t); }
+    t.textContent = msg; t.classList.add('is-visible');
+    clearTimeout(this._tt); this._tt = setTimeout(function () { t.classList.remove('is-visible'); }, 3500);
+  };
+  Landing.prototype.initCart = function () {
+    var self = this, root = this.root;
+    $$(root, '[data-pkg-add]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = +btn.dataset.variantId, qty = +btn.dataset.qty || 1;
+        if (!id) return;
+        var err = btn.parentNode.querySelector('[data-pkg-error]');
+        if (err) err.hidden = true;
+        btn.classList.add('is-loading');
+        var mode = root.dataset.afterAdd;
+        var drawer = document.querySelector('cart-drawer');
+        var body = { items: [{ id: id, quantity: qty }] };
+        if (mode === 'drawer' && drawer && typeof drawer.getSectionsToRender === 'function') {
+          body.sections = drawer.getSectionsToRender().map(function (s) { return s.id; });
+          body.sections_url = window.location.pathname;
+        }
+        fetch(root.dataset.cartAddUrl + '.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(body)
+        })
+          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+          .then(function (res) {
+            if (!res.ok) throw new Error(res.data.description || res.data.message || root.dataset.errorMsg);
+            document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
+            document.dispatchEvent(new CustomEvent('dryniva:added', { detail: res.data }));
+            if (mode === 'checkout') { window.location.href = '/checkout'; return; }
+            if (mode === 'toast') { self.toast(root.dataset.addedMsg); return; }
+            if (mode === 'drawer') {
+              if (window.WakeCartDrawer && window.WakeCartDrawer.open) { window.WakeCartDrawer.open(); return; }
+              if (drawer && typeof drawer.renderContents === 'function' && res.data.sections) {
+                drawer.classList.remove('is-empty');
+                drawer.renderContents(res.data);
+                return;
+              }
+            }
+            window.location.href = root.dataset.cartUrl;
+          })
+          .catch(function (e) {
+            var m = (e && e.message) || root.dataset.errorMsg;
+            if (err) { err.textContent = m; err.hidden = false; }
+            self.toast(m);
+          })
+          .finally(function () { btn.classList.remove('is-loading'); });
+      });
+    });
+  };
+
+  Landing.initAll = function () {
+    document.querySelectorAll('[data-dry-root]').forEach(function (root) {
+      if (root.__dry) return;
+      root.__dry = new Landing(root);
+    });
+  };
+
+  window.DrynivaLanding = Landing;
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', Landing.initAll);
+  else Landing.initAll();
+  document.addEventListener('shopify:section:load', Landing.initAll);
+})();
+</script>
+{% schema %}
+{
+  "name": "Dryniva · Landing",
+  "tag": "section",
+  "class": "dryniva-landing",
+  "max_blocks": 50,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Producto"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Producto",
+      "info": "Vacío = el producto de la página en la que estás. Los packs añaden este producto al carrito."
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "c_dark",
+      "label": "Verde oscuro (títulos y cintas)",
+      "default": "#13494B"
+    },
+    {
+      "type": "color",
+      "id": "c_sage",
+      "label": "Verde salvia (detalles)",
+      "default": "#5C735E"
+    },
+    {
+      "type": "color",
+      "id": "c_light",
+      "label": "Fondo verde claro",
+      "default": "#F1F7F2"
+    },
+    {
+      "type": "color",
+      "id": "c_gray",
+      "label": "Fondo gris (sección problema)",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "color",
+      "id": "c_hero",
+      "label": "Fondo del banner",
+      "default": "#F9FCF9"
+    },
+    {
+      "type": "color",
+      "id": "c_btn1",
+      "label": "Botón: degradado 1",
+      "default": "#02B432"
+    },
+    {
+      "type": "color",
+      "id": "c_btn2",
+      "label": "Botón: degradado 2",
+      "default": "#13DB3F"
+    },
+    {
+      "type": "color",
+      "id": "c_red",
+      "label": "Rojo (cajas del problema)",
+      "default": "#D21113"
+    },
+    {
+      "type": "color",
+      "id": "c_star",
+      "label": "Estrellas",
+      "default": "#00B67A"
+    },
+    {
+      "type": "text",
+      "id": "label_before",
+      "label": "Etiqueta 'Antes'",
+      "default": "Antes"
+    },
+    {
+      "type": "text",
+      "id": "label_after",
+      "label": "Etiqueta 'Después'",
+      "default": "Después"
+    },
+    {
+      "type": "header",
+      "content": "Botón que se repite en cada sección"
+    },
+    {
+      "type": "checkbox",
+      "id": "cta_show_bar",
+      "label": "Mostrar 'Oferta activa' y 'Stock bajo' encima del botón",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_sale_label",
+      "label": "Texto en negrita",
+      "default": "Oferta"
+    },
+    {
+      "type": "text",
+      "id": "cta_sale_text",
+      "label": "Texto después",
+      "default": ": activa 24 h"
+    },
+    {
+      "type": "text",
+      "id": "cta_stock_label",
+      "label": "Texto stock",
+      "default": "Stock:"
+    },
+    {
+      "type": "text",
+      "id": "cta_stock_value",
+      "label": "Nivel de stock",
+      "default": "Bajo"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Texto del botón",
+      "default": "Pídela ya con un 50% dto"
+    },
+    {
+      "type": "text",
+      "id": "cta_guarantee",
+      "label": "Garantía debajo del botón",
+      "default": "Garantía de devolución de 365 días"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_mobile_sticky",
+      "label": "Botón fijo abajo en móvil",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "1 · Banner"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_banner",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_bg",
+      "label": "Imagen de fondo (ordenador)"
+    },
+    {
+      "type": "text",
+      "id": "hero_trusted",
+      "label": "Texto junto a las estrellas",
+      "default": "Más de 100.000 clientes confían en nosotros"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_people",
+      "label": "Fotos de clientes (opcional)",
+      "info": "Una tira de caritas redondas, como en la competencia."
+    },
+    {
+      "type": "textarea",
+      "id": "hero_heading",
+      "label": "Título",
+      "default": "Calma el ardor, el picor y la humedad de los pliegues en 60 segundos"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_strip",
+      "label": "Cinta gris (una por línea)",
+      "default": "Sin receta\nSin corticoides\nSin grasa"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_text",
+      "label": "Texto",
+      "default": "Fórmula testada dermatológicamente que ataca la causa de la irritación y se seca en una barrera invisible tipo polvo que te mantiene cómoda todo el día."
+    },
+    {
+      "type": "textarea",
+      "id": "hero_points",
+      "label": "Ventajas con check verde (una por línea)",
+      "default": "Frescor inmediato: calma el ardor y el picor\nAyuda a frenar los hongos y bacterias de la irritación\nSe seca como polvo: sin restos grasos\npH equilibrado que ayuda a que no vuelva"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_product_image",
+      "label": "Foto del producto",
+      "info": "Mejor PNG sin fondo. Vacío = foto principal del producto."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_ba_image",
+      "label": "Foto antes/después (a la izquierda del producto)"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_seal",
+      "label": "Sello (esquina del producto)"
+    },
+    {
+      "type": "text",
+      "id": "works_heading",
+      "label": "Título 'Funciona en'",
+      "default": "Funciona en"
+    },
+    {
+      "type": "textarea",
+      "id": "works_items",
+      "label": "Zonas (una por línea, | = salto de línea)",
+      "default": "Bajo|el pecho\nZona|ingle\nInterior|muslos\nPliegues|abdomen\nAxilas"
+    },
+    {
+      "type": "image_picker",
+      "id": "works_icon_1",
+      "label": "Icono zona 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "works_icon_2",
+      "label": "Icono zona 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "works_icon_3",
+      "label": "Icono zona 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "works_icon_4",
+      "label": "Icono zona 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "works_icon_5",
+      "label": "Icono zona 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "works_icon_6",
+      "label": "Icono zona 6"
+    },
+    {
+      "type": "header",
+      "content": "2 · Cinta en movimiento"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_marquee",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "marquee_items",
+      "label": "Textos (uno por línea)",
+      "default": "Testada dermatológicamente\nElimina el olor\nSin corticoides\nAcabado seco tipo polvo\nSe seca en 60 segundos\nProtección antifúngica"
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "label": "Velocidad (más alto = más lento)",
+      "min": 10,
+      "max": 80,
+      "step": 2,
+      "default": 30,
+      "unit": "s"
+    },
+    {
+      "type": "header",
+      "content": "3 · Resultados (antes/después)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_results",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "res_heading",
+      "label": "Título",
+      "default": "La prueba\nestá en los resultados"
+    },
+    {
+      "type": "textarea",
+      "id": "res_text",
+      "label": "Texto",
+      "default": "Mujeres reales, pliegues reales y la misma\npiel unas semanas después."
+    },
+    {
+      "type": "image_picker",
+      "id": "res_trust_image",
+      "label": "Imagen de confianza debajo (ordenador)"
+    },
+    {
+      "type": "image_picker",
+      "id": "res_trust_image_mob",
+      "label": "Imagen de confianza debajo (móvil)"
+    },
+    {
+      "type": "paragraph",
+      "content": "Cada tarjeta del slider es un bloque '3 · Resultado'."
+    },
+    {
+      "type": "header",
+      "content": "4 · El problema"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_problem",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "pb_pre",
+      "label": "Antetítulo (rojo)",
+      "default": "El problema"
+    },
+    {
+      "type": "textarea",
+      "id": "pb_heading",
+      "label": "Título",
+      "default": "\"Ya uso polvos y crema del pañal.\n¿Por qué esto iba a ser diferente?\""
+    },
+    {
+      "type": "richtext",
+      "id": "pb_text",
+      "label": "Texto",
+      "default": "<p>La mayoría de productos para rozaduras, incluso los \"medicados\", resuelven el problema equivocado. Están pensados para la piel fina de los bebés, no para pliegues adultos que pasan el día calientes, cerrados y rozándose.</p><p><strong>La irritación de los pliegues no es solo humedad. Es levadura, roce y calor, y casi todos los productos solo atacan uno de los tres.</strong></p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "pb_image",
+      "label": "Foto (izquierda de las cajas)"
+    },
+    {
+      "type": "image_picker",
+      "id": "pb_image_mob",
+      "label": "Foto en móvil (opcional)"
+    },
+    {
+      "type": "paragraph",
+      "content": "Las cajas rojas son bloques '4 · Caja del problema'."
+    },
+    {
+      "type": "richtext",
+      "id": "doc_text",
+      "label": "Cita del especialista",
+      "default": "<p>La irritación de los pliegues no es solo humedad. Lucha contra levaduras, roce y calor a la vez, y por eso los polvos y las cremas por sí solos no la resuelven.</p><p>Por eso <strong>creamos la crema Dryniva</strong>: una crema barrera de secado rápido pensada para atacar la causa y proteger la piel, no solo absorber la humedad.</p>",
+      "info": "Lo que pongas en negrita sale en verde oscuro."
+    },
+    {
+      "type": "image_picker",
+      "id": "doc_image",
+      "label": "Foto del especialista"
+    },
+    {
+      "type": "image_picker",
+      "id": "doc_sign",
+      "label": "Firma (PNG)"
+    },
+    {
+      "type": "text",
+      "id": "doc_name",
+      "label": "Nombre",
+      "default": "Dra. Nombre Apellido",
+      "info": "Usa solo el nombre de un profesional real que respalde el producto."
+    },
+    {
+      "type": "text",
+      "id": "doc_role",
+      "label": "Cargo",
+      "default": "Dermatóloga colegiada"
+    },
+    {
+      "type": "header",
+      "content": "5 · La solución"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_solution",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "s3_pre",
+      "label": "Antetítulo",
+      "default": "La solución"
+    },
+    {
+      "type": "textarea",
+      "id": "s3_heading",
+      "label": "Título",
+      "default": "Crema para pliegues\nDryniva"
+    },
+    {
+      "type": "richtext",
+      "id": "s3_text",
+      "label": "Texto",
+      "default": "<p>Dryniva combina <strong>activos antifúngicos + una base de secado efecto polvo</strong>, para que tengas un cuidado eficaz de los pliegues con una textura ligera, seca e invisible sobre la piel.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_product",
+      "label": "Foto del producto",
+      "info": "Vacío = foto principal del producto."
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_bg",
+      "label": "Círculo/fondo detrás del producto (ordenador)"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_seal_1",
+      "label": "Sello 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_seal_2",
+      "label": "Sello 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_mob_bg",
+      "label": "Imagen de fondo en móvil (opcional)",
+      "info": "Si la dejas vacía, en móvil sale la foto del producto entre las dos columnas de iconos."
+    },
+    {
+      "type": "textarea",
+      "id": "s3_badges",
+      "label": "Iconos en móvil (uno por línea, | = salto)",
+      "default": "Frena hongos,|bacterias y levaduras\nReduce|humedad y olor\nCalma el ardor|y la irritación\nAyuda a que|no vuelva"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_badge_icon_1",
+      "label": "Icono móvil 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_badge_icon_2",
+      "label": "Icono móvil 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_badge_icon_3",
+      "label": "Icono móvil 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_badge_icon_4",
+      "label": "Icono móvil 4"
+    },
+    {
+      "type": "textarea",
+      "id": "s3_features",
+      "label": "Ventajas a la derecha (Título | texto, una por línea)",
+      "default": "Activos de calidad farmacéutica | Ácido undecilénico + óxido de zinc para un alivio eficaz.\nTecnología de secado | Se aplica como crema y se transforma en una barrera sedosa tipo polvo en minutos. Sin grasa. Sin manchas.\n100% sin corticoides | Sin adelgazar la piel ni efecto rebote. Apta para uso diario.\nTestada dermatológicamente | Fórmula hipoalergénica desarrollada con dermatólogos."
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_feat_icon_1",
+      "label": "Icono ventaja 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_feat_icon_2",
+      "label": "Icono ventaja 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_feat_icon_3",
+      "label": "Icono ventaja 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_feat_icon_4",
+      "label": "Icono ventaja 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_feat_icon_5",
+      "label": "Icono ventaja 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "s3_feat_icon_6",
+      "label": "Icono ventaja 6"
+    },
+    {
+      "type": "header",
+      "content": "6 · Cómo funciona"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_how",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "s4_pre",
+      "label": "Antetítulo",
+      "default": "Cómo funciona"
+    },
+    {
+      "type": "textarea",
+      "id": "s4_heading",
+      "label": "Título",
+      "default": "Cómo Dryniva acaba con la irritación de los pliegues"
+    },
+    {
+      "type": "textarea",
+      "id": "s4_text",
+      "label": "Subtítulo",
+      "default": "En tres fases, todo desde\nun solo tubo"
+    },
+    {
+      "type": "image_picker",
+      "id": "s4_image",
+      "label": "Foto mano + producto (arriba a la derecha)"
+    },
+    {
+      "type": "text",
+      "id": "s4_step1_time",
+      "label": "Fase 1: tiempo",
+      "default": "0–60 segundos"
+    },
+    {
+      "type": "text",
+      "id": "s4_step1_title",
+      "label": "Fase 1: título",
+      "default": "Ataca"
+    },
+    {
+      "type": "textarea",
+      "id": "s4_step1_text",
+      "label": "Fase 1: texto",
+      "default": "El ácido undecilénico y el aceite de árbol de té actúan sobre las levaduras y bacterias que causan la irritación."
+    },
+    {
+      "type": "image_picker",
+      "id": "s4_step1_image",
+      "label": "Fase 1: foto"
+    },
+    {
+      "type": "text",
+      "id": "s4_step2_time",
+      "label": "Fase 2: tiempo",
+      "default": "60 segundos – 5 minutos"
+    },
+    {
+      "type": "text",
+      "id": "s4_step2_title",
+      "label": "Fase 2: título",
+      "default": "Calma"
+    },
+    {
+      "type": "textarea",
+      "id": "s4_step2_text",
+      "label": "Fase 2: texto",
+      "default": "El óxido de zinc y el hamamelis calman el ardor y reducen la rojez de la piel irritada."
+    },
+    {
+      "type": "image_picker",
+      "id": "s4_step2_image",
+      "label": "Fase 2: foto"
+    },
+    {
+      "type": "text",
+      "id": "s4_step3_time",
+      "label": "Fase 3: tiempo",
+      "default": "5+ minutos – todo el día"
+    },
+    {
+      "type": "text",
+      "id": "s4_step3_title",
+      "label": "Fase 3: título",
+      "default": "Seca y protege"
+    },
+    {
+      "type": "textarea",
+      "id": "s4_step3_text",
+      "label": "Fase 3: texto",
+      "default": "La sílice y la tapioca se secan en una barrera suave tipo polvo que aguanta el calor y el sudor."
+    },
+    {
+      "type": "image_picker",
+      "id": "s4_step3_image",
+      "label": "Fase 3: foto"
+    },
+    {
+      "type": "text",
+      "id": "s4_protect_title",
+      "label": "Título de la fila de iconos",
+      "default": "Protege los pliegues de"
+    },
+    {
+      "type": "textarea",
+      "id": "s4_protect_items",
+      "label": "Iconos (uno por línea)",
+      "default": "Sudor\nRoce\nHumedad\nOlor\nLevaduras\nRozaduras"
+    },
+    {
+      "type": "image_picker",
+      "id": "s4_protect_icon_1",
+      "label": "Icono 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "s4_protect_icon_2",
+      "label": "Icono 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "s4_protect_icon_3",
+      "label": "Icono 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "s4_protect_icon_4",
+      "label": "Icono 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "s4_protect_icon_5",
+      "label": "Icono 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "s4_protect_icon_6",
+      "label": "Icono 6"
+    },
+    {
+      "type": "header",
+      "content": "7 · Zonas de aplicación"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_areas",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "s5_pre",
+      "label": "Antetítulo",
+      "default": "Zonas de aplicación"
+    },
+    {
+      "type": "textarea",
+      "id": "s5_heading",
+      "label": "Título",
+      "default": "Donde la piel roza con piel,\nDryniva funciona"
+    },
+    {
+      "type": "text",
+      "id": "s5_text",
+      "label": "Texto",
+      "default": "Un tubo. Todos los pliegues. Cualquier situación."
+    },
+    {
+      "type": "paragraph",
+      "content": "Cada tarjeta es un bloque '7 · Zona'."
+    },
+    {
+      "type": "header",
+      "content": "8 · Ingredientes"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ingredients",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "s6_pre",
+      "label": "Antetítulo",
+      "default": "Ingredientes potentes"
+    },
+    {
+      "type": "textarea",
+      "id": "s6_heading",
+      "label": "Título",
+      "default": "Inspirada en la investigación médica.\nValidada por la dermatología moderna."
+    },
+    {
+      "type": "textarea",
+      "id": "s6_text",
+      "label": "Texto",
+      "default": "Cada ingrediente está ahí por una razón y respaldado por años de investigación."
+    },
+    {
+      "type": "image_picker",
+      "id": "s6_product",
+      "label": "Foto del producto (centro)",
+      "info": "Vacío = foto principal del producto."
+    },
+    {
+      "type": "image_picker",
+      "id": "s6_seal",
+      "label": "Sello junto al producto"
+    },
+    {
+      "type": "paragraph",
+      "content": "Cada ingrediente es un bloque '8 · Ingrediente'. La primera mitad sale a la izquierda y el resto a la derecha."
+    },
+    {
+      "type": "textarea",
+      "id": "s6_benefits",
+      "label": "Fila de sellos (uno por línea)",
+      "default": "Sin corticoides\nSin parabenos\nSin talco\nSin petróleo\nSin perfume\nCruelty free"
+    },
+    {
+      "type": "image_picker",
+      "id": "s6_benefit_icon_1",
+      "label": "Icono sello 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "s6_benefit_icon_2",
+      "label": "Icono sello 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "s6_benefit_icon_3",
+      "label": "Icono sello 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "s6_benefit_icon_4",
+      "label": "Icono sello 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "s6_benefit_icon_5",
+      "label": "Icono sello 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "s6_benefit_icon_6",
+      "label": "Icono sello 6"
+    },
+    {
+      "type": "header",
+      "content": "9 · Cómo se usa"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_howuse",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "hu_pre",
+      "label": "Antetítulo",
+      "default": "Cómo se usa"
+    },
+    {
+      "type": "textarea",
+      "id": "hu_heading",
+      "label": "Título",
+      "default": "El sistema de\nsecado en 3 pasos"
+    },
+    {
+      "type": "textarea",
+      "id": "hu_text",
+      "label": "Texto",
+      "default": "La mayoría nota alivio del ardor en minutos y una mejora visible en pocos días."
+    },
+    {
+      "type": "text",
+      "id": "hu_step1_title",
+      "label": "Paso 1: título",
+      "default": "Limpia y seca"
+    },
+    {
+      "type": "textarea",
+      "id": "hu_step1_text",
+      "label": "Paso 1: texto",
+      "default": "Lava la zona con jabón suave y agua. Sécala bien a toquecitos antes de aplicar."
+    },
+    {
+      "type": "image_picker",
+      "id": "hu_step1_image",
+      "label": "Paso 1: foto"
+    },
+    {
+      "type": "text",
+      "id": "hu_step2_title",
+      "label": "Paso 2: título",
+      "default": "Aplica una capa fina"
+    },
+    {
+      "type": "textarea",
+      "id": "hu_step2_text",
+      "label": "Paso 2: texto",
+      "default": "Extiende una capa fina y uniforme sobre la zona irritada y la piel de alrededor."
+    },
+    {
+      "type": "image_picker",
+      "id": "hu_step2_image",
+      "label": "Paso 2: foto"
+    },
+    {
+      "type": "text",
+      "id": "hu_step3_title",
+      "label": "Paso 3: título",
+      "default": "Deja que se transforme"
+    },
+    {
+      "type": "textarea",
+      "id": "hu_step3_text",
+      "label": "Paso 3: texto",
+      "default": "Deja que se seque en una barrera sedosa tipo polvo. Úsala dos veces al día."
+    },
+    {
+      "type": "image_picker",
+      "id": "hu_step3_image",
+      "label": "Paso 3: foto"
+    },
+    {
+      "type": "header",
+      "content": "10 · Qué esperar día a día"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_timeline",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tl_pre",
+      "label": "Antetítulo",
+      "default": "Resultados en el tiempo"
+    },
+    {
+      "type": "textarea",
+      "id": "tl_heading",
+      "label": "Título",
+      "default": "Qué esperar\ndía a día"
+    },
+    {
+      "type": "textarea",
+      "id": "tl_text",
+      "label": "Texto",
+      "default": "El primer minuto se siente diferente. La primera semana se ve diferente. Esto es lo que nos cuentan nuestras clientas, en el orden en que lo notan."
+    },
+    {
+      "type": "image_picker",
+      "id": "tl_image_mob",
+      "label": "Foto del producto (solo móvil)"
+    },
+    {
+      "type": "textarea",
+      "id": "tl_items",
+      "label": "Etapas (Título | texto, una por línea)",
+      "default": "En 60 segundos | El ardor y la molestia se calman y dejan paso a una sensación fresca y agradable.\nDía 1 | La humedad y el mal olor se reducen y la piel se siente seca y protegida.\nDías 2-3 | La rojez y el picor se calman, dando a la piel el alivio que necesita.\nDías 4-7 | La piel recupera poco a poco su textura suave y su tono natural.\nSemana 2 en adelante | Aplicándola 2 o 3 veces por semana ayudas a mantener la zona protegida."
+    },
+    {
+      "type": "header",
+      "content": "11 · La ciencia"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_science",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sc_pre",
+      "label": "Antetítulo",
+      "default": "La ciencia detrás"
+    },
+    {
+      "type": "textarea",
+      "id": "sc_heading",
+      "label": "Título",
+      "default": "Recomendada por dermatólogos. Con datos reales."
+    },
+    {
+      "type": "textarea",
+      "id": "sc_text",
+      "label": "Texto (solo ordenador)",
+      "default": "Fórmula desarrollada y testada con especialistas en la piel."
+    },
+    {
+      "type": "image_picker",
+      "id": "sc_image",
+      "label": "Foto del especialista"
+    },
+    {
+      "type": "image_picker",
+      "id": "sc_image_mob",
+      "label": "Foto del especialista (móvil, opcional)"
+    },
+    {
+      "type": "text",
+      "id": "sc_box_title",
+      "label": "Título del recuadro",
+      "default": "Resultados de nuestro estudio"
+    },
+    {
+      "type": "textarea",
+      "id": "sc_stats",
+      "label": "Datos (porcentaje | texto, uno por línea)",
+      "default": "94 | Notan alivio del ardor en 60 segundos\n95 | Notan menos rojez e irritación\n99 | Notan la piel mejor en 7 días\n89 | Sin molestias de nuevo con uso continuado",
+      "info": "Pon solo datos de tus propios estudios o encuestas."
+    },
+    {
+      "type": "richtext",
+      "id": "sc_quote",
+      "label": "Cita",
+      "default": "<p>\"Recomiendo <strong>la crema Dryniva</strong> a mis pacientes con irritación en los pliegues: la fórmula de secado rápido funciona de verdad.\"</p>"
+    },
+    {
+      "type": "text",
+      "id": "sc_name",
+      "label": "Nombre",
+      "default": "Dra. Nombre Apellido"
+    },
+    {
+      "type": "text",
+      "id": "sc_about",
+      "label": "Descripción",
+      "default": "Dermatóloga colegiada"
+    },
+    {
+      "type": "header",
+      "content": "12 · Comparativa"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cmp_pre",
+      "label": "Antetítulo",
+      "default": "Comparativa"
+    },
+    {
+      "type": "textarea",
+      "id": "cmp_heading",
+      "label": "Título",
+      "default": "Dryniva frente a todo\nlo que ya has probado"
+    },
+    {
+      "type": "text",
+      "id": "cmp_brand",
+      "label": "Tu marca (si no subes logo)",
+      "default": "DRYNIVA"
+    },
+    {
+      "type": "image_picker",
+      "id": "cmp_logo",
+      "label": "Logo (columna verde)"
+    },
+    {
+      "type": "image_picker",
+      "id": "cmp_product",
+      "label": "Foto del producto (columna verde)"
+    },
+    {
+      "type": "text",
+      "id": "cmp_col1_name",
+      "label": "Columna 2: nombre (| = salto)",
+      "default": "Cremas|del pañal"
+    },
+    {
+      "type": "image_picker",
+      "id": "cmp_col1_image",
+      "label": "Columna 2: foto"
+    },
+    {
+      "type": "text",
+      "id": "cmp_col2_name",
+      "label": "Columna 3: nombre (| = salto)",
+      "default": "Sprays|antifúngicos"
+    },
+    {
+      "type": "image_picker",
+      "id": "cmp_col2_image",
+      "label": "Columna 3: foto"
+    },
+    {
+      "type": "text",
+      "id": "cmp_col3_name",
+      "label": "Columna 4: nombre (| = salto)",
+      "default": "Polvos|medicados"
+    },
+    {
+      "type": "image_picker",
+      "id": "cmp_col3_image",
+      "label": "Columna 4: foto"
+    },
+    {
+      "type": "textarea",
+      "id": "cmp_rows",
+      "label": "Filas: Característica | Dryniva | Col 2 | Col 3 | Col 4",
+      "default": "Ataca hongos y levaduras | si | si | no | no\nSeca el pliegue | si | aviso | no | no\nCalma el ardor al momento | si | no | no | no\nElimina el olor | si | no | aviso | aviso\nSin corticoides | si | no | no | no\nApta para uso diario | si | no | no | aviso\nSin restos grasos | si | no | no | no\nAyuda a que no vuelva | si | no | no | no\nTestada dermatológicamente | si | aviso | aviso | aviso",
+      "info": "Valores: si, no o aviso (triángulo naranja)."
+    },
+    {
+      "type": "header",
+      "content": "13 · Garantía"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_guarantee",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "gu_badge",
+      "label": "Etiqueta",
+      "default": "Pruébala SIN RIESGO"
+    },
+    {
+      "type": "image_picker",
+      "id": "gu_seal",
+      "label": "Sello de garantía"
+    },
+    {
+      "type": "text",
+      "id": "gu_heading",
+      "label": "Título",
+      "default": "Garantía de devolución de 365 días"
+    },
+    {
+      "type": "textarea",
+      "id": "gu_text",
+      "label": "Texto",
+      "default": "Pruébala a diario durante 365 días. Si no quedas completamente satisfecha, escríbenos y te devolvemos el dinero, sin devolver el tubo, sin formularios y sin preguntas."
+    },
+    {
+      "type": "text",
+      "id": "gu_text_bold",
+      "label": "Texto en negrita",
+      "default": "Incluso puedes quedarte el tubo. Así de seguros estamos."
+    },
+    {
+      "type": "image_picker",
+      "id": "gu_image",
+      "label": "Foto (derecha)"
+    },
+    {
+      "type": "image_picker",
+      "id": "gu_benefit_1",
+      "label": "Sello lateral 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "gu_benefit_2",
+      "label": "Sello lateral 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "gu_benefit_3",
+      "label": "Sello lateral 3"
+    },
+    {
+      "type": "header",
+      "content": "14 · Opiniones"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "rv_heading",
+      "label": "Título",
+      "default": "Resultados reales de\npersonas reales"
+    },
+    {
+      "type": "text",
+      "id": "rv_rating_text",
+      "label": "Texto junto a las estrellas",
+      "default": "Excelente"
+    },
+    {
+      "type": "image_picker",
+      "id": "rv_logo",
+      "label": "Logo de reseñas (opcional)"
+    },
+    {
+      "type": "text",
+      "id": "rv_verified",
+      "label": "Etiqueta junto al nombre",
+      "default": "Compra verificada"
+    },
+    {
+      "type": "range",
+      "id": "rv_visible",
+      "label": "Opiniones visibles antes de 'Leer más'",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "rv_more",
+      "label": "Texto 'Leer más'",
+      "default": "Leer más opiniones"
+    },
+    {
+      "type": "paragraph",
+      "content": "Los vídeos son bloques '14 · Vídeo' y las opiniones bloques '14 · Opinión'."
+    },
+    {
+      "type": "header",
+      "content": "15 · Oferta y packs"
+    },
+    {
+      "type": "textarea",
+      "id": "of_heading",
+      "label": "Título de la oferta",
+      "default": "Oferta por tiempo limitado\nAhorra un 50% + regalos"
+    },
+    {
+      "type": "text",
+      "id": "of_timer_text",
+      "label": "Texto de la cuenta atrás",
+      "default": "Descuento reservado durante"
+    },
+    {
+      "type": "range",
+      "id": "timer_hours",
+      "label": "Cuenta atrás: horas",
+      "min": 0,
+      "max": 23,
+      "step": 1,
+      "default": 3,
+      "unit": "h"
+    },
+    {
+      "type": "range",
+      "id": "timer_minutes",
+      "label": "Cuenta atrás: minutos",
+      "min": 0,
+      "max": 59,
+      "step": 1,
+      "default": 55,
+      "unit": "min"
+    },
+    {
+      "type": "text",
+      "id": "pk_regular_label",
+      "label": "Texto precio normal",
+      "default": "Precio normal:"
+    },
+    {
+      "type": "text",
+      "id": "pk_per_unit",
+      "label": "Texto por unidad",
+      "default": "/ unidad"
+    },
+    {
+      "type": "text",
+      "id": "pk_btn",
+      "label": "Texto del botón del pack",
+      "default": "Añadir al carrito"
+    },
+    {
+      "type": "image_picker",
+      "id": "pk_card_image",
+      "label": "Logos de pago (debajo del botón)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ship_msg",
+      "label": "Mostrar 'Se envía hoy si lo pides en…'",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "ship_cutoff",
+      "label": "Hora límite de envío del día",
+      "min": 0,
+      "max": 23,
+      "step": 1,
+      "default": 14,
+      "unit": "h"
+    },
+    {
+      "type": "text",
+      "id": "ship_today",
+      "label": "Texto hoy",
+      "default": "Se envía hoy,"
+    },
+    {
+      "type": "text",
+      "id": "ship_tomorrow",
+      "label": "Texto mañana",
+      "default": "Se envía mañana,"
+    },
+    {
+      "type": "text",
+      "id": "ship_within",
+      "label": "Texto después",
+      "default": "si lo pides en"
+    },
+    {
+      "type": "checkbox",
+      "id": "ignore_stock",
+      "label": "No mostrar nunca \"Agotado\" (dropshipping)",
+      "default": true,
+      "info": "En el producto desmarca también 'Controlar cantidad' en Inventario, o Shopify rechazará el pedido."
+    },
+    {
+      "type": "text",
+      "id": "sold_out_text",
+      "label": "Texto agotado",
+      "default": "Agotado"
+    },
+    {
+      "type": "select",
+      "id": "after_add",
+      "label": "Después de añadir al carrito",
+      "default": "checkout",
+      "options": [
+        {
+          "value": "checkout",
+          "label": "Ir directamente al pago"
+        },
+        {
+          "value": "cart",
+          "label": "Página del carrito"
+        },
+        {
+          "value": "drawer",
+          "label": "Abrir el carrito lateral (si el tema lo tiene)"
+        },
+        {
+          "value": "toast",
+          "label": "Quedarse y mostrar aviso"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "added_message",
+      "label": "Aviso al añadir",
+      "default": "¡Añadido al carrito!"
+    },
+    {
+      "type": "text",
+      "id": "error_message",
+      "label": "Aviso de error",
+      "default": "No se pudo añadir al carrito. Inténtalo de nuevo."
+    },
+    {
+      "type": "paragraph",
+      "content": "El descuento de cada pack solo cambia el precio que se ve. Para cobrarlo, crea un descuento automático por cantidad en Descuentos, o usa variantes de pack (2 tubos, 3 tubos) con su propio precio."
+    },
+    {
+      "type": "header",
+      "content": "16 · Preguntas frecuentes"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_faq",
+      "label": "Mostrar",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "faq_heading",
+      "label": "Título",
+      "default": "Preguntas frecuentes"
+    },
+    {
+      "type": "checkbox",
+      "id": "faq_first_open",
+      "label": "Primera pregunta abierta",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "result",
+      "name": "3 · Resultado",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab",
+          "label": "Pestaña (| = salto de línea)",
+          "default": "Bajo|el pecho"
+        },
+        {
+          "type": "text",
+          "id": "area",
+          "label": "Etiqueta de zona",
+          "default": "Bajo el pecho"
+        },
+        {
+          "type": "image_picker",
+          "id": "before",
+          "label": "Foto antes"
+        },
+        {
+          "type": "image_picker",
+          "id": "after",
+          "label": "Foto después"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título",
+          "default": "Escribe aquí el título"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Texto",
+          "default": "Escribe aquí la opinión real de tu clienta."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Nombre",
+          "default": "Nombre A."
+        }
+      ]
+    },
+    {
+      "type": "problem",
+      "name": "4 · Caja del problema",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "pretitle",
+          "label": "Etiqueta roja",
+          "default": "Solo superficie"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Título",
+          "default": "Crema del pañal"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Texto",
+          "default": "Espesa y pastosa, se queda encima, no se absorbe y no es antifúngica."
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icono / foto pequeña"
+        }
+      ]
+    },
+    {
+      "type": "area",
+      "name": "7 · Zona",
+      "limit": 9,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Título",
+          "default": "Pliegues bajo el pecho"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Texto",
+          "default": "Calma el ardor y la humedad después de sudar, hacer deporte o llevar sujetador ajustado."
+        },
+        {
+          "type": "image_picker",
+          "id": "before",
+          "label": "Foto antes"
+        },
+        {
+          "type": "image_picker",
+          "id": "after",
+          "label": "Foto después"
+        }
+      ]
+    },
+    {
+      "type": "ingredient",
+      "name": "8 · Ingrediente",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icono / foto"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Nombre",
+          "default": "Ácido undecilénico"
+        },
+        {
+          "type": "text",
+          "id": "strip",
+          "label": "Etiqueta verde",
+          "default": "El antifúngico"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Texto",
+          "default": "Antifúngico que ayuda a eliminar levaduras y olor y a prevenir que vuelvan."
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "name": "14 · Vídeo",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Vídeo (súbelo a Shopify)"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "…o enlace directo a un .mp4"
+        },
+        {
+          "type": "image_picker",
+          "id": "poster",
+          "label": "Portada (opcional)",
+          "info": "Vacío = la portada del vídeo."
+        }
+      ]
+    },
+    {
+      "type": "review",
+      "name": "14 · Opinión",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Opinión",
+          "default": "Escribe aquí la opinión real de tu clienta."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Nombre",
+          "default": "Nombre"
+        },
+        {
+          "type": "text",
+          "id": "area",
+          "label": "Zona",
+          "default": "Bajo el pecho"
+        },
+        {
+          "type": "image_picker",
+          "id": "photo",
+          "label": "Foto (opcional)"
+        }
+      ]
+    },
+    {
+      "type": "package",
+      "name": "15 · Pack",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Etiqueta de arriba",
+          "default": "Más popular"
+        },
+        {
+          "type": "color",
+          "id": "badge_color",
+          "label": "Color de la etiqueta",
+          "default": "#E59021"
+        },
+        {
+          "type": "checkbox",
+          "id": "featured",
+          "label": "Destacar con sombra",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Título",
+          "default": "Compra 2"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtítulo",
+          "default": "Ideal para varias zonas"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Foto del pack"
+        },
+        {
+          "type": "number",
+          "id": "variant_index",
+          "label": "Variante a añadir (1 = la primera)",
+          "default": 0,
+          "info": "0 = la variante seleccionada del producto. Si tienes variantes 'Pack 2', 'Pack 3', pon su número."
+        },
+        {
+          "type": "number",
+          "id": "qty",
+          "label": "Unidades que se añaden",
+          "default": 2
+        },
+        {
+          "type": "range",
+          "id": "discount",
+          "label": "Descuento mostrado",
+          "min": 0,
+          "max": 90,
+          "step": 1,
+          "unit": "%",
+          "default": 0
+        },
+        {
+          "type": "text",
+          "id": "compare_price",
+          "label": "Precio normal tachado (total del pack)",
+          "info": "Ej: 79,90. Vacío = precio de comparación de la variante × unidades."
+        },
+        {
+          "type": "text",
+          "id": "price_text",
+          "label": "Precio de oferta (texto manual, opcional)",
+          "info": "Vacío = se calcula solo."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_per_unit",
+          "label": "Mostrar precio por unidad",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "shipping_text",
+          "label": "Texto de envío",
+          "default": "Envío gratis"
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "16 · Pregunta",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "photo",
+          "label": "Foto de quien pregunta (opcional)"
+        },
+        {
+          "type": "text",
+          "id": "asker",
+          "label": "Quién pregunta",
+          "default": "Lucía, de Madrid, pregunta:"
+        },
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Pregunta",
+          "default": "¿Y si ya lo he probado todo y nada me ha funcionado?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Respuesta",
+          "default": "<p>Escribe aquí la respuesta.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dryniva · Landing completa",
+      "blocks": [
+        {
+          "type": "result",
+          "settings": {
+            "tab": "Bajo|el pecho",
+            "area": "Bajo el pecho",
+            "title": "Por fin aguanto el sujetador",
+            "text": "Escribe aquí la opinión real de tu clienta sobre esta zona.",
+            "name": "Nombre A."
+          }
+        },
+        {
+          "type": "result",
+          "settings": {
+            "tab": "Zona|ingle",
+            "area": "Zona ingle",
+            "title": "Nada más me funcionaba",
+            "text": "Escribe aquí la opinión real de tu clienta sobre esta zona.",
+            "name": "Nombre B."
+          }
+        },
+        {
+          "type": "result",
+          "settings": {
+            "tab": "Interior|muslos",
+            "area": "Interior de muslos",
+            "title": "Adiós a las rozaduras",
+            "text": "Escribe aquí la opinión real de tu clienta sobre esta zona.",
+            "name": "Nombre C."
+          }
+        },
+        {
+          "type": "result",
+          "settings": {
+            "tab": "Pliegues|abdomen",
+            "area": "Pliegues del abdomen",
+            "title": "Mejoró en una semana",
+            "text": "Escribe aquí la opinión real de tu clienta sobre esta zona.",
+            "name": "Nombre D."
+          }
+        },
+        {
+          "type": "result",
+          "settings": {
+            "tab": "Bajo|los brazos",
+            "area": "Axilas",
+            "title": "Mi piel vuelve a ser normal",
+            "text": "Escribe aquí la opinión real de tu clienta sobre esta zona.",
+            "name": "Nombre E."
+          }
+        },
+        {
+          "type": "problem",
+          "settings": {
+            "pretitle": "Solo superficie",
+            "heading": "Crema del pañal",
+            "text": "Espesa y pastosa, se queda encima, no se absorbe y no es antifúngica."
+          }
+        },
+        {
+          "type": "problem",
+          "settings": {
+            "pretitle": "Solo humedad",
+            "heading": "Polvos de talco / maicena",
+            "text": "Absorben la humedad un rato, pero la maicena puede alimentar a las levaduras."
+          }
+        },
+        {
+          "type": "problem",
+          "settings": {
+            "pretitle": "Solo un problema",
+            "heading": "Polvos antifúngicos",
+            "text": "Atacan la levadura, pero no calman el ardor ni protegen la piel."
+          }
+        },
+        {
+          "type": "problem",
+          "settings": {
+            "pretitle": "Solución temporal",
+            "heading": "Cremas con corticoides",
+            "text": "Calman la rojez rápido, pero con el tiempo adelgazan la piel y la irritación vuelve."
+          }
+        },
+        {
+          "type": "problem",
+          "settings": {
+            "pretitle": "Truco casero",
+            "heading": "Antitranspirante",
+            "text": "Frena el sudor un rato, pero no está pensado para los pliegues y suele irritar más."
+          }
+        },
+        {
+          "type": "area",
+          "settings": {
+            "heading": "Pliegues bajo el pecho",
+            "text": "Calma el ardor y la humedad después de sudar, hacer deporte o llevar sujetador ajustado."
+          }
+        },
+        {
+          "type": "area",
+          "settings": {
+            "heading": "Ingle e interior de muslos",
+            "text": "Ayuda con las rozaduras y la irritación, sin el escozor de polvos o sprays agresivos."
+          }
+        },
+        {
+          "type": "area",
+          "settings": {
+            "heading": "Pliegues de la barriga",
+            "text": "Calma la rojez y el olor que aparecen en los pliegues profundos del abdomen."
+          }
+        },
+        {
+          "type": "area",
+          "settings": {
+            "heading": "Axilas",
+            "text": "Calma la irritación del afeitado, del desodorante y el roce constante."
+          }
+        },
+        {
+          "type": "area",
+          "settings": {
+            "heading": "Pliegue del cuello",
+            "text": "Calma la irritación húmeda que se queda en los pliegues del cuello sin escocer."
+          }
+        },
+        {
+          "type": "area",
+          "settings": {
+            "heading": "Pliegue abdominal inferior",
+            "text": "Seca y protege el pliegue más profundo, donde el calor y el sudor se quedan todo el día."
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "Ácido undecilénico",
+            "strip": "El antifúngico",
+            "text": "Antifúngico que ayuda a eliminar levaduras y olor y a prevenir que vuelvan."
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "Óxido de zinc",
+            "strip": "El escudo de la piel",
+            "text": "Crea una barrera protectora que calma el ardor y reduce el roce."
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "Hamamelis",
+            "strip": "El astringente natural",
+            "text": "Seca el exceso de humedad, equilibra la piel y calma la irritación sin escocer."
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "Aceite de árbol de té microencapsulado",
+            "strip": "Liberación lenta",
+            "text": "Protección antimicrobiana de liberación lenta contra el olor y las bacterias."
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "Sílice + almidón de tapioca",
+            "strip": "La matriz secante",
+            "text": "Absorbe la humedad y deja un acabado sedoso, seco y protector."
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "name": "Glicerina vegetal",
+            "strip": "El acondicionador",
+            "text": "Hidrata y refuerza la barrera de la piel sin resecar las zonas delicadas."
+          }
+        },
+        {
+          "type": "video",
+          "settings": {}
+        },
+        {
+          "type": "video",
+          "settings": {}
+        },
+        {
+          "type": "video",
+          "settings": {}
+        },
+        {
+          "type": "video",
+          "settings": {}
+        },
+        {
+          "type": "review",
+          "settings": {
+            "text": "Escribe aquí la opinión real de tu clienta.",
+            "name": "Nombre A.",
+            "area": "Bajo el pecho"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "text": "Escribe aquí la opinión real de tu clienta.",
+            "name": "Nombre B.",
+            "area": "Bajo el pecho"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "text": "Escribe aquí la opinión real de tu clienta.",
+            "name": "Nombre C.",
+            "area": "Bajo el pecho"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "text": "Escribe aquí la opinión real de tu clienta.",
+            "name": "Nombre D.",
+            "area": "Interior de muslos"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "text": "Escribe aquí la opinión real de tu clienta.",
+            "name": "Nombre E.",
+            "area": "Axilas"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "text": "Escribe aquí la opinión real de tu clienta.",
+            "name": "Nombre F.",
+            "area": "Zona ingle"
+          }
+        },
+        {
+          "type": "package",
+          "settings": {
+            "badge": "Más popular",
+            "badge_color": "#E59021",
+            "heading": "Compra 2",
+            "subtitle": "Ideal para varias zonas",
+            "qty": 2,
+            "shipping_text": "Envío gratis"
+          }
+        },
+        {
+          "type": "package",
+          "settings": {
+            "badge": "Mejor valor",
+            "badge_color": "#00CB35",
+            "featured": true,
+            "heading": "Compra 3",
+            "subtitle": "Ideal para todo el cuerpo",
+            "qty": 3,
+            "shipping_text": "Envío gratis"
+          }
+        },
+        {
+          "type": "package",
+          "settings": {
+            "badge": "Inicial",
+            "badge_color": "#32C0B8",
+            "heading": "Compra 1",
+            "subtitle": "Ideal para una zona",
+            "qty": 1,
+            "shipping_text": "+4,95 € de envío"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "asker": "Lucía, de Madrid, pregunta:",
+            "question": "¿Y si ya lo he probado todo y nada me ha funcionado?",
+            "answer": "<p>La mayoría de productos solo atacan una causa. Dryniva trabaja la humedad, el roce y la irritación en una sola aplicación.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "asker": "Carmen, de Sevilla, pregunta:",
+            "question": "¿Escuece en la piel irritada o agrietada?",
+            "answer": "<p>No. El aceite de árbol de té microencapsulado se libera poco a poco, así que no escuece ni en la piel más sensible.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "asker": "Marta, de Valencia, quiere saber:",
+            "question": "¿En qué se diferencia de las cremas y polvos de siempre?",
+            "answer": "<p>Los polvos se apelmazan, muchas cremas se quedan húmedas y las del pañal están pensadas para bebés. Dryniva está hecha para los pliegues de la piel adulta.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "asker": "Rocío, de Bilbao, pregunta:",
+            "question": "¿Qué pack me conviene?",
+            "answer": "<p>1 tubo = una zona, 2 tubos = varias zonas, 3 tubos = todo el cuerpo o para compartir.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "asker": "Elena, de Zaragoza, quiere saber:",
+            "question": "¿Cuándo notaré los resultados?",
+            "answer": "<p>La mayoría nota alivio del ardor desde la primera aplicación. Con dos aplicaciones al día, la zona mejora visiblemente en pocos días. Para mantenerla, úsala 2 o 3 veces por semana, sobre todo con calor o sudor.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "asker": "Pilar, de Málaga, pregunta:",
+            "question": "¿Y si no me funciona?",
+            "answer": "<p>Dryniva tiene una garantía de 365 días. Si no quedas satisfecha, escríbenos dentro de los 365 días desde que la recibes y te devolvemos el dinero.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "asker": "Ana, de Barcelona, quiere saber:",
+            "question": "¿Puedo usarla en todos los pliegues?",
+            "answer": "<p>Sí. Está formulada para bajo el pecho, pliegues del abdomen, ingle, interior de muslos, entre los glúteos y axilas.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "asker": "Sara, de Murcia, pregunta:",
+            "question": "¿Se vende en Amazon o en otras tiendas?",
+            "answer": "<p>No. Dryniva solo se vende en nuestra web oficial. Los productos vendidos en otros sitios pueden ser falsos y no están cubiertos por nuestra garantía.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
