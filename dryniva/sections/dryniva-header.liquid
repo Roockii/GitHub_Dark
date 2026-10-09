@@ -1,0 +1,201 @@
+{%- comment -%}
+  DRYNIVA — HEADER (cinta superior + logo con ramitas animadas + botón "Pedir ahora")
+  Añádela en Personalizar → Encabezado (Header) → Añadir sección → "Dryniva · Header",
+  y oculta el encabezado original del tema.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign logo_alt = s.logo.alt | default: shop.name
+  assign fallback_url = s.btn_link | default: routes.root_url
+-%}
+
+<style>
+#dry-hd-{{ section.id }}{
+  --hd-dark:{{ s.c_strip_bg }};--hd-strip-txt:{{ s.c_strip_text }};--hd-bg:{{ s.c_bg }};
+  --hd-btn1:{{ s.c_btn1 }};--hd-btn2:{{ s.c_btn2 }};--hd-leaf:{{ s.c_leaf }};
+  --hd-logo:{{ s.logo_width }}px;--hd-logo-m:{{ s.logo_width_mobile }}px;--hd-speed:{{ s.leaf_speed }}s;
+  font-family:'Inter',ui-sans-serif,system-ui,sans-serif;width:100%;position:relative;z-index:50;
+}
+#dry-hd-{{ section.id }} *,#dry-hd-{{ section.id }} *::before,#dry-hd-{{ section.id }} *::after{box-sizing:border-box;}
+#dry-hd-{{ section.id }} p{margin:0;}
+#dry-hd-{{ section.id }} a{text-decoration:none;color:inherit;}
+.dryhd-container{width:1170px;max-width:100%;margin:0 auto;position:relative;}
+.dryhd-strip{width:100%;padding:8px 15px;background:var(--hd-dark);}
+.dryhd-strip-inner{display:flex;justify-content:center;align-items:center;column-gap:7px;}
+.dryhd-strip-inner svg{width:15px;height:15px;flex-shrink:0;color:var(--hd-strip-txt);}
+.dryhd-strip-text{font-size:15px;line-height:18px;color:var(--hd-strip-txt);font-weight:600;letter-spacing:.5px;}
+.dryhd-bar{width:100%;height:70px;background:var(--hd-bg);box-shadow:0 3px 4px rgba(0,0,0,.1);position:relative;}
+.dryhd-row{display:flex;align-items:center;justify-content:space-between;width:100%;height:70px;}
+
+/* ---------- logo + ramitas ---------- */
+.dryhd-logo{position:relative;display:inline-flex;align-items:center;justify-content:center;width:var(--hd-logo);height:70px;flex-shrink:0;}
+.dryhd-logo img{position:relative;z-index:2;display:block;width:100%;height:auto;max-height:54px;object-fit:contain;}
+.dryhd-logo-text{position:relative;z-index:2;font-size:26px;line-height:1;font-weight:800;letter-spacing:.06em;color:var(--hd-dark);text-transform:uppercase;white-space:nowrap;}
+.dryhd-leaves{position:absolute;inset:-6px -34px;z-index:1;pointer-events:none;}
+.dryhd-sprig{position:absolute;color:var(--hd-leaf);transform-origin:var(--ox,50%) var(--oy,100%);animation:dryhd-sway var(--hd-speed) ease-in-out infinite;animation-delay:var(--d,0s);opacity:var(--o,.85);}
+.dryhd-sprig svg{display:block;width:100%;height:100%;overflow:visible;}
+.dryhd-sprig.s1{left:0;bottom:4px;width:34px;height:46px;--ox:80%;--oy:100%;--r:-14deg;--r2:-4deg;}
+.dryhd-sprig.s2{left:10px;top:2px;width:24px;height:30px;--ox:90%;--oy:100%;--r:-38deg;--r2:-26deg;--d:-1.2s;--o:.6;}
+.dryhd-sprig.s3{right:0;bottom:4px;width:34px;height:46px;--ox:20%;--oy:100%;--r:14deg;--r2:4deg;--d:-.6s;}
+.dryhd-sprig.s4{right:10px;top:2px;width:24px;height:30px;--ox:10%;--oy:100%;--r:38deg;--r2:26deg;--d:-1.8s;--o:.6;}
+@keyframes dryhd-sway{0%,100%{transform:rotate(var(--r))}50%{transform:rotate(var(--r2))}}
+.dryhd-float{position:absolute;width:9px;height:9px;color:var(--hd-leaf);opacity:0;animation:dryhd-float calc(var(--hd-speed) * 2) ease-in-out infinite;animation-delay:var(--d,0s);}
+.dryhd-float svg{width:100%;height:100%;display:block;}
+.dryhd-float.f1{left:18%;top:8px;--d:0s;--x:-10px;}
+.dryhd-float.f2{right:20%;top:6px;--d:-2.4s;--x:10px;}
+.dryhd-float.f3{left:46%;top:2px;--d:-4.6s;--x:6px;}
+@keyframes dryhd-float{
+  0%{opacity:0;transform:translate(0,0) rotate(0)}
+  15%{opacity:.75}
+  70%{opacity:.5}
+  100%{opacity:0;transform:translate(var(--x),46px) rotate(160deg)}
+}
+.dryhd-logo:hover .dryhd-sprig{animation-duration:calc(var(--hd-speed) / 2);}
+
+/* ---------- botón ---------- */
+.dryhd-btn{display:flex;align-items:center;justify-content:center;border-radius:50px;min-width:170px;height:42px;padding:0 20px;background:var(--hd-btn1);background:linear-gradient(90deg,var(--hd-btn1),var(--hd-btn2));column-gap:7px;color:#fff;cursor:pointer;transition:filter .2s,transform .2s;}
+.dryhd-btn:hover{filter:brightness(1.06);transform:translateY(-1px);}
+.dryhd-btn p{font-size:15px;line-height:15px;color:#fff;font-weight:700;margin-top:-2px;white-space:nowrap;}
+.dryhd-btn svg{width:14px;height:14px;flex-shrink:0;}
+
+{%- if s.sticky -%}
+#dry-hd-{{ section.id }}{position:sticky;top:0;}
+{%- endif -%}
+
+@media only screen and (max-width:1200px){.dryhd-container{width:1004px;}}
+@media only screen and (max-width:1023px){.dryhd-container{width:750px;}}
+@media only screen and (max-width:767px){
+  .dryhd-container{width:100%;padding:0 15px;max-width:600px;}
+  .dryhd-strip{padding:8px 10px;}
+  .dryhd-strip-inner svg{width:13px;height:13px;}
+  .dryhd-strip-text{font-size:13px;line-height:16px;letter-spacing:0;}
+  .dryhd-bar,.dryhd-row{height:50px;}
+  .dryhd-logo{width:var(--hd-logo-m);height:50px;}
+  .dryhd-logo img{max-height:38px;}
+  .dryhd-logo-text{font-size:19px;}
+  .dryhd-leaves{inset:-4px -20px;}
+  .dryhd-logo{margin-left:12px;}
+  .dryhd-sprig.s1,.dryhd-sprig.s3{width:24px;height:32px;}
+  .dryhd-sprig.s2,.dryhd-sprig.s4{width:17px;height:21px;}
+  .dryhd-btn{min-width:110px;height:30px;column-gap:5px;padding:0 12px;}
+  .dryhd-btn p{font-size:12px;line-height:12px;margin-top:-1px;}
+  .dryhd-btn svg{width:11px;height:11px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .dryhd-sprig,.dryhd-float{animation:none;}
+  .dryhd-float{display:none;}
+}
+</style>
+
+{%- capture sprig_svg -%}
+<svg viewBox="0 0 34 46" fill="currentColor" aria-hidden="true">
+  <path d="M27 46 Q22 30 12 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M24 36 C16 36 10 32 7 26 C14 26 21 30 24 36Z"/>
+  <path d="M24 34 C27 27 32 24 34 22 C33 29 29 33 24 34Z"/>
+  <path d="M19 24 C12 23 8 18 6 13 C13 14 18 18 19 24Z"/>
+  <path d="M19 22 C21 16 26 13 29 11 C28 18 24 21 19 22Z"/>
+  <path d="M14 12 C10 10 8 6 8 2 C12 4 14 8 14 12Z"/>
+</svg>
+{%- endcapture -%}
+{%- capture leaf_svg -%}<svg viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M1 9 C1 4 4 1 9 1 C9 6 6 9 1 9Z"/></svg>{%- endcapture -%}
+
+<header id="dry-hd-{{ section.id }}" class="dryhd" data-dryhd data-fallback="{{ fallback_url }}">
+  {%- if s.show_strip and s.strip_text != blank -%}
+    <div class="dryhd-strip">
+      <div class="dryhd-strip-inner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>
+        <p class="dryhd-strip-text">{{ s.strip_text }}</p>
+      </div>
+    </div>
+  {%- endif -%}
+  <div class="dryhd-bar">
+    <div class="dryhd-container">
+      <div class="dryhd-row">
+        <a href="{{ routes.root_url }}" class="dryhd-logo" aria-label="{{ shop.name | escape }}">
+          {%- if s.show_leaves -%}
+            <span class="dryhd-leaves" aria-hidden="true">
+              <span class="dryhd-sprig s1">{{ sprig_svg }}</span>
+              <span class="dryhd-sprig s2">{{ sprig_svg }}</span>
+              <span class="dryhd-sprig s3"><span style="display:block;width:100%;height:100%;transform:scaleX(-1)">{{ sprig_svg }}</span></span>
+              <span class="dryhd-sprig s4"><span style="display:block;width:100%;height:100%;transform:scaleX(-1)">{{ sprig_svg }}</span></span>
+              <span class="dryhd-float f1">{{ leaf_svg }}</span>
+              <span class="dryhd-float f2">{{ leaf_svg }}</span>
+              <span class="dryhd-float f3">{{ leaf_svg }}</span>
+            </span>
+          {%- endif -%}
+          {%- if s.logo != blank -%}
+            {{ s.logo | image_url: width: 600 | image_tag: loading: 'eager', alt: logo_alt, widths: '200, 400, 600', sizes: '(min-width: 768px) 160px, 130px' }}
+          {%- else -%}
+            <span class="dryhd-logo-text">{{ shop.name }}</span>
+          {%- endif -%}
+        </a>
+        {%- if s.show_btn -%}
+          <a href="{{ fallback_url }}#packs" class="dryhd-btn" data-dryhd-order>
+            <p>{{ s.btn_text }}</p>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#fff"/><path d="M10 7.5l4.5 4.5-4.5 4.5" fill="none" stroke="{{ s.c_btn1 }}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+(function () {
+  var root = document.getElementById('dry-hd-{{ section.id }}');
+  if (!root) return;
+  function packs() { return document.querySelector('.dry .package_section'); }
+  function goToPacks(target) {
+    var top = target.getBoundingClientRect().top + window.pageYOffset - (root.style.position === 'sticky' || getComputedStyle(root).position === 'sticky' ? root.offsetHeight : 0) - 10;
+    window.scrollTo({ top: top, behavior: 'smooth' });
+  }
+  var btn = root.querySelector('[data-dryhd-order]');
+  if (btn) btn.addEventListener('click', function (e) {
+    var target = packs();
+    if (!target) return; // no hay packs en esta página: va al enlace de respaldo + #packs
+    e.preventDefault();
+    goToPacks(target);
+  });
+  // Llegando desde otra página con #packs: baja hasta los packs
+  if (location.hash === '#packs') {
+    window.addEventListener('load', function () { var t = packs(); if (t) setTimeout(function () { goToPacks(t); }, 150); });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Dryniva · Header",
+  "tag": "div",
+  "class": "dryniva-header",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "header", "content": "Cinta superior" },
+    { "type": "checkbox", "id": "show_strip", "label": "Mostrar cinta", "default": true },
+    { "type": "text", "id": "strip_text", "label": "Texto", "default": "Oferta limitada: hasta 50% dto + envío gratis" },
+    { "type": "color", "id": "c_strip_bg", "label": "Fondo de la cinta", "default": "#13494B" },
+    { "type": "color", "id": "c_strip_text", "label": "Texto de la cinta", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Logo" },
+    { "type": "image_picker", "id": "logo", "label": "Logo", "info": "PNG transparente de unos 600 px de ancho. Vacío = nombre de la tienda en texto." },
+    { "type": "range", "id": "logo_width", "label": "Ancho del logo (ordenador)", "min": 80, "max": 260, "step": 5, "unit": "px", "default": 130 },
+    { "type": "range", "id": "logo_width_mobile", "label": "Ancho del logo (móvil)", "min": 60, "max": 200, "step": 5, "unit": "px", "default": 110 },
+    { "type": "checkbox", "id": "show_leaves", "label": "Ramitas animadas alrededor del logo", "default": true },
+    { "type": "color", "id": "c_leaf", "label": "Color de las ramitas", "default": "#5C735E" },
+    { "type": "range", "id": "leaf_speed", "label": "Velocidad del movimiento (más alto = más lento)", "min": 2, "max": 10, "step": 0.5, "unit": "s", "default": 4 },
+
+    { "type": "header", "content": "Botón" },
+    { "type": "checkbox", "id": "show_btn", "label": "Mostrar botón", "default": true },
+    { "type": "text", "id": "btn_text", "label": "Texto", "default": "Pedir ahora" },
+    { "type": "url", "id": "btn_link", "label": "Página con los packs", "info": "En la página del producto el botón baja directamente a los packs. En las demás páginas lleva a este enlace y baja a los packs al llegar. Pon aquí tu producto." },
+    { "type": "color", "id": "c_btn1", "label": "Botón: degradado 1", "default": "#02B432" },
+    { "type": "color", "id": "c_btn2", "label": "Botón: degradado 2", "default": "#13DB3F" },
+
+    { "type": "header", "content": "General" },
+    { "type": "color", "id": "c_bg", "label": "Fondo del header", "default": "#FFFFFF" },
+    { "type": "checkbox", "id": "sticky", "label": "Fijo arriba al hacer scroll", "default": false }
+  ],
+  "presets": [{ "name": "Dryniva · Header" }]
+}
+{% endschema %}
