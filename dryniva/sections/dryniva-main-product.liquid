@@ -431,6 +431,8 @@
 .dry .discount-offer-section{background:var(--dk);padding:0 0 32px;scroll-margin-top:20px;}
 .dry .discount-offer-icn{width:46px;height:46px;background:#fff;display:flex;justify-content:center;align-items:center;border-radius:50%;margin:-23px auto 22px;position:relative;top:-0px;color:var(--dk);}
 .dry .discount-offer-icn svg{width:30px;height:30px;}
+.dry .discount-offer-section.is-top{padding-top:30px;border-top:1px solid rgba(255,255,255,.18);}
+.dry .discount-offer-section.is-top .discount-offer-icn{margin:0 auto 18px;}
 .dry .discount-offer-heading{font-size:40px;line-height:46px;color:#fff;font-weight:700;padding-top:1px;}
 .dry .discount-offer-timer{width:100%;background:var(--sage);padding:6px 0;}
 .dry .discount-offer-timer p{font-size:16px;line-height:22px;letter-spacing:.2px;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;}
@@ -878,6 +880,102 @@
 {%- endcapture -%}
 {%- capture cta -%}<div class="clearall"></div><div class="common_button_box hideMob">{{ cta_inner }}</div>{%- endcapture -%}
 
+{%- capture packs_html -%}
+  {%- comment -%} ================= 15. OFERTA + PACKS ================= {%- endcomment -%}
+  {%- if package_blocks.size > 0 -%}
+    <div class="discount-offer-section dry-sec{% if s.packs_position == 'top' %} is-top{% endif %}">
+      <div class="container">
+        <div class="discount-offer-icn">{{ svg_watch }}</div>
+        <p class="discount-offer-heading">{{ s.of_heading | newline_to_br }}</p>
+      </div>
+    </div>
+    {%- if s.of_timer_text != blank -%}
+      <div class="discount-offer-timer dry-sec">
+        <div class="container">
+          <p>{{ svg_watch }}{{ s.of_timer_text }} <span data-dry-timer>{{ s.timer_hours | prepend: '0' | slice: -2, 2 }}:{{ s.timer_minutes | prepend: '0' | slice: -2, 2 }}:00</span></p>
+        </div>
+      </div>
+    {%- endif -%}
+    <section class="package_section dry-sec" id="{{ pack_id }}">
+      <div class="container">
+        <div class="package_section-row">
+          {%- for block in package_blocks -%}
+            {%- liquid
+              assign b = block.settings
+              assign pk_variant = current_variant
+              if p != blank and b.variant_index > 0 and p.variants.size >= b.variant_index
+                assign vi = b.variant_index | minus: 1
+                assign pk_variant = p.variants[vi]
+              endif
+              assign pk_qty = b.qty | default: 1
+              if pk_qty < 1
+                assign pk_qty = 1
+              endif
+              assign pk_left = 100 | minus: b.discount
+              assign pk_full = 0
+              assign pk_offer = 0
+              assign pk_compare = 0
+              if pk_variant
+                assign pk_full = pk_variant.price | times: pk_qty
+                assign pk_offer = pk_full | times: pk_left | divided_by: 100.0 | round
+                if b.compare_price != blank
+                  assign pk_compare = b.compare_price | remove: '€' | remove: '$' | strip | replace: ',', '.' | times: 100 | round
+                elsif pk_variant.compare_at_price > pk_variant.price
+                  assign pk_compare = pk_variant.compare_at_price | times: pk_qty
+                elsif b.discount > 0
+                  assign pk_compare = pk_full
+                endif
+              endif
+              assign pk_can = false
+              if pk_variant.available or s.ignore_stock
+                assign pk_can = true
+              endif
+            -%}
+            <div class="package{% if b.featured %} is-featured{% endif %}" {{ block.shopify_attributes }}>
+              {%- if b.badge != blank -%}<div class="most-popular" style="background:{{ b.badge_color }}">{{ b.badge }}</div>{%- endif -%}
+              <p class="pkage_heading">{{ b.heading }}</p>
+              {%- if b.subtitle != blank -%}<p class="areas_text">{{ b.subtitle }}</p>{%- endif -%}
+              <div class="pkage_prod_box">
+                {%- if b.image != blank -%}
+                  {{ b.image | image_url: width: 600 | image_tag: loading: 'lazy', alt: b.heading, widths: '300, 450, 600' }}
+                {%- elsif p != blank and p.featured_image != blank -%}
+                  {{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: b.heading }}
+                {%- else -%}
+                  {{ 'product-2' | placeholder_svg_tag: 'dry-ph' }}
+                {%- endif -%}
+              </div>
+              <div class="pkage_price-row">
+                {%- if pk_compare > pk_offer -%}<p class="pkage_retail-price">{{ s.pk_regular_label }} <span>{{ pk_compare | money }}</span></p>{%- endif -%}
+                <p class="pkage_offer-price">{% if b.price_text != blank %}{{ b.price_text }}{% else %}{{ pk_offer | money }}{% endif %}</p>
+                {%- if b.show_per_unit and pk_qty > 1 -%}
+                  {%- assign per_unit = pk_offer | divided_by: pk_qty -%}
+                  <p class="pkage_per-unit">{{ per_unit | money }} {{ s.pk_per_unit }}</p>
+                {%- endif -%}
+              </div>
+              <div class="btn_box">
+                {%- if b.shipping_text != blank -%}<p class="btn-text1">{{ svg_truck }}<span>{{ b.shipping_text }}</span></p>{%- endif -%}
+                <button type="button" class="package_btn" data-pkg-add data-variant-id="{{ pk_variant.id }}" data-qty="{{ pk_qty }}"{% unless pk_can %} disabled{% endunless %}>
+                  <span>{% if pk_can %}{{ s.pk_btn }}{% else %}{{ s.sold_out_text }}{% endif %}</span>{{ svg_arrow }}
+                </button>
+                <p class="pkg-error" data-pkg-error hidden></p>
+                {%- if s.cta_guarantee != blank -%}<p class="btn-text2">{{ svg_shield }}{{ s.cta_guarantee }}</p>{%- endif -%}
+              </div>
+              {%- if s.pk_card_image != blank -%}{{ s.pk_card_image | image_url: width: 400 | image_tag: class: 'pkage-card-img', loading: 'lazy', alt: '' }}{%- endif -%}
+              {%- if s.show_ship_msg -%}
+                <div class="shipping-calculate-date">
+                  <div class="shipping__message shipping__message--today"><strong class="shipping__message-highlight">{{ s.ship_today }}</strong> {{ s.ship_within }} <span class="remain-time"></span></div>
+                  <div class="shipping__message shipping__message--tomorrow"><strong class="shipping__message-highlight">{{ s.ship_tomorrow }}</strong> {{ s.ship_within }} <span class="within-time"></span></div>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+{%- endcapture -%}
+
 <div
   id="dry-{{ section.id }}"
   class="dry"
@@ -983,6 +1081,9 @@
       </div>
     </div>
   {%- endif -%}
+
+  {%- comment -%} ================= OFERTA + PACKS (arriba) ================= {%- endcomment -%}
+  {%- if s.packs_position == 'top' -%}{{ packs_html }}{%- endif -%}
 
   {%- comment -%} ================= 3. RESULTADOS ================= {%- endcomment -%}
   {%- if s.show_results and result_blocks.size > 0 -%}
@@ -1598,98 +1699,8 @@
     </section>
   {%- endif -%}
 
-  {%- comment -%} ================= 15. OFERTA + PACKS ================= {%- endcomment -%}
-  {%- if package_blocks.size > 0 -%}
-    <div class="discount-offer-section dry-sec">
-      <div class="container">
-        <div class="discount-offer-icn">{{ svg_watch }}</div>
-        <p class="discount-offer-heading">{{ s.of_heading | newline_to_br }}</p>
-      </div>
-    </div>
-    {%- if s.of_timer_text != blank -%}
-      <div class="discount-offer-timer dry-sec">
-        <div class="container">
-          <p>{{ svg_watch }}{{ s.of_timer_text }} <span data-dry-timer>{{ s.timer_hours | prepend: '0' | slice: -2, 2 }}:{{ s.timer_minutes | prepend: '0' | slice: -2, 2 }}:00</span></p>
-        </div>
-      </div>
-    {%- endif -%}
-    <section class="package_section dry-sec" id="{{ pack_id }}">
-      <div class="container">
-        <div class="package_section-row">
-          {%- for block in package_blocks -%}
-            {%- liquid
-              assign b = block.settings
-              assign pk_variant = current_variant
-              if p != blank and b.variant_index > 0 and p.variants.size >= b.variant_index
-                assign vi = b.variant_index | minus: 1
-                assign pk_variant = p.variants[vi]
-              endif
-              assign pk_qty = b.qty | default: 1
-              if pk_qty < 1
-                assign pk_qty = 1
-              endif
-              assign pk_left = 100 | minus: b.discount
-              assign pk_full = 0
-              assign pk_offer = 0
-              assign pk_compare = 0
-              if pk_variant
-                assign pk_full = pk_variant.price | times: pk_qty
-                assign pk_offer = pk_full | times: pk_left | divided_by: 100.0 | round
-                if b.compare_price != blank
-                  assign pk_compare = b.compare_price | remove: '€' | remove: '$' | strip | replace: ',', '.' | times: 100 | round
-                elsif pk_variant.compare_at_price > pk_variant.price
-                  assign pk_compare = pk_variant.compare_at_price | times: pk_qty
-                elsif b.discount > 0
-                  assign pk_compare = pk_full
-                endif
-              endif
-              assign pk_can = false
-              if pk_variant.available or s.ignore_stock
-                assign pk_can = true
-              endif
-            -%}
-            <div class="package{% if b.featured %} is-featured{% endif %}" {{ block.shopify_attributes }}>
-              {%- if b.badge != blank -%}<div class="most-popular" style="background:{{ b.badge_color }}">{{ b.badge }}</div>{%- endif -%}
-              <p class="pkage_heading">{{ b.heading }}</p>
-              {%- if b.subtitle != blank -%}<p class="areas_text">{{ b.subtitle }}</p>{%- endif -%}
-              <div class="pkage_prod_box">
-                {%- if b.image != blank -%}
-                  {{ b.image | image_url: width: 600 | image_tag: loading: 'lazy', alt: b.heading, widths: '300, 450, 600' }}
-                {%- elsif p != blank and p.featured_image != blank -%}
-                  {{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: b.heading }}
-                {%- else -%}
-                  {{ 'product-2' | placeholder_svg_tag: 'dry-ph' }}
-                {%- endif -%}
-              </div>
-              <div class="pkage_price-row">
-                {%- if pk_compare > pk_offer -%}<p class="pkage_retail-price">{{ s.pk_regular_label }} <span>{{ pk_compare | money }}</span></p>{%- endif -%}
-                <p class="pkage_offer-price">{% if b.price_text != blank %}{{ b.price_text }}{% else %}{{ pk_offer | money }}{% endif %}</p>
-                {%- if b.show_per_unit and pk_qty > 1 -%}
-                  {%- assign per_unit = pk_offer | divided_by: pk_qty -%}
-                  <p class="pkage_per-unit">{{ per_unit | money }} {{ s.pk_per_unit }}</p>
-                {%- endif -%}
-              </div>
-              <div class="btn_box">
-                {%- if b.shipping_text != blank -%}<p class="btn-text1">{{ svg_truck }}<span>{{ b.shipping_text }}</span></p>{%- endif -%}
-                <button type="button" class="package_btn" data-pkg-add data-variant-id="{{ pk_variant.id }}" data-qty="{{ pk_qty }}"{% unless pk_can %} disabled{% endunless %}>
-                  <span>{% if pk_can %}{{ s.pk_btn }}{% else %}{{ s.sold_out_text }}{% endif %}</span>{{ svg_arrow }}
-                </button>
-                <p class="pkg-error" data-pkg-error hidden></p>
-                {%- if s.cta_guarantee != blank -%}<p class="btn-text2">{{ svg_shield }}{{ s.cta_guarantee }}</p>{%- endif -%}
-              </div>
-              {%- if s.pk_card_image != blank -%}{{ s.pk_card_image | image_url: width: 400 | image_tag: class: 'pkage-card-img', loading: 'lazy', alt: '' }}{%- endif -%}
-              {%- if s.show_ship_msg -%}
-                <div class="shipping-calculate-date">
-                  <div class="shipping__message shipping__message--today"><strong class="shipping__message-highlight">{{ s.ship_today }}</strong> {{ s.ship_within }} <span class="remain-time"></span></div>
-                  <div class="shipping__message shipping__message--tomorrow"><strong class="shipping__message-highlight">{{ s.ship_tomorrow }}</strong> {{ s.ship_within }} <span class="within-time"></span></div>
-                </div>
-              {%- endif -%}
-            </div>
-          {%- endfor -%}
-        </div>
-      </div>
-    </section>
-  {%- endif -%}
+  {%- comment -%} ================= 15. OFERTA + PACKS (abajo) ================= {%- endcomment -%}
+  {%- if s.packs_position != 'top' -%}{{ packs_html }}{%- endif -%}
 
   {%- comment -%} ================= 16. PREGUNTAS FRECUENTES ================= {%- endcomment -%}
   {%- if s.show_faq and faq_blocks.size > 0 -%}
@@ -3270,6 +3281,22 @@
     {
       "type": "header",
       "content": "15 · Oferta y packs"
+    },
+    {
+      "type": "select",
+      "id": "packs_position",
+      "label": "Posición de la oferta y los packs",
+      "default": "top",
+      "options": [
+        {
+          "value": "top",
+          "label": "Arriba: justo debajo de la cinta en movimiento"
+        },
+        {
+          "value": "bottom",
+          "label": "Abajo: antes de las preguntas frecuentes"
+        }
+      ]
     },
     {
       "type": "textarea",
