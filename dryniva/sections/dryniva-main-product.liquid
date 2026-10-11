@@ -268,9 +268,10 @@
 .dry .sec6_col_heading{font-size:18px;line-height:24px;color:#000;font-weight:700;}
 .dry .sec6_col_strip{font-size:15px;line-height:15px;color:var(--sage);padding:4px 12px;border-radius:50px;background:#e9faeb;margin-top:5px;display:inline-block;}
 .dry .sec6_col_text{font-size:17px;line-height:25px;color:#000;margin-top:5px;letter-spacing:-.2px;}
-.dry .sec6-prod-box{position:relative;}
-.dry .sec6-prod-box.showDesk .sec6_product{flex-shrink:0;width:350px;max-width:none;margin:0 -65px;}
-.dry .s6-made-usa-seal{position:absolute;right:-40px;top:-35px;width:120px;}
+.dry .sec6-prod-box{position:relative;width:var(--s6w,210px);flex-shrink:0;}
+.dry .sec6-prod-box.showDesk{align-self:center;margin:0 auto;}
+.dry .sec6-prod-box .sec6_product{display:block;width:100%;max-width:none;margin:0;}
+.dry .sec6-prod-box .s6-made-usa-seal{position:absolute;right:-24%;top:-4%;width:46%;max-width:none;z-index:1;}
 .dry ul.sec6_benefits_list{margin:45px auto 10px;max-width:1030px;}
 .dry ul.sec6_benefits_list li .ic{width:54px;height:54px;margin:0 auto 5px;}
 .dry ul.sec6_benefits_list li p{font-size:17px;line-height:20px;color:var(--dk);font-weight:600;}
@@ -545,8 +546,7 @@
   .dry ul.sec6_benefits_list li{padding:0 19px;}
   .dry ul.sec6_benefits_list li .ic{width:45px;height:45px;}
   .dry ul.sec6_benefits_list li p{font-size:15px;line-height:18px;}
-  .dry .sec6-prod-box.showTab .sec6_product{display:inline-block;margin:35px auto 0;}
-  .dry .sec6-prod-box.showTab .s6-made-usa-seal{right:200px;top:15px;width:100px;}
+  .dry .sec6-prod-box.showTab{margin:35px auto 0;}
   .dry .step-col{width:32%;}
   .dry .step-col-btm{padding:20px 0 0;}
   .dry .science-section{overflow:hidden;}
@@ -686,8 +686,7 @@
   .dry .sec5_col_text{font-size:15px;line-height:22px;}
   .dry .section_6{padding:30px 0 35px;}
   .dry .section6_row{margin:20px auto 0;}
-  .dry .sec6-prod-box.showTab .sec6_product{width:calc(100% + 30px);max-width:none;margin:25px 0 0 -15px;}
-  .dry .sec6-prod-box.showTab .s6-made-usa-seal{right:50px;top:15px;width:80px;}
+  .dry .sec6-prod-box.showTab{width:calc(var(--s6w,210px) * .85);margin:25px auto 0;}
   .dry .sec6_col_icon_box{width:90px;height:90px;}
   .dry .sec6_col_heading{font-size:17px;line-height:24px;letter-spacing:-.3px;}
   .dry .sec6_col_strip{font-size:12px;line-height:16px;}
@@ -991,7 +990,7 @@
   data-timer-h="{{ s.timer_hours }}"
   data-timer-m="{{ s.timer_minutes }}"
   data-cutoff="{{ s.ship_cutoff }}"
-  style="--dk:{{ s.c_dark }};--sage:{{ s.c_sage }};--lt:{{ s.c_light }};--gray:{{ s.c_gray }};--hero:{{ s.c_hero }};--btn1:{{ s.c_btn1 }};--btn2:{{ s.c_btn2 }};--red:{{ s.c_red }};--star:{{ s.c_star }};--marquee-speed:{{ s.marquee_speed }}s;"
+  style="--dk:{{ s.c_dark }};--sage:{{ s.c_sage }};--lt:{{ s.c_light }};--gray:{{ s.c_gray }};--hero:{{ s.c_hero }};--btn1:{{ s.c_btn1 }};--btn2:{{ s.c_btn2 }};--red:{{ s.c_red }};--star:{{ s.c_star }};--marquee-speed:{{ s.marquee_speed }}s;--s6w:{{ s.s6_product_width }}px;"
 >
 
   {%- comment -%} ================= 1. BANNER ================= {%- endcomment -%}
@@ -2864,6 +2863,17 @@
       "type": "image_picker",
       "id": "s6_seal",
       "label": "Sello junto al producto"
+    },
+    {
+      "type": "range",
+      "id": "s6_product_width",
+      "label": "Ancho del producto (centro)",
+      "min": 140,
+      "max": 340,
+      "step": 10,
+      "default": 210,
+      "unit": "px",
+      "info": "Usa una foto recortada al borde del producto. Más pequeño = más espacio con los ingredientes."
     },
     {
       "type": "paragraph",
