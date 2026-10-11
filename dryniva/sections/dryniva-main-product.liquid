@@ -271,7 +271,7 @@
 .dry .sec6-prod-box{position:relative;width:var(--s6w,175px);flex-shrink:0;}
 .dry .sec6-prod-box.showDesk{align-self:center;margin:0 auto;}
 .dry .sec6-prod-box .sec6_product{display:block;width:100%;max-width:none;margin:0;}
-.dry .sec6-prod-box .s6-made-usa-seal{position:absolute;right:-23%;top:-6.5%;width:55%;max-width:none;z-index:1;}
+.dry .sec6-prod-box .s6-made-usa-seal{position:absolute;right:calc(var(--s6sx,23) * -1%);top:calc(var(--s6sy,7) * -1%);width:calc(var(--s6ss,55) * 1%);height:auto;max-width:none;z-index:1;}
 .dry ul.sec6_benefits_list{margin:45px auto 10px;max-width:1030px;}
 .dry ul.sec6_benefits_list li .ic{width:54px;height:54px;margin:0 auto 5px;}
 .dry ul.sec6_benefits_list li p{font-size:17px;line-height:20px;color:var(--dk);font-weight:600;}
@@ -990,7 +990,7 @@
   data-timer-h="{{ s.timer_hours }}"
   data-timer-m="{{ s.timer_minutes }}"
   data-cutoff="{{ s.ship_cutoff }}"
-  style="--dk:{{ s.c_dark }};--sage:{{ s.c_sage }};--lt:{{ s.c_light }};--gray:{{ s.c_gray }};--hero:{{ s.c_hero }};--btn1:{{ s.c_btn1 }};--btn2:{{ s.c_btn2 }};--red:{{ s.c_red }};--star:{{ s.c_star }};--marquee-speed:{{ s.marquee_speed }}s;--s6w:{{ s.s6_product_width }}px;"
+  style="--dk:{{ s.c_dark }};--sage:{{ s.c_sage }};--lt:{{ s.c_light }};--gray:{{ s.c_gray }};--hero:{{ s.c_hero }};--btn1:{{ s.c_btn1 }};--btn2:{{ s.c_btn2 }};--red:{{ s.c_red }};--star:{{ s.c_star }};--marquee-speed:{{ s.marquee_speed }}s;--s6w:{{ s.s6_product_width }}px;--s6ss:{{ s.s6_seal_size }};--s6sx:{{ s.s6_seal_x }};--s6sy:{{ s.s6_seal_y }};"
 >
 
   {%- comment -%} ================= 1. BANNER ================= {%- endcomment -%}
@@ -2863,6 +2863,36 @@
       "type": "image_picker",
       "id": "s6_seal",
       "label": "Sello junto al producto"
+    },
+    {
+      "type": "range",
+      "id": "s6_seal_size",
+      "label": "Tamaño del sello (% del ancho del producto)",
+      "min": 20,
+      "max": 90,
+      "step": 1,
+      "default": 55,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "s6_seal_x",
+      "label": "Sello: cuánto sale por la derecha",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "default": 23,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "s6_seal_y",
+      "label": "Sello: cuánto sube por encima",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "default": 7,
+      "unit": "%"
     },
     {
       "type": "range",
