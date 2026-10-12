@@ -187,11 +187,13 @@
    5. LA SOLUCIÓN
    ========================================================= */
 .dry .section_3{padding:65px 0 70px;background:var(--lt);}
-.dry .section3_row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;margin:50px auto 10px;width:100%;max-width:950px;}
-.dry .section3_left{width:45%;position:relative;padding-top:20px;}
+.dry .section3_row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;margin:50px auto 10px;width:100%;max-width:950px;}
+.dry .section3_left{width:45%;position:relative;padding-top:0;}
+.dry .section_3 .common_parahraph{max-width:900px;margin-left:auto;margin-right:auto;}
 .dry .section3_left .s3-bg{position:absolute;left:0;top:-80px;width:543px;max-width:none;pointer-events:none;}
 .dry .section3_left_iner{display:flex;justify-content:flex-end;width:100%;align-items:center;position:relative;}
-.dry .section3_prod{width:400px;flex-shrink:0;}
+.dry .section3_prod{width:var(--s3w,420px);max-width:100%;flex-shrink:0;}
+.dry .section3_left_iner{justify-content:center;}
 .dry .s3-usa-seal{position:absolute;left:-20px;top:10px;width:120px;}
 .dry .s3-moneyback-seal{position:absolute;left:-20px;top:140px;width:120px;}
 .dry ul.sec3_list{width:100%;display:flex;justify-content:space-between;row-gap:25px;}
@@ -990,7 +992,7 @@
   data-timer-h="{{ s.timer_hours }}"
   data-timer-m="{{ s.timer_minutes }}"
   data-cutoff="{{ s.ship_cutoff }}"
-  style="--dk:{{ s.c_dark }};--sage:{{ s.c_sage }};--lt:{{ s.c_light }};--gray:{{ s.c_gray }};--hero:{{ s.c_hero }};--btn1:{{ s.c_btn1 }};--btn2:{{ s.c_btn2 }};--red:{{ s.c_red }};--star:{{ s.c_star }};--marquee-speed:{{ s.marquee_speed }}s;--s6w:{{ s.s6_product_width }}px;--s6ss:{{ s.s6_seal_size }};--s6sx:{{ s.s6_seal_x }};--s6sy:{{ s.s6_seal_y }};"
+  style="--dk:{{ s.c_dark }};--sage:{{ s.c_sage }};--lt:{{ s.c_light }};--gray:{{ s.c_gray }};--hero:{{ s.c_hero }};--btn1:{{ s.c_btn1 }};--btn2:{{ s.c_btn2 }};--red:{{ s.c_red }};--star:{{ s.c_star }};--marquee-speed:{{ s.marquee_speed }}s;--s6w:{{ s.s6_product_width }}px;--s3w:{{ s.s3_product_width }}px;--s6ss:{{ s.s6_seal_size }};--s6sx:{{ s.s6_seal_x }};--s6sy:{{ s.s6_seal_y }};"
 >
 
   {%- comment -%} ================= 1. BANNER ================= {%- endcomment -%}
@@ -2565,6 +2567,16 @@
       "id": "s3_product",
       "label": "Foto del producto",
       "info": "Vacío = foto principal del producto."
+    },
+    {
+      "type": "range",
+      "id": "s3_product_width",
+      "label": "Ancho de la foto del producto (ordenador)",
+      "min": 260,
+      "max": 480,
+      "step": 10,
+      "default": 420,
+      "unit": "px"
     },
     {
       "type": "image_picker",
