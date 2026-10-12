@@ -214,9 +214,10 @@
 .dry .section_4{padding:65px 0 70px;background:#fff;}
 .dry .section4_box{display:flex;flex-direction:column;align-items:flex-start;margin:0 auto;width:100%;max-width:1030px;row-gap:40px;}
 .dry .section4_header_box{width:100%;position:relative;text-align:left;}
-.dry .section4_header_box .common_heading{max-width:560px;}
+.dry .section4_header_box .common_heading{max-width:620px;}
+.dry .section4_header_box{min-height:140px;}
 .dry .sec4_text{font-size:20px;line-height:26px;color:#000;font-weight:600;margin-top:15px;}
-.dry .sec4_hand_prod{position:absolute;right:40px;width:345px;top:-125px;}
+.dry .sec4_hand_prod{position:absolute;right:40px;width:var(--s4w,345px);max-width:none;top:auto;bottom:-40px;z-index:1;}
 .dry .sec4_work_stepBox{display:flex;flex-wrap:wrap;justify-content:space-between;width:100%;background:#f4fcf5;border-radius:10px;box-shadow:0 0 7px 3px rgba(0,0,0,.2);padding:30px;position:relative;}
 .dry .sec4_work_step_col{width:30.5%;display:flex;flex-direction:column;justify-content:space-between;text-align:center;position:relative;}
 .dry .sec4_work_step_col:after{position:absolute;left:0;right:-42px;top:27px;content:"";height:1px;background:var(--sage);}
@@ -537,7 +538,7 @@
   .dry .s3-usa-seal{left:0;top:0;width:100px;}
   .dry .s3-moneyback-seal{left:110px;top:0;width:100px;}
   .dry .section3_right{width:55%;}
-  .dry .sec4_hand_prod{right:20px;width:265px;top:-105px;}
+  .dry .sec4_hand_prod{right:20px;width:calc(var(--s4w,345px) * .77);}
   .dry .sec4_work_stepBox{padding:10px 20px 20px;}
   .dry .sec4_work_step_col{width:32%;}
   .dry .section5_col{padding:10px;}
@@ -664,7 +665,7 @@
   .dry .section_4{padding:40px 0 35px;overflow-x:clip;}
   .dry .section4_box{row-gap:30px;}
   .dry .section4_header_box{padding-right:110px;}
-  .dry .sec4_hand_prod{right:-95px;width:235px;top:-85px;transform:rotate(-18deg);}
+  .dry .sec4_hand_prod{right:-15px;width:calc(var(--s4w,345px) * .5);bottom:-30px;}
   .dry .sec4_text{font-size:17px;line-height:24px;margin-top:10px;}
   .dry .sec4_work_stepBox{padding:25px 15px 30px;row-gap:35px;}
   .dry .sec4_work_step_col{width:100%;flex-direction:row;align-items:flex-start;column-gap:5px;}
@@ -992,7 +993,7 @@
   data-timer-h="{{ s.timer_hours }}"
   data-timer-m="{{ s.timer_minutes }}"
   data-cutoff="{{ s.ship_cutoff }}"
-  style="--dk:{{ s.c_dark }};--sage:{{ s.c_sage }};--lt:{{ s.c_light }};--gray:{{ s.c_gray }};--hero:{{ s.c_hero }};--btn1:{{ s.c_btn1 }};--btn2:{{ s.c_btn2 }};--red:{{ s.c_red }};--star:{{ s.c_star }};--marquee-speed:{{ s.marquee_speed }}s;--s6w:{{ s.s6_product_width }}px;--s3w:{{ s.s3_product_width }}px;--s6ss:{{ s.s6_seal_size }};--s6sx:{{ s.s6_seal_x }};--s6sy:{{ s.s6_seal_y }};"
+  style="--dk:{{ s.c_dark }};--sage:{{ s.c_sage }};--lt:{{ s.c_light }};--gray:{{ s.c_gray }};--hero:{{ s.c_hero }};--btn1:{{ s.c_btn1 }};--btn2:{{ s.c_btn2 }};--red:{{ s.c_red }};--star:{{ s.c_star }};--marquee-speed:{{ s.marquee_speed }}s;--s6w:{{ s.s6_product_width }}px;--s3w:{{ s.s3_product_width }}px;--s4w:{{ s.s4_image_width }}px;--s6ss:{{ s.s6_seal_size }};--s6sx:{{ s.s6_seal_x }};--s6sy:{{ s.s6_seal_y }};"
 >
 
   {%- comment -%} ================= 1. BANNER ================= {%- endcomment -%}
@@ -2687,12 +2688,23 @@
       "type": "textarea",
       "id": "s4_text",
       "label": "Subtítulo",
-      "default": "En tres fases, todo desde\nun solo tubo"
+      "default": "En tres fases, todo desde un solo tubo"
     },
     {
       "type": "image_picker",
       "id": "s4_image",
       "label": "Foto mano + producto (arriba a la derecha)"
+    },
+    {
+      "type": "range",
+      "id": "s4_image_width",
+      "label": "Ancho de la foto de la mano (ordenador)",
+      "min": 200,
+      "max": 460,
+      "step": 5,
+      "default": 345,
+      "unit": "px",
+      "info": "La foto se apoya justo encima del recuadro de las 3 fases."
     },
     {
       "type": "text",
