@@ -380,9 +380,10 @@
 .dry .guarantee-text{font-size:17px;line-height:25px;letter-spacing:.1px;color:#000;margin-top:15px;}
 .dry .guarantee-text.fw-600{font-weight:600;}
 .dry .guarantee-right{width:30%;}
-.dry .guarantee-benefit-box{float:right;width:120px;display:flex;flex-direction:column;row-gap:25px;margin:35px -20px 0 0;}
+.dry .guarantee-benefit-box{float:right;width:110px;display:flex;flex-direction:column;row-gap:25px;margin:35px 40px 0 0;position:relative;z-index:2;}
+.dry .guarantee-benefit-col img{width:106px;height:106px;object-fit:contain;}
 .dry .guarantee-benefit-col img{display:block;margin:0 auto;width:118px;}
-.dry .guarantee-girl{position:absolute;right:0;bottom:-65px;width:647px;max-width:none;}
+.dry .guarantee-girl{position:absolute;right:70px;bottom:-65px;height:740px;width:auto;max-width:none;z-index:0;}
 
 /* =========================================================
    14. TESTIMONIOS (vídeos + reseñas)
@@ -515,7 +516,7 @@
   .dry .science-btm-left{width:52%;}
   .dry .result_col h3{font-size:18px;line-height:24px;}
   .dry .guarantee-box{width:56%;padding:30px 18px 40px;}
-  .dry .guarantee-girl{right:-20px;width:630px;}
+  .dry .guarantee-girl{right:40px;height:700px;}
 }
 @media only screen and (max-width:1023px){
   .dry .container{width:750px;}
@@ -561,7 +562,7 @@
   .dry .guarantee-section{background:#fff;padding:0;}
   .dry .guarantee-sec-inner{max-width:620px;margin:0 auto;background:var(--lt);border-radius:15px;}
   .dry .guarantee-box{width:100%;background:none;border:none;}
-  .dry .guarantee-girl{width:400px;position:static;}
+  .dry .guarantee-girl{width:400px;height:auto;position:static;}
   .dry .guarantee-right{width:100%;display:flex;justify-content:flex-start;align-items:center;}
   .dry .guarantee-benefit-box{width:100px;margin:0;flex-shrink:0;float:none;}
   .dry .guarantee-risk-free{background:#fff;}
@@ -765,7 +766,7 @@
   .dry .guarantee-heading{font-size:30px;line-height:36px;letter-spacing:-.5px;}
   .dry .guarantee-text{font-size:15px;line-height:22px;letter-spacing:.3px;}
   .dry .guarantee-right{margin:20px auto 0;justify-content:center;}
-  .dry .guarantee-girl{width:280px;margin:0 0 0 -35px;}
+  .dry .guarantee-girl{width:280px;height:auto;margin:0 0 0 -35px;}
   .dry .guarantee-benefit-box{width:85px;row-gap:10px;margin:0 0 0 -10px;}
   .dry .testimonial-section{padding:40px 0 50px;}
   .dry .testimonial-trustpilot{column-gap:8px;margin:20px auto 0;}
@@ -2143,7 +2144,7 @@
 
   /* ---------- recorta el espacio transparente de las fotos de la comparativa ---------- */
   Landing.prototype.initTrim = function () {
-    $$(this.root, '.compare-prod-img, .compare-brand-img, .compare-logo').forEach(function (img) {
+    $$(this.root, '.compare-prod-img, .compare-brand-img, .compare-logo, .guarantee-girl').forEach(function (img) {
       var src = img.currentSrc || img.src;
       if (!src || img.dataset.trimmed) return;
       img.dataset.trimmed = '1';
@@ -2153,7 +2154,7 @@
         try {
           var w = probe.naturalWidth, h = probe.naturalHeight;
           if (!w || !h) return;
-          var k = Math.min(1, 600 / Math.max(w, h)), cw = Math.round(w * k), ch = Math.round(h * k);
+          var k = Math.min(1, 1400 / Math.max(w, h)), cw = Math.round(w * k), ch = Math.round(h * k);
           var cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
           var cx = cv.getContext('2d'); cx.drawImage(probe, 0, 0, cw, ch);
           var d = cx.getImageData(0, 0, cw, ch).data, x0 = cw, y0 = ch, x1 = -1, y1 = -1;
