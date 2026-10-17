@@ -450,7 +450,7 @@
 .dry .package_section{background:var(--lt);padding:60px 0 70px;}
 .dry .package_section-row{width:100%;margin:15px auto 0;display:flex;flex-wrap:wrap;justify-content:space-between;row-gap:35px;}
 .dry .package{width:32%;background:#fff;padding:40px 15px 20px;border:2px solid #1c404c;border-radius:12px;position:relative;}
-.dry .package.is-featured{box-shadow:0 10px 30px -12px rgba(19,73,75,.45);}
+.dry .pkage_retail-price.is-empty{visibility:hidden;}
 .dry .most-popular{position:absolute;width:150px;left:50%;transform:translate(-50%);top:-17px;background:#32c0b8;border-radius:45px;padding:6px 5px;font-size:17px;line-height:17px;color:#fff;font-weight:600;}
 .dry .pkage_heading{font-size:30px;line-height:30px;font-weight:800;color:#000;text-transform:uppercase;}
 .dry .areas_text{font-size:22px;line-height:30px;color:#000;font-weight:600;margin-top:10px;}
@@ -958,7 +958,7 @@
                 {%- endif -%}
               </div>
               <div class="pkage_price-row">
-                {%- if pk_compare > pk_offer -%}<p class="pkage_retail-price">{{ s.pk_regular_label }} <span>{{ pk_compare | money }}</span></p>{%- endif -%}
+                {%- if pk_compare > pk_offer -%}<p class="pkage_retail-price">{{ s.pk_regular_label }} <span>{{ pk_compare | money }}</span></p>{%- else -%}<p class="pkage_retail-price is-empty" aria-hidden="true">&nbsp;</p>{%- endif -%}
                 <p class="pkage_offer-price">{% if b.price_text != blank %}{{ b.price_text }}{% else %}{{ pk_offer | money }}{% endif %}</p>
                 {%- if b.show_per_unit and pk_qty > 1 -%}
                   {%- assign per_unit = pk_offer | divided_by: pk_qty -%}
