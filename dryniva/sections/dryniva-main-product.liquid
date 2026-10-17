@@ -309,13 +309,14 @@
 .dry .timeline__row_center_step.viewing{background:var(--dk);transform:scale(1);}
 .dry .timeline_mid_week_box{width:39%;text-align:left;margin-top:5px;}
 .dry .week_heading{font-size:20px;line-height:26px;color:#14331f;font-weight:700;display:flex;align-items:center;gap:15px;}
-.dry .week_heading svg{width:40px;height:40px;flex-shrink:0;color:var(--dk);}
+.dry .week_heading svg{width:40px;height:40px;flex-shrink:0;}
 .dry .timeline__row_content_box{width:41%;border-radius:15px;position:relative;background:#fff;border:2px solid #346f71;padding:15px 20px;text-align:left;opacity:0;transition:opacity .5s ease-out,transform .5s ease-out;transform:translate(50px);}
 .dry .timeline__mid_row.reverse .timeline__row_content_box{transform:translate(-50px);}
 .dry .timeline__row_content_box.viewing,.dry .timeline__mid_row.reverse .timeline__row_content_box.viewing{opacity:1;transform:translate(0);}
 .dry .timeline__row_content_box:after{position:absolute;content:"";left:-12px;top:10px;border-top:11px solid transparent;border-bottom:11px solid transparent;border-right:11px solid #346f71;}
 .dry .timeline__mid_row.reverse .timeline__row_content_box:after{border-right:none;border-left:11px solid #346f71;left:auto;right:-12px;}
 .dry .timeline_row_text1{font-size:17px;line-height:24px;color:#000;}
+.dry .timeline-section .common_parahraph{max-width:620px;margin-left:auto;margin-right:auto;}
 .shopify-design-mode .dry .timeline__row_content_box{opacity:1;transform:none;}
 
 /* =========================================================
@@ -858,6 +859,8 @@
 {%- capture tp_stars -%}<span class="tp-stars" aria-label="5/5">{%- for i in (1..5) -%}<span><svg viewBox="0 0 24 24" aria-hidden="true">{{ svg_star_path }}</svg></span>{%- endfor -%}</span>{%- endcapture -%}
 {%- capture svg_quote -%}<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10 6H6a3 3 0 0 0-3 3v4h4v5h3V6zm11 0h-4a3 3 0 0 0-3 3v4h4v5h3V6z"/></svg>{%- endcapture -%}
 {%- capture svg_watch -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6M12 2v3"/></svg>{%- endcapture -%}
+{%- capture svg_tl_watch -%}<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="20" y="3" width="8" height="5" rx="1.5" fill="#1f1f1f"/><rect x="22.5" y="7" width="3" height="5" fill="#1f1f1f"/><path d="M36 9.5l3.2 3.2" stroke="#1f1f1f" stroke-width="3" stroke-linecap="round"/><circle cx="24" cy="28" r="16.5" fill="#fff" stroke="#1f1f1f" stroke-width="3"/><path d="M24 28V14.5A13.5 13.5 0 0 1 37.5 28Z" fill="#f59e0b"/><path d="M24 28V17" stroke="#1f1f1f" stroke-width="2.6" stroke-linecap="round"/><circle cx="24" cy="28" r="2.4" fill="#1f1f1f"/></svg>{%- endcapture -%}
+{%- capture svg_tl_calendar -%}<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="8" width="40" height="36" rx="5" fill="#f1f1f3" stroke="#d6d6da" stroke-width="1.5"/><path d="M4 13a5 5 0 0 1 5-5h30a5 5 0 0 1 5 5v5H4z" fill="#e53935"/><rect x="12" y="3" width="4" height="10" rx="2" fill="#5a5a5f"/><rect x="22" y="3" width="4" height="10" rx="2" fill="#5a5a5f"/><rect x="32" y="3" width="4" height="10" rx="2" fill="#5a5a5f"/><g fill="#c9c9ce"><rect x="9" y="22" width="7" height="5" rx="1"/><rect x="20.5" y="22" width="7" height="5" rx="1"/><rect x="32" y="22" width="7" height="5" rx="1"/><rect x="9" y="30" width="7" height="5" rx="1"/><rect x="32" y="30" width="7" height="5" rx="1"/><rect x="9" y="38" width="7" height="3" rx="1"/><rect x="20.5" y="38" width="7" height="3" rx="1"/></g><rect x="20.5" y="30" width="7" height="5" rx="1" fill="#e53935"/></svg>{%- endcapture -%}
 {%- capture svg_calendar -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8.5 15l2 2 4-4"/></svg>{%- endcapture -%}
 {%- capture svg_play -%}<svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="27" fill="rgba(255,255,255,.9)"/><path d="M23 18.5v19l15-9.5z" fill="#13494b"/></svg>{%- endcapture -%}
 {%- capture svg_truck -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6h11v10H2zM13 9h4.5l3.5 3.5V16h-8"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>{%- endcapture -%}
@@ -1470,7 +1473,7 @@
                 {%- assign odd = ti | modulo: 2 -%}
                 <div class="timeline__mid_row{% if ti == 0 %} timeline__entry_point{% endif %}{% if odd == 1 %} reverse{% endif %}">
                   <div class="timeline__row_center_step"></div>
-                  <div class="timeline_mid_week_box"><div class="week_heading">{% if ti == 0 %}{{ svg_watch }}{% else %}{{ svg_calendar }}{% endif %}<span>{{ parts[0] | strip }}</span></div></div>
+                  <div class="timeline_mid_week_box"><div class="week_heading">{% if ti == 0 %}{{ svg_tl_watch }}{% else %}{{ svg_tl_calendar }}{% endif %}<span>{{ parts[0] | strip }}</span></div></div>
                   <div class="timeline__row_content_box"><p class="timeline_row_text1">{{ parts[1] | strip }}</p></div>
                 </div>
                 {%- assign ti = ti | plus: 1 -%}
