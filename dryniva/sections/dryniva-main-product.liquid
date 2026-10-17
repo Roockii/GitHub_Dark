@@ -310,14 +310,15 @@
 .dry .timeline_mid_week_box{width:39%;text-align:left;margin-top:5px;}
 .dry .week_heading{font-size:20px;line-height:26px;color:#14331f;font-weight:700;display:flex;align-items:center;gap:15px;}
 .dry .week_heading svg{width:40px;height:40px;flex-shrink:0;}
-.dry .timeline__row_content_box{width:41%;border-radius:15px;position:relative;background:#fff;border:2px solid #346f71;padding:15px 20px;text-align:left;opacity:0;transition:opacity .5s ease-out,transform .5s ease-out;transform:translate(50px);}
-.dry .timeline__mid_row.reverse .timeline__row_content_box{transform:translate(-50px);}
-.dry .timeline__row_content_box.viewing,.dry .timeline__mid_row.reverse .timeline__row_content_box.viewing{opacity:1;transform:translate(0);}
+.dry .timeline__row_content_box{width:41%;border-radius:15px;position:relative;background:#fff;border:2px solid #346f71;padding:15px 20px;text-align:left;transition:opacity .5s ease-out,transform .5s ease-out;}
+.dry [data-timeline].tl-js .timeline__row_content_box{opacity:0;transform:translate(50px);}
+.dry [data-timeline].tl-js .timeline__mid_row.reverse .timeline__row_content_box{transform:translate(-50px);}
+.dry [data-timeline] .timeline__row_content_box.viewing,.dry [data-timeline] .timeline__mid_row.reverse .timeline__row_content_box.viewing{opacity:1;transform:translate(0);}
 .dry .timeline__row_content_box:after{position:absolute;content:"";left:-12px;top:10px;border-top:11px solid transparent;border-bottom:11px solid transparent;border-right:11px solid #346f71;}
 .dry .timeline__mid_row.reverse .timeline__row_content_box:after{border-right:none;border-left:11px solid #346f71;left:auto;right:-12px;}
 .dry .timeline_row_text1{font-size:17px;line-height:24px;color:#000;}
 .dry .timeline-section .common_parahraph{max-width:620px;margin-left:auto;margin-right:auto;}
-.shopify-design-mode .dry .timeline__row_content_box{opacity:1;transform:none;}
+.shopify-design-mode .dry [data-timeline] .timeline__row_content_box{opacity:1;transform:none;}
 
 /* =========================================================
    11. LA CIENCIA (barras de resultados + cita)
@@ -723,7 +724,8 @@
   .dry .timeline__mid_row.timeline__entry_point:after{left:13px;top:25px;border-width:2px;}
   .dry .timeline__row_center_step{left:0;margin:0;width:26px;height:26px;border-width:6px;top:0;}
   .dry .timeline_mid_week_box{width:100%;text-align:left;margin-top:3px;}
-  .dry .timeline__row_content_box,.dry .timeline__mid_row.reverse .timeline__row_content_box{width:100%;margin-top:15px;border-width:2px;padding:15px;transform:translate(30px);}
+  .dry .timeline__row_content_box,.dry .timeline__mid_row.reverse .timeline__row_content_box{width:100%;margin-top:15px;border-width:2px;padding:15px;}
+  .dry [data-timeline].tl-js .timeline__row_content_box,.dry [data-timeline].tl-js .timeline__mid_row.reverse .timeline__row_content_box{transform:translate(30px);}
   .dry .timeline__row_content_box:after{display:none;}
   .dry .week_heading{font-size:18px;line-height:22px;gap:12px;}
   .dry .week_heading svg{width:24px;height:24px;}
@@ -2009,10 +2011,26 @@
         if (contents[i]) contents[i].classList.toggle('viewing', on);
       });
     }
+    function kick() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+    box.classList.add('tl-js');
     measure(); update();
-    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    // "capture" recoge también el scroll de cualquier contenedor del tema, no solo el de la ventana
+    document.addEventListener('scroll', kick, { passive: true, capture: true });
+    window.addEventListener('scroll', kick, { passive: true });
+    window.addEventListener('touchmove', kick, { passive: true });
+    window.addEventListener('wheel', kick, { passive: true });
     window.addEventListener('resize', debounce(function () { measure(); update(); }, 150));
     window.addEventListener('load', function () { measure(); update(); });
+    // red de seguridad: mientras la línea esté en pantalla se recalcula sola
+    var visible = false, last = null;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible) { measure(); kick(); } }).observe(box);
+    } else { visible = true; }
+    setInterval(function () {
+      if (!visible) return;
+      var t = box.getBoundingClientRect().top;
+      if (t !== last) { last = t; update(); }
+    }, 200);
   };
 
   /* ---------- barras y porcentajes animados ---------- */
