@@ -484,17 +484,19 @@
    ========================================================= */
 .dry .faq-section{background:#fff;padding:60px 0 65px;}
 .dry .faq-container{display:flex;flex-direction:column;margin:30px auto 10px;max-width:800px;width:100%;}
-.dry .faq-row{position:relative;width:100%;background:#fff;border-radius:0 12px 12px;border:1px solid #e0e6d7;margin-top:12px;}
-.dry .acdn-heading{width:100%;display:flex;justify-content:flex-start;align-items:center;column-gap:20px;padding:17px 45px 17px 25px;cursor:pointer;position:relative;text-align:left;}
-.dry .acdn-heading .acdn-ic{position:absolute;right:25px;top:50%;width:18px;height:18px;margin-top:-9px;color:#000;}
+.dry .faq-row{position:relative;width:100%;background:#fff;border-radius:14px;border:1px solid #e0e6d7;margin-top:12px;transition:background .3s,border-color .3s,box-shadow .3s;}
+.dry .faq-row:hover{border-color:color-mix(in srgb,var(--sage) 45%,#e0e6d7);}
+/* pregunta abierta: fondo verde suave y borde con el color de la marca */
+.dry .faq-row:has(.accordion-open){background:var(--lt);border-color:color-mix(in srgb,var(--sage) 55%,transparent);box-shadow:0 8px 22px -14px rgba(19,73,75,.35);}
+.dry .acdn-heading{width:100%;display:flex;justify-content:space-between;align-items:center;column-gap:20px;padding:20px 25px;cursor:pointer;position:relative;text-align:left;}
+.dry .faq-toggle{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--lt);color:var(--dk);display:flex;align-items:center;justify-content:center;transition:background .3s,color .3s,transform .3s;}
+.dry .faq-row:has(.accordion-open) .faq-toggle,.dry .acdn-heading.accordion-open .faq-toggle{background:var(--dk);color:#fff;}
+.dry .faq-toggle .acdn-ic{width:14px;height:14px;display:block;}
 .dry .acdn-heading .acdn-ic .v{transition:transform .3s;transform-origin:center;}
 .dry .acdn-heading.accordion-open .acdn-ic .v{transform:scaleY(0);}
-.dry .faq-header-img{width:50px;height:50px;flex-shrink:0;border-radius:50%;overflow:hidden;background:#dfe9e0;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--sage);}
-.dry .faq-header-img img{width:100%;height:100%;object-fit:cover;}
-.dry .faq-header{text-align:left;}
-.dry .faq-subheading{font-size:15px;line-height:22px;color:var(--sage);}
-.dry .faq-heading{font-size:20px;line-height:24px;color:#000;font-weight:600;letter-spacing:-.3px;}
-.dry .acdn-content{text-align:left;padding:0 70px 0 95px;overflow:hidden;max-height:0;transition:max-height .5s ease;}
+.dry .faq-header{text-align:left;flex:1;}
+.dry .faq-heading{font-size:19px;line-height:25px;color:var(--dk);font-weight:600;letter-spacing:-.3px;}
+.dry .acdn-content{text-align:left;padding:0 80px 0 25px;overflow:hidden;max-height:0;transition:max-height .5s ease;}
 .dry .acdn-content-inner{padding-bottom:10px;}
 .dry .acdn-para,.dry .acdn-para p{color:#000;font-size:17px;line-height:25px;letter-spacing:-.3px;}
 .dry .acdn-para p{margin-bottom:20px;}
@@ -801,12 +803,11 @@
   .dry .discount-offer-heading{font-size:30px;line-height:36px;}
   .dry .faq-section{padding:25px 0 35px;}
   .dry .faq-container{margin:10px auto 0;}
-  .dry .acdn-heading{column-gap:12px;padding:10px 30px 10px 15px;}
-  .dry .acdn-heading .acdn-ic{right:12px;width:12px;height:12px;margin-top:-6px;}
-  .dry .faq-header-img{width:40px;height:40px;}
-  .dry .faq-subheading{font-size:13px;line-height:18px;}
-  .dry .faq-heading{font-size:16px;line-height:20px;}
-  .dry .acdn-content{padding:0 15px;}
+  .dry .acdn-heading{column-gap:12px;padding:15px 15px 15px 16px;}
+  .dry .faq-toggle{width:28px;height:28px;}
+  .dry .faq-toggle .acdn-ic{width:12px;height:12px;}
+  .dry .faq-heading{font-size:16px;line-height:21px;}
+  .dry .acdn-content{padding:0 16px;}
   .dry .acdn-para,.dry .acdn-para p{font-size:15px;line-height:21px;}
   .dry .acdn-para p{margin-bottom:15px;}
   .dry .call-btn{display:block;padding:0 15px 10px;position:fixed;bottom:0;left:0;right:0;z-index:99;transform:translateY(130%);transition:transform .4s ease;pointer-events:none;}
@@ -1726,14 +1727,10 @@
             {%- if forloop.first and s.faq_first_open -%}{%- assign open = true -%}{%- endif -%}
             <div class="faq-row" {{ block.shopify_attributes }}>
               <div class="acdn-heading{% if open %} accordion-open{% endif %}" role="button" tabindex="0" aria-expanded="{{ open }}" aria-controls="faq-{{ block.id }}">
-                <div class="faq-header-img">
-                  {%- if block.settings.photo != blank -%}{{ block.settings.photo | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}{{ block.settings.asker | slice: 0 }}{%- endif -%}
-                </div>
                 <div class="faq-header">
-                  {%- if block.settings.asker != blank -%}<p class="faq-subheading">{{ block.settings.asker }}</p>{%- endif -%}
                   <p class="faq-heading">{{ block.settings.question }}</p>
                 </div>
-                {{ svg_plus }}
+                <span class="faq-toggle">{{ svg_plus }}</span>
               </div>
               <div class="acdn-content" id="faq-{{ block.id }}"{% if open %} style="max-height:none"{% endif %}>
                 <div class="acdn-content-inner acdn-para">{{ block.settings.answer }}</div>
@@ -3869,17 +3866,6 @@
       "limit": 12,
       "settings": [
         {
-          "type": "image_picker",
-          "id": "photo",
-          "label": "Foto de quien pregunta (opcional)"
-        },
-        {
-          "type": "text",
-          "id": "asker",
-          "label": "Quién pregunta",
-          "default": "Lucía, de Madrid, pregunta:"
-        },
-        {
           "type": "text",
           "id": "question",
           "label": "Pregunta",
@@ -4179,7 +4165,6 @@
         {
           "type": "faq",
           "settings": {
-            "asker": "Lucía, de Madrid, pregunta:",
             "question": "¿Y si ya lo he probado todo y nada me ha funcionado?",
             "answer": "<p>La mayoría de productos solo atacan una causa. Dryniva trabaja la humedad, el roce y la irritación en una sola aplicación.</p>"
           }
@@ -4187,7 +4172,6 @@
         {
           "type": "faq",
           "settings": {
-            "asker": "Carmen, de Sevilla, pregunta:",
             "question": "¿Escuece en la piel irritada o agrietada?",
             "answer": "<p>No. El aceite de árbol de té microencapsulado se libera poco a poco, así que no escuece ni en la piel más sensible.</p>"
           }
@@ -4195,7 +4179,6 @@
         {
           "type": "faq",
           "settings": {
-            "asker": "Marta, de Valencia, quiere saber:",
             "question": "¿En qué se diferencia de las cremas y polvos de siempre?",
             "answer": "<p>Los polvos se apelmazan, muchas cremas se quedan húmedas y las del pañal están pensadas para bebés. Dryniva está hecha para los pliegues de la piel adulta.</p>"
           }
@@ -4203,7 +4186,6 @@
         {
           "type": "faq",
           "settings": {
-            "asker": "Rocío, de Bilbao, pregunta:",
             "question": "¿Qué pack me conviene?",
             "answer": "<p>1 tubo = una zona, 2 tubos = varias zonas, 3 tubos = todo el cuerpo o para compartir.</p>"
           }
@@ -4211,7 +4193,6 @@
         {
           "type": "faq",
           "settings": {
-            "asker": "Elena, de Zaragoza, quiere saber:",
             "question": "¿Cuándo notaré los resultados?",
             "answer": "<p>La mayoría nota alivio del ardor desde la primera aplicación. Con dos aplicaciones al día, la zona mejora visiblemente en pocos días. Para mantenerla, úsala 2 o 3 veces por semana, sobre todo con calor o sudor.</p>"
           }
@@ -4219,7 +4200,6 @@
         {
           "type": "faq",
           "settings": {
-            "asker": "Pilar, de Málaga, pregunta:",
             "question": "¿Y si no me funciona?",
             "answer": "<p>Dryniva tiene una garantía de 365 días. Si no quedas satisfecha, escríbenos dentro de los 365 días desde que la recibes y te devolvemos el dinero.</p>"
           }
@@ -4227,7 +4207,6 @@
         {
           "type": "faq",
           "settings": {
-            "asker": "Ana, de Barcelona, quiere saber:",
             "question": "¿Puedo usarla en todos los pliegues?",
             "answer": "<p>Sí. Está formulada para bajo el pecho, pliegues del abdomen, ingle, interior de muslos, entre los glúteos y axilas.</p>"
           }
@@ -4235,7 +4214,6 @@
         {
           "type": "faq",
           "settings": {
-            "asker": "Sara, de Murcia, pregunta:",
             "question": "¿Se vende en Amazon o en otras tiendas?",
             "answer": "<p>No. Dryniva solo se vende en nuestra web oficial. Los productos vendidos en otros sitios pueden ser falsos y no están cubiertos por nuestra garantía.</p>"
           }
