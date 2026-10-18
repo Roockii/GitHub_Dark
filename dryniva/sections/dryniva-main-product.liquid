@@ -897,6 +897,7 @@
 {%- capture packs_html -%}
   {%- comment -%} ================= 15. OFERTA + PACKS ================= {%- endcomment -%}
   {%- if package_blocks.size > 0 -%}
+    <div class="dry-packs-anchor" id="{{ pack_id }}">
     <div class="discount-offer-section dry-sec{% if s.packs_position == 'top' %} is-top{% endif %}">
       <div class="container">
         <div class="discount-offer-icn">{{ svg_watch }}</div>
@@ -910,7 +911,7 @@
         </div>
       </div>
     {%- endif -%}
-    <section class="package_section dry-sec" id="{{ pack_id }}">
+    <section class="package_section dry-sec">
       <div class="container">
         <div class="package_section-row">
           {%- for block in package_blocks -%}
@@ -986,6 +987,7 @@
         </div>
       </div>
     </section>
+    </div>
   {%- endif -%}
 
 {%- endcapture -%}
@@ -1783,7 +1785,12 @@
       var target = document.querySelector(a.getAttribute('href'));
       if (!target) return;
       e.preventDefault();
-      window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - 10, behavior: 'smooth' });
+      // deja hueco para el header si está fijo arriba
+      var hd = document.querySelector('[id^="dry-hd-"]'), off = 10;
+      if (hd) { var pos = getComputedStyle(hd).position; if (pos === 'sticky' || pos === 'fixed') off += hd.offsetHeight; }
+      target.style.scrollMarginTop = off + 'px';
+      // scrollIntoView funciona aunque el tema haga scroll dentro de un contenedor
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   };
 
