@@ -1,0 +1,185 @@
+{%- comment -%}
+  DRYNIVA — CONTACTO (formulario de contacto con el estilo de la tienda)
+  Personalizar → arriba elige "Páginas → contact" → Añadir sección → "Dryniva · Contacto",
+  y oculta las secciones "Página" y "Formulario de contacto" del tema.
+  Los mensajes llegan al email de tu tienda (Configuración → Notificaciones / email del remitente).
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign form_id = 'dryct-form-' | append: section.id
+-%}
+
+<style>
+#dry-ct-{{ section.id }}{
+  --ct-dark:{{ s.c_dark }};--ct-sage:{{ s.c_sage }};--ct-bg:{{ s.c_bg }};--ct-btn1:{{ s.c_btn1 }};--ct-btn2:{{ s.c_btn2 }};
+  font-family:'Inter',ui-sans-serif,system-ui,sans-serif;width:100%;background:var(--ct-bg);padding:60px 0 70px;color:#000;position:relative;overflow:hidden;
+}
+#dry-ct-{{ section.id }} *,#dry-ct-{{ section.id }} *::before,#dry-ct-{{ section.id }} *::after{box-sizing:border-box;}
+:where(#dry-ct-{{ section.id }}) :where(p,h1,h2,form,ul){margin:0;padding:0;}
+#dry-ct-{{ section.id }} .dryct-container{width:1000px;max-width:100%;margin:0 auto;padding:0 20px;position:relative;z-index:1;}
+#dry-ct-{{ section.id }} .dryct-head{text-align:center;max-width:680px;margin:0 auto;}
+#dry-ct-{{ section.id }} .dryct-pre{font-size:14px;line-height:18px;font-weight:700;color:var(--ct-sage);text-transform:uppercase;letter-spacing:.08em;}
+#dry-ct-{{ section.id }} .dryct-title{font-size:42px;line-height:48px;font-weight:700;color:var(--ct-dark);letter-spacing:-.5px;margin-top:8px;}
+#dry-ct-{{ section.id }} .dryct-text{font-size:17px;line-height:25px;margin-top:14px;}
+#dry-ct-{{ section.id }} .dryct-grid{display:grid;grid-template-columns:300px 1fr;gap:28px;margin-top:40px;align-items:start;}
+#dry-ct-{{ section.id }} .dryct-info{display:flex;flex-direction:column;gap:14px;}
+#dry-ct-{{ section.id }} .dryct-item{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid #dee4d4;border-radius:14px;padding:18px;}
+#dry-ct-{{ section.id }} .dryct-ic{flex-shrink:0;width:42px;height:42px;border-radius:50%;background:color-mix(in srgb,var(--ct-sage) 14%,#fff);color:var(--ct-dark);display:flex;align-items:center;justify-content:center;}
+#dry-ct-{{ section.id }} .dryct-ic svg{width:20px;height:20px;}
+#dry-ct-{{ section.id }} .dryct-item-t{font-size:16px;line-height:22px;font-weight:700;color:var(--ct-dark);}
+#dry-ct-{{ section.id }} .dryct-item-d{font-size:15px;line-height:21px;margin-top:3px;color:#2b3530;word-break:break-word;}
+#dry-ct-{{ section.id }} .dryct-item-d a{color:var(--ct-dark);text-decoration:underline;text-underline-offset:3px;}
+#dry-ct-{{ section.id }} .dryct-card{background:#fff;border:1px solid #dee4d4;border-radius:18px;padding:30px;box-shadow:0 10px 30px -18px rgba(19,73,75,.35);}
+#dry-ct-{{ section.id }} .dryct-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+#dry-ct-{{ section.id }} .dryct-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+#dry-ct-{{ section.id }} label{font-size:14px;line-height:18px;font-weight:600;color:var(--ct-dark);}
+#dry-ct-{{ section.id }} input,#dry-ct-{{ section.id }} textarea{width:100%;font:inherit;font-size:16px;color:#000;background:#f7faf7;border:1px solid #d0ded2;border-radius:12px;padding:13px 16px;outline:none;transition:border-color .2s,box-shadow .2s,background .2s;}
+#dry-ct-{{ section.id }} textarea{min-height:150px;resize:vertical;}
+#dry-ct-{{ section.id }} input::placeholder,#dry-ct-{{ section.id }} textarea::placeholder{color:#8a948b;}
+#dry-ct-{{ section.id }} input:focus,#dry-ct-{{ section.id }} textarea:focus{background:#fff;border-color:var(--ct-sage);box-shadow:0 0 0 3px color-mix(in srgb,var(--ct-sage) 20%,transparent);}
+#dry-ct-{{ section.id }} .dryct-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;height:56px;border:0;border-radius:50px;cursor:pointer;color:#fff;font:inherit;font-size:19px;font-weight:700;background:var(--ct-btn1);background:linear-gradient(90deg,var(--ct-btn1),var(--ct-btn2));box-shadow:0 5px 9px 1px color-mix(in srgb,var(--ct-btn1) 30%,transparent);transition:filter .2s;margin-top:4px;}
+#dry-ct-{{ section.id }} .dryct-btn:hover{filter:brightness(1.06);}
+#dry-ct-{{ section.id }} .dryct-btn svg{width:18px;height:18px;}
+#dry-ct-{{ section.id }} .dryct-note{font-size:13px;line-height:18px;color:#5b665e;text-align:center;margin-top:12px;}
+#dry-ct-{{ section.id }} .dryct-msg{border-radius:12px;padding:14px 16px;font-size:15px;line-height:22px;margin-bottom:16px;}
+#dry-ct-{{ section.id }} .dryct-msg.ok{background:color-mix(in srgb,var(--ct-btn1) 12%,#fff);color:#0d5b25;border:1px solid color-mix(in srgb,var(--ct-btn1) 35%,#fff);}
+#dry-ct-{{ section.id }} .dryct-msg.err{background:#fdf0f0;color:#a11818;border:1px solid #f3c7c7;}
+#dry-ct-{{ section.id }} .dryct-leaf{position:absolute;width:150px;opacity:.5;color:color-mix(in srgb,var(--ct-sage) 35%,#fff);pointer-events:none;}
+#dry-ct-{{ section.id }} .dryct-leaf.l1{left:-20px;bottom:30px;transform:rotate(-15deg);}
+#dry-ct-{{ section.id }} .dryct-leaf.l2{right:-10px;top:20px;transform:rotate(160deg);}
+@media (max-width:767px){
+  #dry-ct-{{ section.id }}{padding:35px 0 45px;}
+  #dry-ct-{{ section.id }} .dryct-container{padding:0 15px;}
+  #dry-ct-{{ section.id }} .dryct-title{font-size:30px;line-height:36px;}
+  #dry-ct-{{ section.id }} .dryct-text{font-size:15px;line-height:22px;}
+  #dry-ct-{{ section.id }} .dryct-grid{grid-template-columns:1fr;gap:18px;margin-top:25px;}
+  #dry-ct-{{ section.id }} .dryct-card{padding:20px;order:-1;}
+  #dry-ct-{{ section.id }} .dryct-row{grid-template-columns:1fr;gap:0;}
+  #dry-ct-{{ section.id }} .dryct-leaf{width:100px;}
+}
+</style>
+
+{%- capture leaf -%}<svg viewBox="0 0 120 200" fill="currentColor" aria-hidden="true"><path d="M58 198c2-60 4-120 2-190h4c2 70 0 130-2 190z"/><path d="M60 150c-25-5-45-25-50-55 25 5 45 25 50 55z"/><path d="M62 120c25-5 45-25 50-55-25 5-45 25-50 55z"/><path d="M60 85c-20-5-35-22-38-45 20 5 35 22 38 45z"/><path d="M62 60c18-5 32-20 35-40-18 5-32 20-35 40z"/></svg>{%- endcapture -%}
+
+<section id="dry-ct-{{ section.id }}" class="dryct">
+  <span class="dryct-leaf l1">{{ leaf }}</span>
+  <span class="dryct-leaf l2">{{ leaf }}</span>
+  <div class="dryct-container">
+    <div class="dryct-head">
+      {%- if s.pre != blank -%}<p class="dryct-pre">{{ s.pre }}</p>{%- endif -%}
+      <h1 class="dryct-title">{{ s.title }}</h1>
+      {%- if s.text != blank -%}<p class="dryct-text">{{ s.text }}</p>{%- endif -%}
+    </div>
+
+    <div class="dryct-grid">
+      <div class="dryct-info">
+        {%- if s.email != blank -%}
+          <div class="dryct-item">
+            <span class="dryct-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+            <div><p class="dryct-item-t">{{ s.email_title }}</p><p class="dryct-item-d"><a href="mailto:{{ s.email }}">{{ s.email }}</a></p></div>
+          </div>
+        {%- endif -%}
+        {%- if s.hours_title != blank -%}
+          <div class="dryct-item">
+            <span class="dryct-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <div><p class="dryct-item-t">{{ s.hours_title }}</p>{%- if s.hours_text != blank -%}<p class="dryct-item-d">{{ s.hours_text }}</p>{%- endif -%}</div>
+          </div>
+        {%- endif -%}
+        {%- if s.guarantee_title != blank -%}
+          <div class="dryct-item">
+            <span class="dryct-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span>
+            <div><p class="dryct-item-t">{{ s.guarantee_title }}</p>{%- if s.guarantee_text != blank -%}<p class="dryct-item-d">{{ s.guarantee_text }}</p>{%- endif -%}</div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="dryct-card">
+        {%- form 'contact', id: form_id -%}
+          {%- if form.posted_successfully? -%}
+            <p class="dryct-msg ok" role="status">{{ s.success }}</p>
+          {%- elsif form.errors -%}
+            <p class="dryct-msg err" role="alert">{{ s.error }}</p>
+          {%- endif -%}
+          <div class="dryct-row">
+            <div class="dryct-field">
+              <label for="{{ form_id }}-name">{{ s.l_name }}</label>
+              <input id="{{ form_id }}-name" type="text" name="contact[name]" autocomplete="name" value="{{ form.name }}">
+            </div>
+            <div class="dryct-field">
+              <label for="{{ form_id }}-email">{{ s.l_email }} *</label>
+              <input id="{{ form_id }}-email" type="email" name="contact[email]" autocomplete="email" required value="{{ form.email }}">
+            </div>
+          </div>
+          {%- if s.show_order -%}
+            <div class="dryct-field">
+              <label for="{{ form_id }}-order">{{ s.l_order }}</label>
+              <input id="{{ form_id }}-order" type="text" name="contact[order]" placeholder="{{ s.p_order }}">
+            </div>
+          {%- endif -%}
+          <div class="dryct-field">
+            <label for="{{ form_id }}-body">{{ s.l_message }} *</label>
+            <textarea id="{{ form_id }}-body" name="contact[body]" required placeholder="{{ s.p_message }}">{{ form.body }}</textarea>
+          </div>
+          <button type="submit" class="dryct-btn">{{ s.button }}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+          {%- if s.note != blank -%}<p class="dryct-note">{{ s.note }}</p>{%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- if request.design_mode == false -%}
+<script>
+(function () {
+  // Tras enviar el formulario la página se recarga: baja hasta el mensaje
+  var box = document.getElementById('dry-ct-{{ section.id }}');
+  if (box && box.querySelector('.dryct-msg')) {
+    window.addEventListener('load', function () { box.querySelector('.dryct-card').scrollIntoView({ block: 'center' }); });
+  }
+})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Dryniva · Contacto",
+  "tag": "div",
+  "class": "dryniva-contact",
+  "settings": [
+    { "type": "header", "content": "Textos" },
+    { "type": "text", "id": "pre", "label": "Antetítulo", "default": "We're here to help" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Contact Us" },
+    { "type": "textarea", "id": "text", "label": "Texto", "default": "Questions about your order, how to use Dryniva or our guarantee? Send us a message and we'll get back to you as soon as possible." },
+
+    { "type": "header", "content": "Cajas de la izquierda" },
+    { "type": "text", "id": "email_title", "label": "Email: título", "default": "Email us" },
+    { "type": "text", "id": "email", "label": "Email de soporte", "info": "Vacío = no se muestra esta caja." },
+    { "type": "text", "id": "hours_title", "label": "Respuesta: título", "default": "Fast replies" },
+    { "type": "text", "id": "hours_text", "label": "Respuesta: texto", "default": "We usually reply within 24–48 hours, Monday to Friday." },
+    { "type": "text", "id": "guarantee_title", "label": "Garantía: título", "default": "30-Day Money-Back Guarantee" },
+    { "type": "text", "id": "guarantee_text", "label": "Garantía: texto", "default": "Not happy? Email us within 30 days and we'll refund you in full." },
+
+    { "type": "header", "content": "Formulario" },
+    { "type": "text", "id": "l_name", "label": "Etiqueta nombre", "default": "Name" },
+    { "type": "text", "id": "l_email", "label": "Etiqueta email", "default": "Email" },
+    { "type": "checkbox", "id": "show_order", "label": "Mostrar campo 'Número de pedido'", "default": true },
+    { "type": "text", "id": "l_order", "label": "Etiqueta pedido", "default": "Order number (optional)" },
+    { "type": "text", "id": "p_order", "label": "Ejemplo pedido", "default": "#1001" },
+    { "type": "text", "id": "l_message", "label": "Etiqueta mensaje", "default": "Message" },
+    { "type": "text", "id": "p_message", "label": "Ejemplo mensaje", "default": "How can we help you?" },
+    { "type": "text", "id": "button", "label": "Texto del botón", "default": "Send Message" },
+    { "type": "text", "id": "note", "label": "Nota debajo del botón", "default": "We'll only use your email to reply to your message." },
+    { "type": "text", "id": "success", "label": "Mensaje enviado", "default": "Thanks! Your message has been sent. We'll get back to you soon." },
+    { "type": "text", "id": "error", "label": "Mensaje de error", "default": "Please check your email address and message, then try again." },
+
+    { "type": "header", "content": "Colores" },
+    { "type": "color", "id": "c_dark", "label": "Verde oscuro (títulos)", "default": "#13494B" },
+    { "type": "color", "id": "c_sage", "label": "Verde salvia", "default": "#5C735E" },
+    { "type": "color", "id": "c_btn1", "label": "Botón: degradado 1", "default": "#02B432" },
+    { "type": "color", "id": "c_btn2", "label": "Botón: degradado 2", "default": "#13DB3F" },
+    { "type": "color", "id": "c_bg", "label": "Fondo", "default": "#F1F7F2" }
+  ],
+  "presets": [{ "name": "Dryniva · Contacto" }]
+}
+{% endschema %}

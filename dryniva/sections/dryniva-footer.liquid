@@ -12,6 +12,12 @@
   assign contact_url = s.contact_link | default: '/pages/contact'
   assign logo_alt = s.logo.alt | default: shop.name
   assign form_id = 'dryft-form-' | append: section.id
+  assign show_nl = false
+  if s.show_newsletter
+    if s.nl_scope == 'all' or request.page_type == 'product'
+      assign show_nl = true
+    endif
+  endif
 -%}
 
 <style>
@@ -92,7 +98,7 @@
 {%- endcapture -%}
 
 <footer id="dry-ft-{{ section.id }}" class="dryft">
-  {%- if s.show_newsletter -%}
+  {%- if show_nl -%}
     <div class="dryft-nl" id="dryft-nl-{{ section.id }}">
       <span class="dryft-leaf l1" aria-hidden="true">{{ leaf_branch }}</span>
       <span class="dryft-leaf l2" aria-hidden="true">{{ leaf_branch }}</span>
@@ -148,7 +154,31 @@
   </div>
 </footer>
 
-{%- if s.show_newsletter -%}
+{%- if s.style_policies and request.page_type == 'policy' -%}
+<style>
+/* Páginas de políticas (Términos, Privacidad, Reembolsos, Envíos) con el estilo de Dryniva */
+.shopify-policy__container{max-width:860px !important;margin:40px auto 60px !important;padding:45px 50px !important;background:#fff;border:1px solid #dee4d4;border-radius:18px;box-shadow:0 10px 30px -18px rgba(19,73,75,.35);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;color:#1f2a24;}
+.shopify-policy__title{text-align:center;margin:0 0 30px !important;padding-bottom:25px;border-bottom:1px solid #e3ebe4;}
+.shopify-policy__title h1{font-family:inherit;font-size:40px;line-height:46px;font-weight:700;letter-spacing:-.5px;color:{{ s.c_dark }};margin:0;}
+.shopify-policy__title h1::before{content:"{{ s.policy_pre | escape }}";display:block;font-size:14px;line-height:18px;font-weight:700;color:{{ s.c_sage }};text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.shopify-policy__body,.shopify-policy__body p,.shopify-policy__body li{font-family:inherit;font-size:16px;line-height:26px;color:#1f2a24;}
+.shopify-policy__body p{margin:0 0 16px;}
+.shopify-policy__body h1,.shopify-policy__body h2,.shopify-policy__body h3,.shopify-policy__body h4,.shopify-policy__body p > strong:only-child{font-family:inherit;color:{{ s.c_dark }};font-weight:700;}
+.shopify-policy__body h2,.shopify-policy__body h3{font-size:20px;line-height:28px;margin:30px 0 12px;}
+.shopify-policy__body p > strong:only-child{display:inline-block;font-size:17px;margin-top:14px;}
+.shopify-policy__body ul,.shopify-policy__body ol{margin:0 0 18px;padding-left:22px;}
+.shopify-policy__body li{margin-bottom:8px;}
+.shopify-policy__body li::marker{color:{{ s.c_sage }};}
+.shopify-policy__body a{color:{{ s.c_dark }};text-decoration:underline;text-underline-offset:3px;}
+@media (max-width:767px){
+  .shopify-policy__container{margin:20px 15px 40px !important;padding:28px 20px !important;border-radius:14px;}
+  .shopify-policy__title h1{font-size:30px;line-height:36px;}
+  .shopify-policy__body,.shopify-policy__body p,.shopify-policy__body li{font-size:15px;line-height:24px;}
+}
+</style>
+{%- endif -%}
+
+{%- if show_nl -%}
 <script>
 (function () {
   // Tras enviar el formulario la página se recarga: baja hasta el mensaje en vez de quedarse arriba
@@ -169,6 +199,10 @@
   "settings": [
     { "type": "header", "content": "Suscripción por email" },
     { "type": "checkbox", "id": "show_newsletter", "label": "Mostrar suscripción", "default": true },
+    { "type": "select", "id": "nl_scope", "label": "Mostrar la suscripción en", "default": "product", "options": [
+      { "value": "product", "label": "Solo en la página del producto" },
+      { "value": "all", "label": "Todas las páginas" }
+    ] },
     { "type": "text", "id": "nl_pre", "label": "Antetítulo", "default": "Únete a la comunidad Dryniva" },
     { "type": "text", "id": "nl_title", "label": "Título", "default": "Recibe un 10% de descuento en tu primer pedido" },
     { "type": "textarea", "id": "nl_text", "label": "Texto", "default": "Suscríbete y recibe ofertas exclusivas, consejos para cuidar tu piel y acceso anticipado a nuevos productos." },
@@ -194,6 +228,10 @@
     { "type": "url", "id": "contact_link", "label": "Enlace contacto", "info": "Vacío = /pages/contact" },
     { "type": "text", "id": "copyright", "label": "Texto del copyright", "default": "Todos los derechos reservados." },
     { "type": "checkbox", "id": "show_payment", "label": "Mostrar iconos de pago", "default": false },
+
+    { "type": "header", "content": "Páginas de políticas" },
+    { "type": "checkbox", "id": "style_policies", "label": "Dar el estilo Dryniva a Términos, Privacidad, Reembolsos y Envíos", "default": true },
+    { "type": "text", "id": "policy_pre", "label": "Antetítulo de las políticas", "default": "Dryniva" },
 
     { "type": "header", "content": "Colores" },
     { "type": "color", "id": "c_dark", "label": "Verde oscuro (títulos)", "default": "#13494B" },
