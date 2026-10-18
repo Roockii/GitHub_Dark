@@ -293,7 +293,8 @@
 .dry .step-col:first-child:before{left:50%;}
 .dry .step-col:last-child:before{right:50%;}
 .dry .step-col-no-text{display:flex;align-items:center;justify-content:center;font-size:17px;line-height:21px;color:#fff;font-weight:700;width:45px;height:45px;background:var(--sage);border:5px solid var(--lt);border-radius:50%;margin:0 auto 20px;position:relative;}
-.dry .step-col-top img{display:block;margin:0 auto;width:100%;border-radius:15px;}
+/* las 3 fotos de "Cómo se usa" siempre del mismo tamaño, suba la foto que suba */
+.dry .step-col-top img,.dry .step-col-top .dry-ph{display:block;margin:0 auto;width:100% !important;height:auto !important;max-width:none;aspect-ratio:243/145;object-fit:cover;object-position:center;border-radius:15px;}
 .dry .step-col-btm{width:100%;padding:20px 5px 0;}
 .dry .step-col-text1{font-size:20px;line-height:26px;color:#000;font-weight:700;}
 .dry .step-col-text2{font-size:17px;line-height:24px;color:#000;margin-top:10px;}
