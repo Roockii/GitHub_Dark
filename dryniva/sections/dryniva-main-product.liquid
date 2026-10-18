@@ -278,6 +278,8 @@
 .dry .sec6-prod-box .sec6_product{display:block;width:100%;max-width:none;margin:0;}
 .dry .sec6-prod-box .s6-made-usa-seal{position:absolute;right:calc(var(--s6sx,23) * -1%);top:calc(var(--s6sy,7) * -1%);width:calc(var(--s6ss,55) * 1%);height:auto;max-width:none;z-index:1;}
 .dry ul.sec6_benefits_list{margin:45px auto 10px;max-width:1030px;}
+/* tablet y ordenador: siempre en una sola fila, el espacio entre iconos se encoge si los textos son largos */
+@media only screen and (min-width:768px){.dry ul.sec6_benefits_list{flex-wrap:nowrap;max-width:1100px;}.dry ul.sec6_benefits_list li{padding:0 clamp(12px,2.4vw,40px);white-space:nowrap;flex:0 1 auto;}.dry ul.sec6_benefits_list li:first-child{padding-left:0;}.dry ul.sec6_benefits_list li:last-child{padding-right:0;}}
 .dry ul.sec6_benefits_list li .ic{width:54px;height:54px;margin:0 auto 5px;}
 .dry ul.sec6_benefits_list li p{font-size:17px;line-height:20px;color:var(--dk);font-weight:600;}
 
