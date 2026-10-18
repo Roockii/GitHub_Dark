@@ -7,8 +7,8 @@
 
 {%- liquid
   assign s = section.settings
-  assign terms_url = s.terms_link | default: shop.terms_of_service.url | default: '#'
-  assign privacy_url = s.privacy_link | default: shop.privacy_policy.url | default: '#'
+  assign terms_url = s.terms_link | default: '/pages/terms-of-service'
+  assign privacy_url = s.privacy_link | default: '/pages/privacy-policy'
   assign contact_url = s.contact_link | default: '/pages/contact'
   assign refund_url = s.refund_link | default: '/pages/refund-policy'
   assign shipping_url = s.shipping_link | default: '/pages/shipping-policy'
@@ -228,9 +228,9 @@
 
     { "type": "header", "content": "Enlaces" },
     { "type": "text", "id": "terms_text", "label": "Texto términos", "default": "Términos de uso" },
-    { "type": "url", "id": "terms_link", "label": "Enlace términos", "info": "Vacío = tu política de Términos del servicio (Configuración → Políticas)." },
+    { "type": "url", "id": "terms_link", "label": "Enlace términos", "info": "Vacío = /pages/terms-of-service" },
     { "type": "text", "id": "privacy_text", "label": "Texto privacidad", "default": "Política de privacidad" },
-    { "type": "url", "id": "privacy_link", "label": "Enlace privacidad", "info": "Vacío = tu Política de privacidad." },
+    { "type": "url", "id": "privacy_link", "label": "Enlace privacidad", "info": "Vacío = /pages/privacy-policy" },
     { "type": "text", "id": "refund_text", "label": "Texto reembolsos", "default": "Refund Policy", "info": "Vacío = no aparece." },
     { "type": "url", "id": "refund_link", "label": "Enlace reembolsos", "info": "Vacío = /pages/refund-policy" },
     { "type": "text", "id": "shipping_text", "label": "Texto envíos", "default": "Shipping Policy", "info": "Vacío = no aparece." },
