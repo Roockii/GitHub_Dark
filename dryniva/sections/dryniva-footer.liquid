@@ -10,6 +10,8 @@
   assign terms_url = s.terms_link | default: shop.terms_of_service.url | default: '#'
   assign privacy_url = s.privacy_link | default: shop.privacy_policy.url | default: '#'
   assign contact_url = s.contact_link | default: '/pages/contact'
+  assign refund_url = s.refund_link | default: '/pages/refund-policy'
+  assign shipping_url = s.shipping_link | default: '/pages/shipping-policy'
   assign logo_alt = s.logo.alt | default: shop.name
   assign form_id = 'dryft-form-' | append: section.id
   assign show_nl = false
@@ -82,7 +84,10 @@
   .dryft-main{padding:25px 15px 90px;border:none;}
   .dryft-logo{margin:0 auto 25px;height:calc(var(--ft-logo-h) * .8);}
   .dryft-logo img{height:calc(var(--ft-logo-h) * .8);}
-  .dryft-links{font-size:14px;line-height:20px;flex-wrap:nowrap;white-space:nowrap;}
+  .dryft-links{font-size:14px;line-height:20px;row-gap:10px;max-width:340px;margin-left:auto;margin-right:auto;}
+  .dryft-links{column-gap:4px;}
+  .dryft-links a{white-space:nowrap;}
+  .dryft-links .sep{display:none;}
   .dryft-copy{font-size:14px;line-height:20px;}
   .dryft-links a{padding:0 6px;}
 }
@@ -139,10 +144,12 @@
         {%- endif -%}
       </a>
       <p class="dryft-links">
-        {%- if s.terms_text != blank -%}<a href="{{ terms_url }}">{{ s.terms_text }}</a>{%- endif -%}
-        {%- if s.terms_text != blank and s.privacy_text != blank -%}<span class="sep" aria-hidden="true"></span>{%- endif -%}
-        {%- if s.privacy_text != blank -%}<a href="{{ privacy_url }}">{{ s.privacy_text }}</a>{%- endif -%}
-        {%- if s.contact_text != blank -%}<span class="sep" aria-hidden="true"></span><a href="{{ contact_url }}">{{ s.contact_text }}</a>{%- endif -%}
+        {%- assign first_link = true -%}
+        {%- if s.terms_text != blank -%}<a href="{{ terms_url }}">{{ s.terms_text }}</a>{%- assign first_link = false -%}{%- endif -%}
+        {%- if s.privacy_text != blank -%}{%- unless first_link -%}<span class="sep" aria-hidden="true"></span>{%- endunless -%}<a href="{{ privacy_url }}">{{ s.privacy_text }}</a>{%- assign first_link = false -%}{%- endif -%}
+        {%- if s.refund_text != blank -%}{%- unless first_link -%}<span class="sep" aria-hidden="true"></span>{%- endunless -%}<a href="{{ refund_url }}">{{ s.refund_text }}</a>{%- assign first_link = false -%}{%- endif -%}
+        {%- if s.shipping_text != blank -%}{%- unless first_link -%}<span class="sep" aria-hidden="true"></span>{%- endunless -%}<a href="{{ shipping_url }}">{{ s.shipping_text }}</a>{%- assign first_link = false -%}{%- endif -%}
+        {%- if s.contact_text != blank -%}{%- unless first_link -%}<span class="sep" aria-hidden="true"></span>{%- endunless -%}<a href="{{ contact_url }}">{{ s.contact_text }}</a>{%- endif -%}
       </p>
       <p class="dryft-copy">© {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ s.copyright }}</p>
       {%- if s.show_payment and shop.enabled_payment_types.size > 0 -%}
@@ -224,6 +231,10 @@
     { "type": "url", "id": "terms_link", "label": "Enlace términos", "info": "Vacío = tu política de Términos del servicio (Configuración → Políticas)." },
     { "type": "text", "id": "privacy_text", "label": "Texto privacidad", "default": "Política de privacidad" },
     { "type": "url", "id": "privacy_link", "label": "Enlace privacidad", "info": "Vacío = tu Política de privacidad." },
+    { "type": "text", "id": "refund_text", "label": "Texto reembolsos", "default": "Refund Policy", "info": "Vacío = no aparece." },
+    { "type": "url", "id": "refund_link", "label": "Enlace reembolsos", "info": "Vacío = /pages/refund-policy" },
+    { "type": "text", "id": "shipping_text", "label": "Texto envíos", "default": "Shipping Policy", "info": "Vacío = no aparece." },
+    { "type": "url", "id": "shipping_link", "label": "Enlace envíos", "info": "Vacío = /pages/shipping-policy" },
     { "type": "text", "id": "contact_text", "label": "Texto contacto", "default": "Contacto" },
     { "type": "url", "id": "contact_link", "label": "Enlace contacto", "info": "Vacío = /pages/contact" },
     { "type": "text", "id": "copyright", "label": "Texto del copyright", "default": "Todos los derechos reservados." },
