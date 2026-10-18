@@ -1724,7 +1724,6 @@
         <div class="faq-container" data-faq>
           {%- for block in faq_blocks -%}
             {%- assign open = false -%}
-            {%- if forloop.first and s.faq_first_open -%}{%- assign open = true -%}{%- endif -%}
             <div class="faq-row" {{ block.shopify_attributes }}>
               <div class="acdn-heading{% if open %} accordion-open{% endif %}" role="button" tabindex="0" aria-expanded="{{ open }}" aria-controls="faq-{{ block.id }}">
                 <div class="faq-header">
@@ -3573,12 +3572,6 @@
       "id": "faq_heading",
       "label": "Título",
       "default": "Preguntas frecuentes"
-    },
-    {
-      "type": "checkbox",
-      "id": "faq_first_open",
-      "label": "Primera pregunta abierta",
-      "default": true
     }
   ],
   "blocks": [
