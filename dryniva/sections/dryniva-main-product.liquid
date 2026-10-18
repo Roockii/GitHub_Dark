@@ -5,8 +5,10 @@
   Usa el producto de la página, así que funciona para todos los productos.
 {%- endcomment -%}
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 /* =========================================================
    BASE — todo va dentro de .dry para no interferir con el tema
@@ -1012,13 +1014,13 @@
     {%- capture banner_right -%}
       <div class="banner_prod_box">
         {%- if s.hero_ba_image != blank -%}
-          <div class="banner_bfr_aftr">{{ s.hero_ba_image | image_url: width: 600 | image_tag: loading: 'eager', alt: s.hero_ba_image.alt, widths: '300, 450, 600' }}</div>
+          <div class="banner_bfr_aftr">{{ s.hero_ba_image | image_url: width: 600 | image_tag: loading: 'eager', alt: s.hero_ba_image.alt, widths: '300, 450, 600', sizes: '(max-width: 767px) 200px, 236px' }}</div>
         {%- endif -%}
         <div class="banner_prod">
           {%- if s.hero_product_image != blank -%}
-            {{ s.hero_product_image | image_url: width: 800 | image_tag: loading: 'eager', fetchpriority: 'high', alt: s.hero_product_image.alt, widths: '400, 600, 800' }}
+            {{ s.hero_product_image | image_url: width: 800 | image_tag: loading: 'eager', fetchpriority: 'high', preload: true, alt: s.hero_product_image.alt, widths: '400, 600, 800', sizes: '(max-width: 767px) 210px, 307px' }}
           {%- elsif p != blank and p.featured_image != blank -%}
-            {{ p.featured_image | image_url: width: 800 | image_tag: loading: 'eager', fetchpriority: 'high', alt: p.title, widths: '400, 600, 800' }}
+            {{ p.featured_image | image_url: width: 800 | image_tag: loading: 'eager', fetchpriority: 'high', preload: true, alt: p.title, widths: '400, 600, 800', sizes: '(max-width: 767px) 210px, 307px' }}
           {%- else -%}
             {{ 'product-1' | placeholder_svg_tag: 'dry-ph' }}
           {%- endif -%}
@@ -1047,7 +1049,7 @@
       </div>
     {%- endcapture -%}
 
-    <section class="banner dry-sec"{% if s.hero_bg != blank %} style="background-image:url('{{ s.hero_bg | image_url: width: 2400 }}')"{% endif %}>
+    <section class="banner dry-sec"{% if s.hero_bg != blank %} style="background-image:url('{{ s.hero_bg | image_url: width: 1920 }}')"{% endif %}>
       <div class="container">
         <div class="banner_row">
           <div class="banner_content">
