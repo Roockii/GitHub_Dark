@@ -5,9 +5,7 @@
   Usa el producto de la página, así que funciona para todos los productos.
 {%- endcomment -%}
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+{%- comment -%} La letra Inter ya la carga el tema desde el CDN de Shopify: no se descarga otra vez de Google. {%- endcomment -%}
 <style>
 
 /* =========================================================
@@ -1014,7 +1012,7 @@
     {%- capture banner_right -%}
       <div class="banner_prod_box">
         {%- if s.hero_ba_image != blank -%}
-          <div class="banner_bfr_aftr">{{ s.hero_ba_image | image_url: width: 600 | image_tag: loading: 'eager', alt: s.hero_ba_image.alt, widths: '300, 450, 600', sizes: '(max-width: 767px) 200px, 236px' }}</div>
+          <div class="banner_bfr_aftr">{{ s.hero_ba_image | image_url: width: 600 | image_tag: loading: 'eager', fetchpriority: 'low', alt: s.hero_ba_image.alt, widths: '300, 450, 600', sizes: '(max-width: 767px) 200px, 236px' }}</div>
         {%- endif -%}
         <div class="banner_prod">
           {%- if s.hero_product_image != blank -%}
@@ -1025,7 +1023,7 @@
             {{ 'product-1' | placeholder_svg_tag: 'dry-ph' }}
           {%- endif -%}
         </div>
-        {%- if s.hero_seal != blank -%}{{ s.hero_seal | image_url: width: 260 | image_tag: class: 'banner-prod-seal', loading: 'eager', alt: s.hero_seal.alt }}{%- endif -%}
+        {%- if s.hero_seal != blank -%}{{ s.hero_seal | image_url: width: 260 | image_tag: class: 'banner-prod-seal', loading: 'eager', fetchpriority: 'low', alt: s.hero_seal.alt }}{%- endif -%}
       </div>
     {%- endcapture -%}
     {%- capture works_box -%}
@@ -1056,7 +1054,7 @@
             <div class="bnr_trusted_text">
               <span class="stars-row" aria-hidden="true">{%- for i in (1..5) -%}<svg viewBox="0 0 24 24" fill="{{ s.c_star }}">{{ svg_star_path }}</svg>{%- endfor -%}</span>
               <p>{{ s.hero_trusted }}</p>
-              {%- if s.hero_people != blank -%}{{ s.hero_people | image_url: width: 220 | image_tag: class: 'trust_people', loading: 'eager', alt: '' }}{%- endif -%}
+              {%- if s.hero_people != blank -%}{{ s.hero_people | image_url: width: 220 | image_tag: class: 'trust_people', loading: 'eager', fetchpriority: 'low', alt: '' }}{%- endif -%}
             </div>
             <h1 class="banner_heading">{{ s.hero_heading }}</h1>
             {%- assign strip_lines = s.hero_strip | newline_to_br | split: '<br />' -%}
