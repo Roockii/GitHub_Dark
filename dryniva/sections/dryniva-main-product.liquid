@@ -2169,7 +2169,20 @@
 
   /* ---------- recorta el espacio transparente de las fotos de la comparativa ---------- */
   Landing.prototype.initTrim = function () {
-    $$(this.root, '.compare-prod-img, .compare-brand-img, .compare-logo, .guarantee-girl').forEach(function (img) {
+    var imgs = $$(this.root, '.compare-prod-img, .compare-brand-img, .compare-logo, .guarantee-girl');
+    if (!imgs.length) return;
+    // Solo se recorta cuando la imagen está a punto de verse y la página ya ha cargado,
+    // para no robar tiempo a la carga inicial (LCP).
+    function later(fn) { (window.requestIdleCallback || function (cb) { setTimeout(cb, 200); })(fn); }
+    function start() {
+      if (!('IntersectionObserver' in window)) { imgs.forEach(function (i) { later(function () { trim(i); }); }); return; }
+      var io = new IntersectionObserver(function (en) {
+        en.forEach(function (e) { if (e.isIntersecting) { io.unobserve(e.target); later(function () { trim(e.target); }); } });
+      }, { rootMargin: '400px 0px' });
+      imgs.forEach(function (i) { io.observe(i); });
+    }
+    if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
+    function trim(img) {
       var src = img.currentSrc || img.src;
       if (!src || img.dataset.trimmed) return;
       img.dataset.trimmed = '1';
@@ -2179,7 +2192,7 @@
         try {
           var w = probe.naturalWidth, h = probe.naturalHeight;
           if (!w || !h) return;
-          var k = Math.min(1, 1400 / Math.max(w, h)), cw = Math.round(w * k), ch = Math.round(h * k);
+          var k = Math.min(1, 1000 / Math.max(w, h)), cw = Math.round(w * k), ch = Math.round(h * k);
           var cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
           var cx = cv.getContext('2d'); cx.drawImage(probe, 0, 0, cw, ch);
           var d = cx.getImageData(0, 0, cw, ch).data, x0 = cw, y0 = ch, x1 = -1, y1 = -1;
@@ -2194,7 +2207,7 @@
         } catch (e) { /* sin permiso CORS: se deja la imagen tal cual */ }
       };
       probe.src = src;
-    });
+    }
   };
 
   Landing.initAll = function () {
