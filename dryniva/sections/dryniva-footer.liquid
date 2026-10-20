@@ -12,6 +12,7 @@
   assign contact_url = s.contact_link | default: '/pages/contact'
   assign refund_url = s.refund_link | default: '/pages/refund-policy'
   assign shipping_url = s.shipping_link | default: '/pages/shipping-policy'
+  assign track_url = s.track_link | default: '/apps/track123'
   assign logo_alt = s.logo.alt | default: shop.name
   assign form_id = 'dryft-form-' | append: section.id
   assign show_nl = false
@@ -149,6 +150,7 @@
         {%- if s.privacy_text != blank -%}{%- unless first_link -%}<span class="sep" aria-hidden="true"></span>{%- endunless -%}<a href="{{ privacy_url }}">{{ s.privacy_text }}</a>{%- assign first_link = false -%}{%- endif -%}
         {%- if s.refund_text != blank -%}{%- unless first_link -%}<span class="sep" aria-hidden="true"></span>{%- endunless -%}<a href="{{ refund_url }}">{{ s.refund_text }}</a>{%- assign first_link = false -%}{%- endif -%}
         {%- if s.shipping_text != blank -%}{%- unless first_link -%}<span class="sep" aria-hidden="true"></span>{%- endunless -%}<a href="{{ shipping_url }}">{{ s.shipping_text }}</a>{%- assign first_link = false -%}{%- endif -%}
+        {%- if s.track_text != blank -%}{%- unless first_link -%}<span class="sep" aria-hidden="true"></span>{%- endunless -%}<a href="{{ track_url }}">{{ s.track_text }}</a>{%- assign first_link = false -%}{%- endif -%}
         {%- if s.contact_text != blank -%}{%- unless first_link -%}<span class="sep" aria-hidden="true"></span>{%- endunless -%}<a href="{{ contact_url }}">{{ s.contact_text }}</a>{%- endif -%}
       </p>
       <p class="dryft-copy">© {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ s.copyright }}</p>
@@ -235,6 +237,8 @@
     { "type": "url", "id": "refund_link", "label": "Enlace reembolsos", "info": "Vacío = /pages/refund-policy" },
     { "type": "text", "id": "shipping_text", "label": "Texto envíos", "default": "Shipping Policy", "info": "Vacío = no aparece." },
     { "type": "url", "id": "shipping_link", "label": "Enlace envíos", "info": "Vacío = /pages/shipping-policy" },
+    { "type": "text", "id": "track_text", "label": "Texto seguimiento", "default": "Track Your Order", "info": "Vacío = no aparece." },
+    { "type": "url", "id": "track_link", "label": "Enlace seguimiento", "info": "Vacío = /apps/track123" },
     { "type": "text", "id": "contact_text", "label": "Texto contacto", "default": "Contacto" },
     { "type": "url", "id": "contact_link", "label": "Enlace contacto", "info": "Vacío = /pages/contact" },
     { "type": "text", "id": "copyright", "label": "Texto del copyright", "default": "Todos los derechos reservados." },
