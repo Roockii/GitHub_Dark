@@ -1,0 +1,280 @@
+{%- comment -%}
+  DRYNIVA — CARRITO (página /cart con el estilo de la tienda)
+  Personalizar → arriba elige "Carrito" → oculta "Carrito" y "Colección destacada" del tema
+  → Agregar sección → "Dryniva · Carrito".
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign threshold = s.free_threshold | remove: '$' | remove: '€' | strip | replace: ',', '.' | times: 100 | round
+  assign remaining = threshold | minus: cart.total_price
+  assign pct = cart.total_price | times: 100 | divided_by: threshold
+  if pct > 100
+    assign pct = 100
+  endif
+  assign shop_url = s.shop_link | default: routes.root_url
+  assign remaining_money = remaining | money
+-%}
+
+<style>
+#dry-cart-{{ section.id }}{
+  --c-dark:{{ s.c_dark }};--c-sage:{{ s.c_sage }};--c-lt:{{ s.c_light }};--c-btn1:{{ s.c_btn1 }};--c-btn2:{{ s.c_btn2 }};
+  font-family:'Inter',ui-sans-serif,system-ui,sans-serif;width:100%;background:var(--c-lt);padding:50px 0 70px;color:#1f2a24;position:relative;overflow:hidden;
+}
+#dry-cart-{{ section.id }} *,#dry-cart-{{ section.id }} *::before,#dry-cart-{{ section.id }} *::after{box-sizing:border-box;}
+:where(#dry-cart-{{ section.id }}) :where(p,h1,h2,form,ul){margin:0;padding:0;}
+#dry-cart-{{ section.id }} a{color:inherit;text-decoration:none;}
+#dry-cart-{{ section.id }} .ct-container{width:1060px;max-width:100%;margin:0 auto;padding:0 20px;position:relative;z-index:1;}
+#dry-cart-{{ section.id }} .ct-head{text-align:center;margin-bottom:30px;}
+#dry-cart-{{ section.id }} .ct-pre{font-size:14px;line-height:18px;font-weight:700;color:var(--c-sage);text-transform:uppercase;letter-spacing:.08em;}
+#dry-cart-{{ section.id }} .ct-title{font-size:40px;line-height:46px;font-weight:700;color:var(--c-dark);letter-spacing:-.5px;margin-top:8px;}
+#dry-cart-{{ section.id }} .ct-grid{display:grid;grid-template-columns:1fr 360px;gap:26px;align-items:start;}
+#dry-cart-{{ section.id }} .ct-card{background:#fff;border:1px solid #dee4d4;border-radius:18px;padding:26px;box-shadow:0 10px 30px -18px rgba(19,73,75,.35);}
+/* barra de envío gratis */
+#dry-cart-{{ section.id }} .ct-ship{background:#fff;border:1px solid #dee4d4;border-radius:14px;padding:16px 18px;margin-bottom:16px;}
+#dry-cart-{{ section.id }} .ct-ship p{font-size:15px;line-height:21px;font-weight:600;color:var(--c-dark);display:flex;align-items:center;gap:8px;}
+#dry-cart-{{ section.id }} .ct-ship p svg{width:20px;height:20px;flex-shrink:0;}
+#dry-cart-{{ section.id }} .ct-bar{height:8px;border-radius:99px;background:#e3ece4;margin-top:10px;overflow:hidden;}
+#dry-cart-{{ section.id }} .ct-bar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--c-btn1),var(--c-btn2));transition:width .4s;}
+/* productos */
+#dry-cart-{{ section.id }} .ct-item{display:grid;grid-template-columns:96px 1fr auto;gap:18px;align-items:center;padding:18px 0;border-bottom:1px solid #e6ede7;}
+#dry-cart-{{ section.id }} .ct-item:first-child{padding-top:0;}
+#dry-cart-{{ section.id }} .ct-item:last-child{border-bottom:0;padding-bottom:0;}
+#dry-cart-{{ section.id }} .ct-img{width:96px;height:96px;border-radius:12px;background:var(--c-lt);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#dry-cart-{{ section.id }} .ct-img img{width:100%;height:100%;object-fit:contain;}
+#dry-cart-{{ section.id }} .ct-name{font-size:17px;line-height:22px;font-weight:700;color:var(--c-dark);}
+#dry-cart-{{ section.id }} .ct-var{display:inline-block;font-size:13px;line-height:16px;font-weight:600;color:var(--c-sage);background:var(--c-lt);border-radius:50px;padding:4px 10px;margin-top:6px;}
+#dry-cart-{{ section.id }} .ct-row{display:flex;align-items:center;gap:14px;margin-top:12px;}
+#dry-cart-{{ section.id }} .ct-qty{display:inline-flex;align-items:center;border:1px solid #d0ded2;border-radius:50px;background:#fff;overflow:hidden;}
+#dry-cart-{{ section.id }} .ct-qty button{width:34px;height:34px;border:0;background:transparent;font-size:18px;line-height:1;color:var(--c-dark);cursor:pointer;}
+#dry-cart-{{ section.id }} .ct-qty button:hover{background:var(--c-lt);}
+#dry-cart-{{ section.id }} .ct-qty input{width:36px;height:34px;border:0;text-align:center;font:inherit;font-size:15px;font-weight:600;color:#000;-moz-appearance:textfield;}
+#dry-cart-{{ section.id }} .ct-qty input::-webkit-outer-spin-button,#dry-cart-{{ section.id }} .ct-qty input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+#dry-cart-{{ section.id }} .ct-remove{font-size:13px;color:#5b665e;text-decoration:underline;text-underline-offset:3px;}
+#dry-cart-{{ section.id }} .ct-remove:hover{color:#b42318;}
+#dry-cart-{{ section.id }} .ct-price{text-align:right;}
+#dry-cart-{{ section.id }} .ct-price s{display:block;font-size:14px;color:#8a948b;}
+#dry-cart-{{ section.id }} .ct-price b{font-size:18px;color:#000;}
+/* resumen */
+#dry-cart-{{ section.id }} .ct-sum-t{font-size:20px;line-height:26px;font-weight:700;color:var(--c-dark);margin-bottom:16px;}
+#dry-cart-{{ section.id }} .ct-line{display:flex;justify-content:space-between;font-size:15px;line-height:22px;margin-bottom:10px;}
+#dry-cart-{{ section.id }} .ct-line.save{color:#0d7a2d;font-weight:600;}
+#dry-cart-{{ section.id }} .ct-line.total{font-size:20px;font-weight:700;color:#000;border-top:1px solid #e6ede7;padding-top:14px;margin-top:14px;}
+#dry-cart-{{ section.id }} .ct-note{font-size:13px;line-height:18px;color:#5b665e;margin-top:4px;}
+#dry-cart-{{ section.id }} .ct-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:58px;border:0;border-radius:50px;cursor:pointer;color:#fff;font:inherit;font-size:20px;font-weight:700;background:var(--c-btn1);background:linear-gradient(90deg,var(--c-btn1),var(--c-btn2));box-shadow:0 5px 9px 1px color-mix(in srgb,var(--c-btn1) 30%,transparent);margin-top:18px;transition:filter .2s;}
+#dry-cart-{{ section.id }} .ct-btn:hover{filter:brightness(1.06);}
+#dry-cart-{{ section.id }} .ct-btn svg{width:18px;height:18px;}
+#dry-cart-{{ section.id }} .ct-trust{list-style:none;margin-top:18px;display:flex;flex-direction:column;gap:10px;}
+#dry-cart-{{ section.id }} .ct-trust li{display:flex;align-items:center;gap:10px;font-size:14px;line-height:19px;}
+#dry-cart-{{ section.id }} .ct-trust svg{width:20px;height:20px;flex-shrink:0;color:var(--c-sage);}
+#dry-cart-{{ section.id }} .ct-pay{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:16px;}
+#dry-cart-{{ section.id }} .ct-pay svg{height:24px;width:auto;}
+#dry-cart-{{ section.id }} .ct-back{display:block;text-align:center;font-size:14px;color:var(--c-dark);text-decoration:underline;text-underline-offset:3px;margin-top:14px;}
+#dry-cart-{{ section.id }} .ct-loading{opacity:.5;pointer-events:none;}
+/* vacío */
+#dry-cart-{{ section.id }} .ct-empty{max-width:520px;margin:0 auto;text-align:center;background:#fff;border:1px solid #dee4d4;border-radius:18px;padding:40px 30px;box-shadow:0 10px 30px -18px rgba(19,73,75,.35);}
+#dry-cart-{{ section.id }} .ct-empty-ic{width:64px;height:64px;border-radius:50%;background:var(--c-lt);color:var(--c-dark);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+#dry-cart-{{ section.id }} .ct-empty-ic svg{width:30px;height:30px;}
+#dry-cart-{{ section.id }} .ct-empty h2{font-size:26px;line-height:32px;font-weight:700;color:var(--c-dark);}
+#dry-cart-{{ section.id }} .ct-empty p{font-size:16px;line-height:24px;margin-top:8px;}
+#dry-cart-{{ section.id }} .ct-empty .ct-btn{max-width:340px;margin:22px auto 0;text-decoration:none;}
+#dry-cart-{{ section.id }} .ct-leaf{position:absolute;width:150px;opacity:.5;color:color-mix(in srgb,var(--c-sage) 35%,#fff);pointer-events:none;}
+#dry-cart-{{ section.id }} .ct-leaf.l1{left:-20px;bottom:20px;transform:rotate(-15deg);}
+#dry-cart-{{ section.id }} .ct-leaf.l2{right:-10px;top:10px;transform:rotate(160deg);}
+@media (max-width:900px){
+  #dry-cart-{{ section.id }} .ct-grid{grid-template-columns:1fr;}
+}
+@media (max-width:767px){
+  #dry-cart-{{ section.id }}{padding:30px 0 45px;}
+  #dry-cart-{{ section.id }} .ct-container{padding:0 15px;}
+  #dry-cart-{{ section.id }} .ct-title{font-size:30px;line-height:36px;}
+  #dry-cart-{{ section.id }} .ct-card{padding:18px;border-radius:14px;}
+  #dry-cart-{{ section.id }} .ct-item{grid-template-columns:72px 1fr;gap:14px;}
+  #dry-cart-{{ section.id }} .ct-img{width:72px;height:72px;}
+  #dry-cart-{{ section.id }} .ct-price{grid-column:2;text-align:left;display:flex;gap:8px;align-items:baseline;}
+  #dry-cart-{{ section.id }} .ct-price s{display:inline;}
+  #dry-cart-{{ section.id }} .ct-leaf{width:90px;}
+}
+</style>
+
+{%- capture leaf -%}<svg viewBox="0 0 120 200" fill="currentColor" aria-hidden="true"><path d="M58 198c2-60 4-120 2-190h4c2 70 0 130-2 190z"/><path d="M60 150c-25-5-45-25-50-55 25 5 45 25 50 55z"/><path d="M62 120c25-5 45-25 50-55-25 5-45 25-50 55z"/><path d="M60 85c-20-5-35-22-38-45 20 5 35 22 38 45z"/><path d="M62 60c18-5 32-20 35-40-18 5-32 20-35 40z"/></svg>{%- endcapture -%}
+{%- capture ic_arrow -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>{%- endcapture -%}
+{%- capture ic_truck -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>{%- endcapture -%}
+{%- capture ic_lock -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>{%- endcapture -%}
+{%- capture ic_shield -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6z"/><path d="m9 12 2 2 4-4"/></svg>{%- endcapture -%}
+{%- capture ic_bag -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>{%- endcapture -%}
+
+<section id="dry-cart-{{ section.id }}" class="drycart" data-dry-cart>
+  <span class="ct-leaf l1">{{ leaf }}</span>
+  <span class="ct-leaf l2">{{ leaf }}</span>
+  <div class="ct-container">
+    {%- if cart.item_count == 0 -%}
+      <div class="ct-empty">
+        <div class="ct-empty-ic">{{ ic_bag }}</div>
+        <h2>{{ s.empty_title }}</h2>
+        {%- if s.empty_text != blank -%}<p>{{ s.empty_text }}</p>{%- endif -%}
+        <a class="ct-btn" href="{{ shop_url }}">{{ s.empty_button }}{{ ic_arrow }}</a>
+      </div>
+    {%- else -%}
+      <div class="ct-head">
+        {%- if s.pre != blank -%}<p class="ct-pre">{{ s.pre }}</p>{%- endif -%}
+        <h1 class="ct-title">{{ s.title }}</h1>
+      </div>
+
+      <form action="{{ routes.cart_url }}" method="post" id="dry-cart-form-{{ section.id }}">
+        <div class="ct-grid">
+          <div>
+            {%- if s.show_ship_bar and threshold > 0 -%}
+              <div class="ct-ship">
+                {%- if remaining > 0 -%}
+                  <p>{{ ic_truck }}<span>{{ s.ship_left | replace: '[amount]', remaining_money }}</span></p>
+                {%- else -%}
+                  <p>{{ ic_truck }}<span>{{ s.ship_done }}</span></p>
+                {%- endif -%}
+                <div class="ct-bar"><span style="width:{{ pct }}%"></span></div>
+              </div>
+            {%- endif -%}
+
+            <div class="ct-card">
+              {%- for item in cart.items -%}
+                <div class="ct-item" data-line="{{ forloop.index }}">
+                  <a class="ct-img" href="{{ item.url }}">
+                    {%- if item.image != blank -%}{{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title }}{%- else -%}{{ 'product-1' | placeholder_svg_tag }}{%- endif -%}
+                  </a>
+                  <div>
+                    <a class="ct-name" href="{{ item.url }}">{{ item.product.title }}</a>
+                    {%- unless item.product.has_only_default_variant -%}<div><span class="ct-var">{{ item.variant.title }}</span></div>{%- endunless -%}
+                    <div class="ct-row">
+                      <div class="ct-qty">
+                        <button type="button" data-qty-step="-1" aria-label="-">−</button>
+                        <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" aria-label="{{ item.product.title | escape }}">
+                        <button type="button" data-qty-step="1" aria-label="+">+</button>
+                      </div>
+                      <a class="ct-remove" href="{{ item.url_to_remove }}" data-remove>{{ s.remove_text }}</a>
+                    </div>
+                  </div>
+                  <div class="ct-price">
+                    {%- if item.original_line_price > item.final_line_price -%}<s>{{ item.original_line_price | money }}</s>{%- elsif item.variant.compare_at_price > item.variant.price -%}<s>{{ item.variant.compare_at_price | times: item.quantity | money }}</s>{%- endif -%}
+                    <b>{{ item.final_line_price | money }}</b>
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+          </div>
+
+          <div class="ct-card">
+            <p class="ct-sum-t">{{ s.summary_title }}</p>
+            {%- liquid
+              assign compare_total = 0
+              for item in cart.items
+                if item.variant.compare_at_price > item.variant.price
+                  assign line_cmp = item.variant.compare_at_price | times: item.quantity
+                else
+                  assign line_cmp = item.original_line_price
+                endif
+                assign compare_total = compare_total | plus: line_cmp
+              endfor
+              assign saved = compare_total | minus: cart.total_price
+            -%}
+            <div class="ct-line"><span>{{ s.subtotal_text }}</span><span>{{ cart.items_subtotal_price | money }}</span></div>
+            {%- if cart.total_discount > 0 -%}<div class="ct-line save"><span>{{ s.discount_text }}</span><span>−{{ cart.total_discount | money }}</span></div>{%- endif -%}
+            {%- if s.show_savings and saved > 0 -%}<div class="ct-line save"><span>{{ s.savings_text }}</span><span>{{ saved | money }}</span></div>{%- endif -%}
+            <div class="ct-line"><span>{{ s.shipping_text }}</span><span>{%- if threshold > 0 and remaining <= 0 -%}{{ s.free_text }}{%- else -%}{{ s.calc_text }}{%- endif -%}</span></div>
+            <div class="ct-line total"><span>{{ s.total_text }}</span><span>{{ cart.total_price | money_with_currency }}</span></div>
+            <p class="ct-note">{{ s.tax_note }}</p>
+            <button type="submit" name="checkout" class="ct-btn">{{ s.checkout_text }}{{ ic_arrow }}</button>
+            <ul class="ct-trust">
+              {%- if s.trust_1 != blank -%}<li>{{ ic_lock }}{{ s.trust_1 }}</li>{%- endif -%}
+              {%- if s.trust_2 != blank -%}<li>{{ ic_shield }}{{ s.trust_2 }}</li>{%- endif -%}
+              {%- if s.trust_3 != blank -%}<li>{{ ic_truck }}{{ s.trust_3 }}</li>{%- endif -%}
+            </ul>
+            {%- if s.show_payment and shop.enabled_payment_types.size > 0 -%}
+              <div class="ct-pay">{%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag }}{%- endfor -%}</div>
+            {%- endif -%}
+            <a class="ct-back" href="{{ shop_url }}">{{ s.continue_text }}</a>
+          </div>
+        </div>
+      </form>
+    {%- endif -%}
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.getElementById('dry-cart-{{ section.id }}');
+  if (!root || !window.fetch) return;
+  // Cambiar cantidad o quitar: se guarda al momento y se recarga para recalcular precios y envío
+  function change(line, qty) {
+    root.classList.add('ct-loading');
+    fetch('{{ routes.cart_change_url }}.js', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ line: line, quantity: qty }) })
+      .then(function () { location.reload(); })
+      .catch(function () { root.classList.remove('ct-loading'); });
+  }
+  root.addEventListener('click', function (e) {
+    var step = e.target.closest('[data-qty-step]');
+    var rm = e.target.closest('[data-remove]');
+    var item = e.target.closest('.ct-item');
+    if (!item) return;
+    var line = +item.dataset.line, input = item.querySelector('input');
+    if (step) { change(line, Math.max(0, (+input.value || 0) + (+step.dataset.qtyStep))); }
+    if (rm) { e.preventDefault(); change(line, 0); }
+  });
+  root.addEventListener('change', function (e) {
+    var input = e.target.closest('.ct-qty input');
+    if (input) change(+input.closest('.ct-item').dataset.line, Math.max(0, parseInt(input.value, 10) || 0));
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Dryniva · Carrito",
+  "tag": "div",
+  "class": "dryniva-cart",
+  "enabled_on": { "templates": ["cart"] },
+  "settings": [
+    { "type": "header", "content": "Textos" },
+    { "type": "text", "id": "pre", "label": "Antetítulo", "default": "Almost there" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Your Cart" },
+    { "type": "text", "id": "remove_text", "label": "Texto quitar", "default": "Remove" },
+    { "type": "text", "id": "summary_title", "label": "Título del resumen", "default": "Order Summary" },
+    { "type": "text", "id": "subtotal_text", "label": "Subtotal", "default": "Subtotal" },
+    { "type": "text", "id": "discount_text", "label": "Descuento", "default": "Discount" },
+    { "type": "checkbox", "id": "show_savings", "label": "Mostrar 'Ahorras' (precio tachado − precio)", "default": true },
+    { "type": "text", "id": "savings_text", "label": "Texto ahorro", "default": "You save" },
+    { "type": "text", "id": "shipping_text", "label": "Envío", "default": "Shipping" },
+    { "type": "text", "id": "free_text", "label": "Envío gratis", "default": "FREE" },
+    { "type": "text", "id": "calc_text", "label": "Envío sin calcular", "default": "Calculated at checkout" },
+    { "type": "text", "id": "total_text", "label": "Total", "default": "Total" },
+    { "type": "text", "id": "tax_note", "label": "Nota bajo el total", "default": "Taxes calculated at checkout." },
+    { "type": "text", "id": "checkout_text", "label": "Botón de pago", "default": "Secure Checkout" },
+    { "type": "text", "id": "continue_text", "label": "Seguir comprando", "default": "Continue shopping" },
+    { "type": "url", "id": "shop_link", "label": "Enlace 'Seguir comprando'", "info": "Pon tu producto. Vacío = página de inicio." },
+
+    { "type": "header", "content": "Barra de envío gratis" },
+    { "type": "checkbox", "id": "show_ship_bar", "label": "Mostrar barra", "default": true },
+    { "type": "text", "id": "free_threshold", "label": "Envío gratis desde (importe)", "default": "39.95", "info": "El mismo importe que pusiste en Envío y entrega." },
+    { "type": "text", "id": "ship_left", "label": "Texto cuando falta", "default": "You're [amount] away from FREE shipping!", "info": "[amount] = lo que falta." },
+    { "type": "text", "id": "ship_done", "label": "Texto cuando ya lo tiene", "default": "Congrats! Your order ships for FREE." },
+
+    { "type": "header", "content": "Confianza" },
+    { "type": "text", "id": "trust_1", "label": "Línea 1", "default": "Secure, encrypted checkout" },
+    { "type": "text", "id": "trust_2", "label": "Línea 2", "default": "30-Day Money-Back Guarantee" },
+    { "type": "text", "id": "trust_3", "label": "Línea 3", "default": "Ships within 1–2 business days" },
+    { "type": "checkbox", "id": "show_payment", "label": "Mostrar iconos de pago", "default": true },
+
+    { "type": "header", "content": "Carrito vacío" },
+    { "type": "text", "id": "empty_title", "label": "Título", "default": "Your cart is empty" },
+    { "type": "text", "id": "empty_text", "label": "Texto", "default": "Your skin folds deserve better. Find the right pack for you." },
+    { "type": "text", "id": "empty_button", "label": "Botón", "default": "Shop Dryniva" },
+
+    { "type": "header", "content": "Colores" },
+    { "type": "color", "id": "c_dark", "label": "Verde oscuro", "default": "#13494B" },
+    { "type": "color", "id": "c_sage", "label": "Verde salvia", "default": "#5C735E" },
+    { "type": "color", "id": "c_light", "label": "Fondo verde claro", "default": "#F1F7F2" },
+    { "type": "color", "id": "c_btn1", "label": "Botón: degradado 1", "default": "#02B432" },
+    { "type": "color", "id": "c_btn2", "label": "Botón: degradado 2", "default": "#13DB3F" }
+  ],
+  "presets": [{ "name": "Dryniva · Carrito" }]
+}
+{% endschema %}
