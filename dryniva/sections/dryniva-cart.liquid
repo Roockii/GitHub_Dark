@@ -139,7 +139,7 @@
               {%- for item in cart.items -%}
                 <div class="ct-item" data-line="{{ forloop.index }}">
                   <a class="ct-img" href="{{ item.url }}">
-                    {%- if item.image != blank -%}{{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title }}{%- else -%}{{ 'product-1' | placeholder_svg_tag }}{%- endif -%}
+                    {%- if s.item_image != blank -%}{{ s.item_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title }}{%- elsif item.image != blank -%}{{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title }}{%- else -%}{{ 'product-1' | placeholder_svg_tag }}{%- endif -%}
                   </a>
                   <div>
                     <a class="ct-name" href="{{ item.url }}">{{ item.product.title }}</a>
@@ -251,6 +251,9 @@
     { "type": "text", "id": "continue_text", "label": "Seguir comprando", "default": "Continue shopping" },
     { "type": "url", "id": "shop_link", "label": "Enlace 'Seguir comprando'", "info": "Pon tu producto. Vacío = página de inicio." },
 
+    { "type": "header", "content": "Foto del producto" },
+    { "type": "image_picker", "id": "item_image", "label": "Foto en el carrito", "info": "Se usa para todos los productos del carrito. Vacío = la foto del producto en Shopify." },
+
     { "type": "header", "content": "Barra de envío gratis" },
     { "type": "checkbox", "id": "show_ship_bar", "label": "Mostrar barra", "default": true },
     { "type": "text", "id": "free_threshold", "label": "Envío gratis desde (importe)", "default": "39.95", "info": "El mismo importe que pusiste en Envío y entrega." },
@@ -260,7 +263,7 @@
     { "type": "header", "content": "Confianza" },
     { "type": "text", "id": "trust_1", "label": "Línea 1", "default": "Secure, encrypted checkout" },
     { "type": "text", "id": "trust_2", "label": "Línea 2", "default": "30-Day Money-Back Guarantee" },
-    { "type": "text", "id": "trust_3", "label": "Línea 3", "default": "Ships within 1–2 business days" },
+    { "type": "text", "id": "trust_3", "label": "Línea 3", "default": "Free shipping on orders over $39.95" },
     { "type": "checkbox", "id": "show_payment", "label": "Mostrar iconos de pago", "default": true },
 
     { "type": "header", "content": "Carrito vacío" },
