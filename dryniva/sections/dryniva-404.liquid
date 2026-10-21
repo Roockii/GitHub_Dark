@@ -1,0 +1,102 @@
+{%- comment -%}
+  DRYNIVA — PÁGINA 404 (página no encontrada) con el estilo de la tienda
+  Personalizar → arriba elige "Página 404" → oculta "404" y "Colección destacada" del tema
+  → Agregar sección → "Dryniva · 404".
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign shop_url = s.button_link | default: routes.root_url
+-%}
+
+<style>
+#dry-404-{{ section.id }}{
+  --n-dark:{{ s.c_dark }};--n-sage:{{ s.c_sage }};--n-lt:{{ s.c_light }};--n-btn1:{{ s.c_btn1 }};--n-btn2:{{ s.c_btn2 }};
+  font-family:'Inter',ui-sans-serif,system-ui,sans-serif;width:100%;background:var(--n-lt);padding:70px 0 80px;color:#1f2a24;position:relative;overflow:hidden;text-align:center;
+}
+#dry-404-{{ section.id }} *,#dry-404-{{ section.id }} *::before,#dry-404-{{ section.id }} *::after{box-sizing:border-box;}
+:where(#dry-404-{{ section.id }}) :where(p,h1,ul){margin:0;padding:0;}
+#dry-404-{{ section.id }} a{text-decoration:none;}
+#dry-404-{{ section.id }} .nf-container{width:760px;max-width:100%;margin:0 auto;padding:0 20px;position:relative;z-index:1;}
+#dry-404-{{ section.id }} .nf-code{font-size:120px;line-height:1;font-weight:800;letter-spacing:-4px;color:var(--n-dark);opacity:.12;}
+#dry-404-{{ section.id }} .nf-ic{width:74px;height:74px;border-radius:50%;background:#fff;border:1px solid #dee4d4;color:var(--n-dark);display:flex;align-items:center;justify-content:center;margin:-62px auto 0;position:relative;box-shadow:0 10px 30px -18px rgba(19,73,75,.4);}
+#dry-404-{{ section.id }} .nf-ic svg{width:36px;height:36px;}
+#dry-404-{{ section.id }} .nf-pre{font-size:14px;line-height:18px;font-weight:700;color:var(--n-sage);text-transform:uppercase;letter-spacing:.08em;margin-top:24px;}
+#dry-404-{{ section.id }} .nf-title{font-size:42px;line-height:48px;font-weight:700;color:var(--n-dark);letter-spacing:-.5px;margin-top:8px;}
+#dry-404-{{ section.id }} .nf-text{font-size:17px;line-height:25px;margin:14px auto 0;max-width:520px;}
+#dry-404-{{ section.id }} .nf-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:58px;padding:0 40px;border-radius:50px;color:#fff;font-size:19px;font-weight:700;background:var(--n-btn1);background:linear-gradient(90deg,var(--n-btn1),var(--n-btn2));box-shadow:0 5px 9px 1px color-mix(in srgb,var(--n-btn1) 30%,transparent);margin-top:28px;transition:filter .2s;}
+#dry-404-{{ section.id }} .nf-btn:hover{filter:brightness(1.06);}
+#dry-404-{{ section.id }} .nf-btn svg{width:18px;height:18px;}
+#dry-404-{{ section.id }} .nf-links{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:30px;}
+#dry-404-{{ section.id }} .nf-links a{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid #dee4d4;border-radius:50px;padding:10px 18px;font-size:15px;font-weight:600;color:var(--n-dark);transition:border-color .2s,background .2s;}
+#dry-404-{{ section.id }} .nf-links a:hover{border-color:var(--n-sage);}
+#dry-404-{{ section.id }} .nf-links svg{width:18px;height:18px;color:var(--n-sage);}
+#dry-404-{{ section.id }} .nf-leaf{position:absolute;width:160px;opacity:.5;color:color-mix(in srgb,var(--n-sage) 35%,#fff);pointer-events:none;}
+#dry-404-{{ section.id }} .nf-leaf.l1{left:-15px;bottom:10px;transform:rotate(-15deg);}
+#dry-404-{{ section.id }} .nf-leaf.l2{right:-10px;top:10px;transform:rotate(160deg);}
+@media (max-width:767px){
+  #dry-404-{{ section.id }}{padding:45px 0 55px;}
+  #dry-404-{{ section.id }} .nf-container{padding:0 15px;}
+  #dry-404-{{ section.id }} .nf-code{font-size:90px;}
+  #dry-404-{{ section.id }} .nf-ic{width:62px;height:62px;margin-top:-50px;}
+  #dry-404-{{ section.id }} .nf-title{font-size:30px;line-height:36px;}
+  #dry-404-{{ section.id }} .nf-text{font-size:15px;line-height:22px;}
+  #dry-404-{{ section.id }} .nf-btn{width:100%;font-size:18px;}
+  #dry-404-{{ section.id }} .nf-leaf{width:95px;}
+}
+</style>
+
+{%- capture leaf -%}<svg viewBox="0 0 120 200" fill="currentColor" aria-hidden="true"><path d="M58 198c2-60 4-120 2-190h4c2 70 0 130-2 190z"/><path d="M60 150c-25-5-45-25-50-55 25 5 45 25 50 55z"/><path d="M62 120c25-5 45-25 50-55-25 5-45 25-50 55z"/><path d="M60 85c-20-5-35-22-38-45 20 5 35 22 38 45z"/><path d="M62 60c18-5 32-20 35-40-18 5-32 20-35 40z"/></svg>{%- endcapture -%}
+
+<section id="dry-404-{{ section.id }}" class="dry404">
+  <span class="nf-leaf l1">{{ leaf }}</span>
+  <span class="nf-leaf l2">{{ leaf }}</span>
+  <div class="nf-container">
+    <p class="nf-code" aria-hidden="true">404</p>
+    <div class="nf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c8 0 14-6 14-14-8 0-14 6-14 14z"/><path d="M5 19 13 11"/></svg></div>
+    {%- if s.pre != blank -%}<p class="nf-pre">{{ s.pre }}</p>{%- endif -%}
+    <h1 class="nf-title">{{ s.title }}</h1>
+    {%- if s.text != blank -%}<p class="nf-text">{{ s.text }}</p>{%- endif -%}
+    <a class="nf-btn" href="{{ shop_url }}">{{ s.button }}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+    {%- if s.show_links -%}
+      <ul class="nf-links">
+        {%- if s.l1_text != blank -%}<li><a href="{{ s.l1_link | default: '/apps/track123' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>{{ s.l1_text }}</a></li>{%- endif -%}
+        {%- if s.l2_text != blank -%}<li><a href="{{ s.l2_link | default: '/pages/contact' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>{{ s.l2_text }}</a></li>{%- endif -%}
+        {%- if s.l3_text != blank -%}<li><a href="{{ s.l3_link | default: '/pages/refund-policy' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6z"/><path d="m9 12 2 2 4-4"/></svg>{{ s.l3_text }}</a></li>{%- endif -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Dryniva · 404",
+  "tag": "div",
+  "class": "dryniva-404",
+  "settings": [
+    { "type": "header", "content": "Textos" },
+    { "type": "text", "id": "pre", "label": "Antetítulo", "default": "Oops! Wrong fold" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Page Not Found" },
+    { "type": "textarea", "id": "text", "label": "Texto", "default": "The page you're looking for doesn't exist or has been moved. Let's get you back to soothing, dry and comfortable skin." },
+    { "type": "text", "id": "button", "label": "Botón", "default": "Back to Dryniva" },
+    { "type": "url", "id": "button_link", "label": "Enlace del botón", "info": "Pon tu producto. Vacío = página de inicio." },
+
+    { "type": "header", "content": "Enlaces útiles" },
+    { "type": "checkbox", "id": "show_links", "label": "Mostrar enlaces", "default": true },
+    { "type": "text", "id": "l1_text", "label": "Enlace 1", "default": "Track Your Order" },
+    { "type": "url", "id": "l1_link", "label": "Enlace 1: URL", "info": "Vacío = /apps/track123" },
+    { "type": "text", "id": "l2_text", "label": "Enlace 2", "default": "Contact Us" },
+    { "type": "url", "id": "l2_link", "label": "Enlace 2: URL", "info": "Vacío = /pages/contact" },
+    { "type": "text", "id": "l3_text", "label": "Enlace 3", "default": "30-Day Guarantee" },
+    { "type": "url", "id": "l3_link", "label": "Enlace 3: URL", "info": "Vacío = /pages/refund-policy" },
+
+    { "type": "header", "content": "Colores" },
+    { "type": "color", "id": "c_dark", "label": "Verde oscuro", "default": "#13494B" },
+    { "type": "color", "id": "c_sage", "label": "Verde salvia", "default": "#5C735E" },
+    { "type": "color", "id": "c_light", "label": "Fondo verde claro", "default": "#F1F7F2" },
+    { "type": "color", "id": "c_btn1", "label": "Botón: degradado 1", "default": "#02B432" },
+    { "type": "color", "id": "c_btn2", "label": "Botón: degradado 2", "default": "#13DB3F" }
+  ],
+  "presets": [{ "name": "Dryniva · 404" }]
+}
+{% endschema %}
