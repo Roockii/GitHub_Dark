@@ -139,7 +139,16 @@
               {%- for item in cart.items -%}
                 <div class="ct-item" data-line="{{ forloop.index }}">
                   <a class="ct-img" href="{{ item.url }}">
-                    {%- if s.item_image != blank -%}{{ s.item_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title }}{%- elsif item.image != blank -%}{{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title }}{%- else -%}{{ 'product-1' | placeholder_svg_tag }}{%- endif -%}
+                    {%- liquid
+                      assign pic = s.item_image
+                      assign vt = item.variant.title | downcase
+                      if vt contains '3' and s.item_image_3 != blank
+                        assign pic = s.item_image_3
+                      elsif vt contains '2' and s.item_image_2 != blank
+                        assign pic = s.item_image_2
+                      endif
+                    -%}
+                    {%- if pic != blank -%}{{ pic | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title }}{%- elsif item.image != blank -%}{{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title }}{%- else -%}{{ 'product-1' | placeholder_svg_tag }}{%- endif -%}
                   </a>
                   <div>
                     <a class="ct-name" href="{{ item.url }}">{{ item.product.title }}</a>
@@ -252,7 +261,9 @@
     { "type": "url", "id": "shop_link", "label": "Enlace 'Seguir comprando'", "info": "Pon tu producto. Vacío = página de inicio." },
 
     { "type": "header", "content": "Foto del producto" },
-    { "type": "image_picker", "id": "item_image", "label": "Foto en el carrito", "info": "Se usa para todos los productos del carrito. Vacío = la foto del producto en Shopify." },
+    { "type": "image_picker", "id": "item_image", "label": "Foto: pack de 1 tubo", "info": "También se usa si no pones foto para los packs de 2 o 3. Vacío = la foto del producto en Shopify." },
+    { "type": "image_picker", "id": "item_image_2", "label": "Foto: pack de 2 tubos", "info": "Se usa cuando la variante tiene un 2 en el nombre (ej. 2 Tubes)." },
+    { "type": "image_picker", "id": "item_image_3", "label": "Foto: pack de 3 tubos", "info": "Se usa cuando la variante tiene un 3 en el nombre (ej. 3 Tubes)." },
 
     { "type": "header", "content": "Barra de envío gratis" },
     { "type": "checkbox", "id": "show_ship_bar", "label": "Mostrar barra", "default": true },
